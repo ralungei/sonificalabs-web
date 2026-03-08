@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  /* Surfaces — deep black with subtle blue undertone */
+  --color-surface-0: #060608;
+  --color-surface-1: #0e0e12;
+  --color-surface-2: #18181f;
+  --color-surface-3: #22222b;
+
+  /* Accent — warm studio gold */
+  --color-accent: #e8a838;
+  --color-accent-bright: #f5c842;
+  --color-accent-dim: #8a6b20;
+
+  /* Text — warm off-whites */
+  --color-text-primary: #ece8e0;
+  --color-text-secondary: #8a857d;
+  --color-text-muted: #4a4740;
+
+  /* Borders */
+  --color-border-subtle: #1c1c24;
+
+  /* Semantic */
+  --color-done: #4ade80;
+  --color-fail: #f87171;
+
+  /* Fonts */
+  --font-brand: var(--font-brand), system-ui, sans-serif;
+  --font-logo: var(--font-logo), system-ui, sans-serif;
+  --font-body: var(--font-body), system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+}
+
+body {
+  background: radial-gradient(ellipse 140% 90% at 50% 0%, #1a1a22 0%, #0c0c10 50%, #060608 80%) fixed;
+  color: var(--color-text-primary);
+}
+
+/* Film grain overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.022;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* Seamless infinite scroll */
+@keyframes scroll-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-100% / 3)); }
+}
+@keyframes scroll-right {
+  0% { transform: translateX(calc(-100% / 3)); }
+  100% { transform: translateX(0); }
+}
+
+/* Demo player — play icon breathing glow */
+.play-glow {
+  animation: play-breathe 2s ease-in-out infinite;
+  transition: filter 0.6s ease-out, color 0.5s ease;
+}
+.play-glow-off {
+  filter: drop-shadow(0 0 0 transparent);
+  transition: filter 0.6s ease-out, color 0.5s ease;
+}
+@keyframes play-breathe {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(232,168,56,0.6)) drop-shadow(0 0 12px rgba(232,168,56,0.25)); }
+  50% { filter: drop-shadow(0 0 8px rgba(232,168,56,0.95)) drop-shadow(0 0 22px rgba(232,168,56,0.45)); }
+}
+
+/* Selection */
+::selection {
+  background: var(--color-accent);
+  color: var(--color-surface-0);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-surface-3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }

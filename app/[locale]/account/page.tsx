@@ -1,0 +1,205 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useSession, signOut } from "next-auth/react";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
+import { motion } from "framer-motion";
+import { Navbar } from "@/components/Navbar";
+import { apiFetch } from "@/lib/api";
+
+const PLAN_LABELS: Record<string, string> = {
+  free: "Free",
+  pro: "Pro",
+  studio: "Studio",
+};
+
+interface AccountData {
+  email: string;
+  name: string | null;
+  avatar: string | null;
+  plan: string;
+  creditsUsed: number;
+  creditsLimit: number;
+  createdAt: string;
+}
+
+export default function AccountPage() {
+  const t = useTranslations("account");
+  const locale = useLocale();
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [account, setAccount] = useState<AccountData | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/signin");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    if (status !== "authenticated") return;
+    apiFetch("/user/account")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data) setAccount(data);
+      })
+      .catch(() => {});
+  }, [status]);
+
+  async function handleDelete() {
+    if (confirmText !== t("deleteWord")) return;
+    setDeleting(true);
+    setError(null);
+    try {
+      const res = await apiFetch("/user/account", { method: "DELETE" });
+      if (!res.ok) throw new Error("Error al eliminar la cuenta");
+      await signOut({ redirect: false });
+      router.push("/");
+    } catch {
+      setError(t("deleteError"));
+      setDeleting(false);
+    }
+  }
+
+  if (status === "loading" || !session) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="h-8 w-8 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Navbar />
+      <main className="min-h-screen pt-24 pb-16 px-4 max-w-lg mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <h1 className="text-2xl font-brand text-white mb-8">{t("title")}</h1>
+
+          {/* Profile card */}
+          <div className="rounded-2xl border border-white/[0.08] bg-surface-1/60 backdrop-blur-sm p-6 mb-6">
+            <div className="flex items-center gap-4 mb-6">
+              {session.user?.image ? (
+                <img
+                  src={session.user.image}
+                  alt=""
+                  className="h-14 w-14 rounded-full"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <div className="h-14 w-14 rounded-full bg-accent/20 flex items-center justify-center text-xl text-accent font-semibold">
+                  {session.user?.name?.[0]?.toUpperCase() || "?"}
+                </div>
+              )}
+              <div>
+                <p className="text-white font-medium">{session.user?.name}</p>
+                <p className="text-sm text-text-secondary">{session.user?.email}</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-text-muted text-xs mb-1">{t("plan")}</p>
+                <p className="text-white font-medium">
+                  {PLAN_LABELS[account?.plan ?? "free"] ?? account?.plan ?? "Free"}
+                </p>
+              </div>
+              <div>
+                <p className="text-text-muted text-xs mb-1">{t("creditsUsed")}</p>
+                <p className="text-white font-medium">{account?.creditsUsed ?? 0} / {account?.creditsLimit ?? 0}</p>
+              </div>
+              <div className="col-span-2">
+                <p className="text-text-muted text-xs mb-1">{t("memberSince")}</p>
+                <p className="text-white font-medium">
+                  {account?.createdAt
+                    ? new Date(account.createdAt).toLocaleDateString(locale, {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })
+                    : "—"}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Danger zone */}
+          <div className="rounded-2xl border border-red-500/20 bg-red-500/[0.04] p-6">
+            <h2 className="text-sm font-semibold text-red-400 mb-2">{t("dangerZone")}</h2>
+            <p className="text-xs text-text-secondary mb-4">
+              {t("dangerDescription")}
+            </p>
+            <button
+              onClick={() => setShowDeleteDialog(true)}
+              className="px-4 py-2 rounded-lg text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors cursor-pointer"
+            >
+              {t("deleteAccount")}
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Delete confirmation dialog */}
+        {showDeleteDialog && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="w-full max-w-sm rounded-2xl border border-white/[0.08] bg-surface-2 p-6 shadow-2xl"
+            >
+              <h3 className="text-white font-semibold mb-2">
+                {t("confirmDeletion")}
+              </h3>
+              <p className="text-xs text-text-secondary mb-4">
+                {t.rich("typeDeleteConfirm", {
+                  word: (chunks) => <span className="text-red-400 font-mono font-semibold">{t("deleteWord")}</span>,
+                })}
+              </p>
+              <input
+                type="text"
+                value={confirmText}
+                onChange={(e) => setConfirmText(e.target.value)}
+                placeholder={t("typePlaceholder")}
+                className="w-full px-3 py-2 rounded-lg bg-surface-0 border border-white/[0.08] text-white text-sm placeholder:text-text-muted focus:outline-none focus:border-red-500/50 mb-4"
+                autoFocus
+              />
+              {error && (
+                <p className="text-xs text-red-400 mb-3">{error}</p>
+              )}
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => {
+                    setShowDeleteDialog(false);
+                    setConfirmText("");
+                    setError(null);
+                  }}
+                  className="px-4 py-2 rounded-lg text-xs text-text-secondary hover:text-white transition-colors cursor-pointer"
+                >
+                  {t("cancel")}
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={confirmText !== t("deleteWord") || deleting}
+                  className="px-4 py-2 rounded-lg text-xs font-semibold bg-red-500 text-white hover:bg-red-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  {deleting ? t("deleting") : t("deleteAccount")}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </main>
+    </>
+  );
+}

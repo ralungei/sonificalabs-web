@@ -1,0 +1,264 @@
+{
+  "nav": {
+    "howItWorks": "How it works",
+    "pricing": "Pricing",
+    "credits": "credits",
+    "myAccount": "My account",
+    "manageSubscription": "Manage subscription",
+    "signOut": "Sign out",
+    "signIn": "Sign in",
+    "admin": "Admin"
+  },
+  "home": {
+    "heroLine": "Produce your next",
+    "flipWords": "podcast,advertisement,trailer,radio drama,newscast,intro,audiobook,sketch",
+    "tagline": "Real voices · Music · SFX · Professional mix",
+    "listenExamples": "Listen to examples",
+    "ctaTitle": "Try it now",
+    "ctaSubtitle": "1 free production. Describe your idea and in 30 seconds you'll have professional-quality audio.",
+    "ctaButton": "Create my audio for free",
+    "footer": "© 2026 SonificaLabs",
+    "capabilities": "Podcasts,Ads,Intros,Radio dramas,Documentaries,Cinematic scenes,Newscasts,Audiobooks,Trailers,Sketches,Meditations,Voiceovers",
+    "demos": {
+      "truecrime": "True Crime",
+      "pizzeria": "Radio Ad",
+      "epica": "Epic Intro",
+      "humor": "Sketch",
+      "meditacion": "ASMR",
+      "informativo": "Newscast",
+      "thriller": "Thriller",
+      "documental": "Documentary",
+      "audiocuento": "Audiobook",
+      "trailer": "Trailer"
+    }
+  },
+  "promptForm": {
+    "placeholders": [
+      "Podcast about my vacation in Thailand with two hosts",
+      "Thriller: my mom opens the bedroom door at 3am",
+      "Cinematic intro for my sci-fi short film",
+      "Epic voiceover for my Instagram reel",
+      "Dramatic newscast about what happened at my office today",
+      "TikTok audio: narrator tells my worst date story",
+      "Radio jingle for the barbershop in my neighborhood",
+      "Horror movie trailer set in an abandoned town",
+      "Podcast of two friends debating conspiracy theories",
+      "Children's story about a dragon afraid of fire"
+    ],
+    "tipos": "Podcast,Ad,Intro,Newscast,Radio drama,Meditation,Trailer,Sketch,Other",
+    "type": "Type",
+    "duration": "Duration",
+    "characters": "Characters",
+    "describePlaceholder": "Describe your audio...",
+    "remove": "Remove",
+    "credits": "{count} credits",
+    "upgradePlan": "Upgrade plan",
+    "rateLimitWait": "Wait {seconds}s to try again",
+    "errorProducing": "Error producing",
+    "debugClaudeModel": "Claude model",
+    "debugTtsModel": "TTS model",
+    "debugPlanDefault": "Plan default"
+  },
+  "jobStatus": {
+    "script": "Script",
+    "timing": "Timing",
+    "production": "Production",
+    "ready": "Ready",
+    "queuePosition": "Position {position} in queue",
+    "waitingTurn": "Waiting in line...",
+    "searchingWeb": "Searching the web...",
+    "generatingScript": "Generating script with AI...",
+    "calculatingTiming": "Calculating timing with AI...",
+    "synthesizing": "Synthesizing voices and mixing...",
+    "inQueue": "In queue"
+  },
+  "audioPlayer": {
+    "download": "Download"
+  },
+  "pipeline": {
+    "sectionTitle": "What happens when you hit produce",
+    "step": "Step",
+    "typewriterText": "True crime podcast with two hosts about Jack the Ripper",
+    "scriptLabel": "script",
+    "escaletaLines": {
+      "suspenseAmbience": "Suspense background ambience",
+      "danielLine": "Daniel: \"Good evening, welcome...\"",
+      "transitionEffect": "Transition effect",
+      "saraLine": "Sara: \"Today we're discussing a case that...\"",
+      "rainOnGlass": "Rain on glass",
+      "dramaticHit": "Dramatic hit"
+    },
+    "dawTracks": {
+      "music": "Music",
+      "voice1": "Voice 1",
+      "sfx": "SFX",
+      "voice2": "Voice 2",
+      "ambience": "Ambience"
+    },
+    "dawBadges": "Uniform volume,Voice always clear,Equalization,Reverb,Stereo,Fades",
+    "waveformDuration": "~30 seconds",
+    "phases": [
+      {
+        "title": "Your idea",
+        "subtitle": "Write it like you'd tell a human. No formats, no templates."
+      },
+      {
+        "title": "AI writes the script",
+        "subtitle": "Claude analyzes your prompt and generates a complete script with voices, music, effects and timing."
+      },
+      {
+        "title": "23+ voices choose their role",
+        "subtitle": "Real voices automatically selected based on tone and character."
+      },
+      {
+        "title": "Smart timing and mixing",
+        "subtitle": "Volume, effects, silences and layers adjust automatically for professional sound."
+      },
+      {
+        "title": "Audio ready",
+        "subtitle": "Download your production in seconds."
+      }
+    ]
+  },
+  "jobPage": {
+    "back": "Back",
+    "audioReady": "Your audio is ready",
+    "cancel": "Cancel",
+    "createAnother": "Create another",
+    "somethingWentWrong": "Something went wrong",
+    "errorDescription": "An error occurred while generating your audio. Please try again in a few seconds.",
+    "tryAgain": "Try again"
+  },
+  "masterDialog": {
+    "shareLink": "Share link",
+    "copied": "Copied",
+    "copy": "Copy",
+    "audioReady": "Your audio is ready",
+    "masterReady": "Master ready",
+    "normalizedLufs": "Normalized to -14 LUFS",
+    "downloadMp3": "Download MP3",
+    "downloadInMp3": "Download MP3",
+    "availableInPro": "Available in Pro plan",
+    "pro": "Pro"
+  },
+  "trackLane": {
+    "deleteTrack": "Delete track"
+  },
+  "pricing": {
+    "title": "Pricing",
+    "subtitle": "Pay for what you produce. Cancel anytime.",
+    "comingSoon": "Coming soon",
+    "currentPlan": "Current plan",
+    "priceNote": "Prices exclude VAT. Paid credits renew monthly.",
+    "howCreditsWork": "How credits are spent",
+    "examples": "Examples",
+    "faqTitle": "Frequently asked questions",
+    "bottomCtaTitle": "Produce your first audio for free",
+    "viewDemos": "View demos",
+    "startFree": "Start free",
+    "perMonth": "per month",
+    "plans": {
+      "free": {
+        "credits": "20 credits",
+        "cta": "Start free",
+        "features": [
+          "1 free production",
+          "Up to 30 seconds per audio",
+          "Up to 2 voices per production",
+          "10 voices in Spanish, Latin and English",
+          "Music, SFX and AI mixing",
+          "Share via link"
+        ]
+      },
+      "pro": {
+        "credits": "2,000 credits / month",
+        "cta": "Choose Pro",
+        "badge": "Popular",
+        "includes": "Everything in Free, plus",
+        "features": [
+          "Up to 2 minutes per audio",
+          "Up to 4 voices per production",
+          "27+ voices in Spanish, Latin and English",
+          "Advanced voice model",
+          "Download in MP3"
+        ]
+      },
+      "studio": {
+        "credits": "5,000 credits / month",
+        "cta": "Choose Studio",
+        "includes": "Everything in Pro, plus",
+        "features": [
+          "Up to 8 voices per production",
+          "2.5x more credits than Pro"
+        ]
+      }
+    },
+    "creditCosts": [
+      { "action": "Base production (AI + mixing)", "credits": 10 },
+      { "action": "Per generated voice", "credits": 5 }
+    ],
+    "creditExamples": [
+      { "desc": "Ad spot (2 voices)", "total": "20 credits" },
+      { "desc": "Podcast with 4 hosts", "total": "30 credits" },
+      { "desc": "Radio drama (8 voices)", "total": "50 credits" }
+    ],
+    "faqs": [
+      {
+        "q": "How do credits work?",
+        "a": "Each production has a base cost of 10 credits, plus 5 credits per generated voice. A production with 2 voices costs 20 credits, one with 8 voices costs 50. You pay proportionally to what you use."
+      },
+      {
+        "q": "Do credits accumulate?",
+        "a": "Unused credits are kept until the end of the billing cycle. They don't roll over to the next month."
+      },
+      {
+        "q": "What is the advanced voice model?",
+        "a": "The free plan uses a fast voice model with good quality. Pro and Studio plans use a more expressive, natural model with support for 70+ languages. The difference is especially noticeable in dialogues and long narrations."
+      },
+      {
+        "q": "Can I cancel anytime?",
+        "a": "Yes. You can cancel your subscription at any time. You'll keep access until the end of the billed period."
+      },
+      {
+        "q": "What happens if I run out of credits?",
+        "a": "You'll need to wait until your credits renew next month, or upgrade to a higher plan for more credits immediately."
+      },
+      {
+        "q": "Can I use the audio commercially?",
+        "a": "Paid plans include a commercial license. You can use the generated audio in ads, podcasts, YouTube videos, social media and any commercial project."
+      },
+      {
+        "q": "What payment methods do you accept?",
+        "a": "We accept credit cards, Apple Pay and Google Pay through Stripe. All transactions are encrypted and secure."
+      }
+    ]
+  },
+  "account": {
+    "title": "My account",
+    "plan": "Plan",
+    "creditsUsed": "Credits used",
+    "memberSince": "Member since",
+    "dangerZone": "Danger zone",
+    "dangerDescription": "Deleting your account will permanently erase all your data, productions and audio files. This action cannot be undone.",
+    "deleteAccount": "Delete account",
+    "confirmDeletion": "Confirm deletion",
+    "typeDeleteConfirm": "Type {word} to confirm the permanent deletion of your account and all your data.",
+    "deleteWord": "DELETE",
+    "typePlaceholder": "Type DELETE",
+    "deleting": "Deleting...",
+    "cancel": "Cancel",
+    "deleteError": "Could not delete the account. Please try again."
+  },
+  "signin": {
+    "subtitle": "Sign in to create audio with AI",
+    "oauthError": "This email is already registered with another method.",
+    "genericError": "Error signing in. Please try again.",
+    "continueWith": "Continue with",
+    "termsNotice": "By continuing, you accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
+    "backToHome": "Back to SonificaLabs"
+  },
+  "localeSwitcher": {
+    "es": "ES",
+    "en": "EN"
+  }
+}

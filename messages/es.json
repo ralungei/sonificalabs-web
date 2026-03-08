@@ -1,0 +1,264 @@
+{
+  "nav": {
+    "howItWorks": "Cómo funciona",
+    "pricing": "Pricing",
+    "credits": "créditos",
+    "myAccount": "Mi cuenta",
+    "manageSubscription": "Gestionar suscripción",
+    "signOut": "Cerrar sesión",
+    "signIn": "Iniciar sesión",
+    "admin": "Admin"
+  },
+  "home": {
+    "heroLine": "Produce tu siguiente",
+    "flipWords": "podcast,spot,tráiler,radionovela,informativo,intro,audiocuento,sketch",
+    "tagline": "Voces reales · Música · SFX · Mezcla profesional",
+    "listenExamples": "Escucha ejemplos",
+    "ctaTitle": "Pruébalo ahora",
+    "ctaSubtitle": "1 producción gratis. Escribe tu idea y en 30 segundos tendrás tu audio con calidad profesional.",
+    "ctaButton": "Crear mi audio gratis",
+    "footer": "© 2026 SonificaLabs",
+    "capabilities": "Podcasts,Spots publicitarios,Intros,Radionovelas,Documentales,Escenas cinemáticas,Informativos,Audiocuentos,Tráilers,Sketches,Meditaciones,Doblajes",
+    "demos": {
+      "truecrime": "True Crime",
+      "pizzeria": "Spot Radio",
+      "epica": "Intro Epica",
+      "humor": "Sketch",
+      "meditacion": "ASMR",
+      "informativo": "Informativo",
+      "thriller": "Thriller",
+      "documental": "Documental",
+      "audiocuento": "Audiocuento",
+      "trailer": "Trailer"
+    }
+  },
+  "promptForm": {
+    "placeholders": [
+      "Podcast sobre mis vacaciones en Tailandia con dos presentadores",
+      "Thriller: mi madre abre la puerta del cuarto a las 3am",
+      "Intro cinematica para mi corto de ciencia ficcion",
+      "Voz en off epica para mi reel de Instagram",
+      "Noticiero dramatico sobre lo que paso hoy en mi oficina",
+      "Audio para TikTok: narrador cuenta mi peor cita",
+      "Cuna de radio para la barberia de mi barrio",
+      "Trailer de pelicula de terror en un pueblo abandonado",
+      "Podcast de dos amigos debatiendo sobre conspiraciones",
+      "Audiocuento infantil sobre un dragon que tenia miedo al fuego"
+    ],
+    "tipos": "Podcast,Spot,Intro,Informativo,Radionovela,Meditacion,Trailer,Sketch,Otro",
+    "type": "Tipo",
+    "duration": "Duración",
+    "characters": "Personajes",
+    "describePlaceholder": "Describe tu audio...",
+    "remove": "Quitar",
+    "credits": "{count} créditos",
+    "upgradePlan": "Mejorar plan",
+    "rateLimitWait": "Espera {seconds}s para volver a intentar",
+    "errorProducing": "Error al producir",
+    "debugClaudeModel": "Modelo Claude",
+    "debugTtsModel": "Modelo TTS",
+    "debugPlanDefault": "Plan default"
+  },
+  "jobStatus": {
+    "script": "Guion",
+    "timing": "Timing",
+    "production": "Producción",
+    "ready": "Listo",
+    "queuePosition": "Posición {position} en cola",
+    "waitingTurn": "Esperando turno...",
+    "searchingWeb": "Buscando en la web...",
+    "generatingScript": "Generando guion con IA...",
+    "calculatingTiming": "Calculando timing con IA...",
+    "synthesizing": "Sintetizando voces y mezclando...",
+    "inQueue": "En cola"
+  },
+  "audioPlayer": {
+    "download": "Descargar"
+  },
+  "pipeline": {
+    "sectionTitle": "Qué pasa cuando pulsas producir",
+    "step": "Paso",
+    "typewriterText": "Podcast true crime con dos presentadores sobre Jack el Destripador",
+    "scriptLabel": "guion",
+    "escaletaLines": {
+      "suspenseAmbience": "Ambiente suspense de fondo",
+      "danielLine": "Daniel: \"Buenas noches, bienvenidos...\"",
+      "transitionEffect": "Efecto de transicion",
+      "saraLine": "Sara: \"Hoy hablamos de un caso que...\"",
+      "rainOnGlass": "Lluvia sobre cristal",
+      "dramaticHit": "Golpe dramatico"
+    },
+    "dawTracks": {
+      "music": "Música",
+      "voice1": "Voz 1",
+      "sfx": "SFX",
+      "voice2": "Voz 2",
+      "ambience": "Ambiente"
+    },
+    "dawBadges": "Volumen uniforme,Voz siempre clara,Ecualizacion,Reverb,Estereo,Fades",
+    "waveformDuration": "~30 segundos",
+    "phases": [
+      {
+        "title": "Tu idea",
+        "subtitle": "Escríbelo como se lo dirías a un humano. Sin formatos, sin plantillas."
+      },
+      {
+        "title": "La IA escribe el guión",
+        "subtitle": "Claude analiza tu prompt y genera una escaleta completa con voces, música, efectos y timing."
+      },
+      {
+        "title": "23+ voces eligen su papel",
+        "subtitle": "Voces reales seleccionadas automaticamente segun el tono y el personaje."
+      },
+      {
+        "title": "Timing y mezcla inteligente",
+        "subtitle": "Volumen, efectos, silencios y capas se ajustan solos para un sonido profesional."
+      },
+      {
+        "title": "Audio listo",
+        "subtitle": "Descarga tu producción en segundos."
+      }
+    ]
+  },
+  "jobPage": {
+    "back": "Volver",
+    "audioReady": "Tu audio esta listo",
+    "cancel": "Cancelar",
+    "createAnother": "Crear otro",
+    "somethingWentWrong": "Algo ha fallado",
+    "errorDescription": "Ha ocurrido un error al generar tu audio. Inténtalo de nuevo en unos segundos.",
+    "tryAgain": "Intentar de nuevo"
+  },
+  "masterDialog": {
+    "shareLink": "Enlace para compartir",
+    "copied": "Copiado",
+    "copy": "Copiar",
+    "audioReady": "Tu audio está listo",
+    "masterReady": "Master listo",
+    "normalizedLufs": "Normalizado a -14 LUFS",
+    "downloadMp3": "Descargar MP3",
+    "downloadInMp3": "Descargar en MP3",
+    "availableInPro": "Disponible en el plan Pro",
+    "pro": "Pro"
+  },
+  "trackLane": {
+    "deleteTrack": "Eliminar pista"
+  },
+  "pricing": {
+    "title": "Pricing",
+    "subtitle": "Paga por lo que produces. Cancela cuando quieras.",
+    "comingSoon": "Próximamente",
+    "currentPlan": "Plan actual",
+    "priceNote": "Precios sin IVA. Los créditos de pago se renuevan cada mes.",
+    "howCreditsWork": "Cómo se gastan los créditos",
+    "examples": "Ejemplos",
+    "faqTitle": "Preguntas frecuentes",
+    "bottomCtaTitle": "Produce tu primer audio gratis",
+    "viewDemos": "Ver demos",
+    "startFree": "Empezar gratis",
+    "perMonth": "por mes",
+    "plans": {
+      "free": {
+        "credits": "20 créditos",
+        "cta": "Empezar gratis",
+        "features": [
+          "1 producción gratis",
+          "Hasta 30 segundos por audio",
+          "Hasta 2 voces por producción",
+          "10 voces en español, latino e inglés",
+          "Música, SFX y mezcla con IA",
+          "Compartir vía enlace"
+        ]
+      },
+      "pro": {
+        "credits": "2.000 créditos / mes",
+        "cta": "Elegir Pro",
+        "badge": "Popular",
+        "includes": "Todo en Free, y además",
+        "features": [
+          "Hasta 2 minutos por audio",
+          "Hasta 4 voces por producción",
+          "27+ voces en español, latino e inglés",
+          "Modelo avanzado de voces",
+          "Descarga en MP3"
+        ]
+      },
+      "studio": {
+        "credits": "5.000 créditos / mes",
+        "cta": "Elegir Studio",
+        "includes": "Todo en Pro, y además",
+        "features": [
+          "Hasta 8 voces por producción",
+          "2.5x más créditos que Pro"
+        ]
+      }
+    },
+    "creditCosts": [
+      { "action": "Producción base (IA + mezcla)", "credits": 10 },
+      { "action": "Por cada voz generada", "credits": 5 }
+    ],
+    "creditExamples": [
+      { "desc": "Spot publicitario (2 voces)", "total": "20 créditos" },
+      { "desc": "Podcast con 4 presentadores", "total": "30 créditos" },
+      { "desc": "Radionovela (8 voces)", "total": "50 créditos" }
+    ],
+    "faqs": [
+      {
+        "q": "¿Cómo funcionan los créditos?",
+        "a": "Cada producción tiene un coste base de 10 créditos, más 5 créditos por cada voz generada. Una producción con 2 voces cuesta 20 créditos, una con 8 voces cuesta 50. Así pagas proporcionalmente a lo que consumes."
+      },
+      {
+        "q": "¿Los créditos se acumulan?",
+        "a": "Los créditos no usados se mantienen hasta el final del ciclo de facturación. No se acumulan de un mes a otro."
+      },
+      {
+        "q": "¿Qué es el modelo avanzado de voces?",
+        "a": "El plan gratuito usa un modelo de voz rápido con buena calidad. Los planes Pro y Studio usan un modelo más expresivo, más natural y con soporte para 70+ idiomas. La diferencia se nota especialmente en diálogos y narraciones largas."
+      },
+      {
+        "q": "¿Puedo cancelar cuando quiera?",
+        "a": "Sí. Puedes cancelar tu suscripción en cualquier momento. Mantendrás el acceso hasta el final del periodo facturado."
+      },
+      {
+        "q": "¿Qué pasa si me quedo sin créditos?",
+        "a": "Tendrás que esperar a que se renueven el mes siguiente, o subir a un plan superior para obtener más créditos de inmediato."
+      },
+      {
+        "q": "¿Puedo usar el audio comercialmente?",
+        "a": "Los planes de pago incluyen licencia comercial. Puedes usar el audio generado en anuncios, podcasts, videos de YouTube, redes sociales y cualquier proyecto comercial."
+      },
+      {
+        "q": "¿Qué métodos de pago aceptáis?",
+        "a": "Aceptamos tarjeta de crédito, Apple Pay y Google Pay a través de Stripe. Todas las transacciones están cifradas y protegidas."
+      }
+    ]
+  },
+  "account": {
+    "title": "Mi cuenta",
+    "plan": "Plan",
+    "creditsUsed": "Créditos usados",
+    "memberSince": "Miembro desde",
+    "dangerZone": "Zona peligrosa",
+    "dangerDescription": "Al eliminar tu cuenta se borrarán permanentemente todos tus datos, producciones y archivos de audio. Esta acción no se puede deshacer.",
+    "deleteAccount": "Eliminar cuenta",
+    "confirmDeletion": "Confirmar eliminación",
+    "typeDeleteConfirm": "Escribe {word} para confirmar la eliminación permanente de tu cuenta y todos tus datos.",
+    "deleteWord": "ELIMINAR",
+    "typePlaceholder": "Escribe ELIMINAR",
+    "deleting": "Eliminando...",
+    "cancel": "Cancelar",
+    "deleteError": "No se pudo eliminar la cuenta. Inténtalo de nuevo."
+  },
+  "signin": {
+    "subtitle": "Inicia sesion para crear audio con IA",
+    "oauthError": "Este correo ya esta registrado con otro metodo.",
+    "genericError": "Error al iniciar sesion. Intentalo de nuevo.",
+    "continueWith": "Continuar con",
+    "termsNotice": "Al continuar, aceptas los <terms>terminos de uso</terms> y la <privacy>politica de privacidad</privacy>.",
+    "backToHome": "Volver a SonificaLabs"
+  },
+  "localeSwitcher": {
+    "es": "ES",
+    "en": "EN"
+  }
+}
