@@ -216,7 +216,7 @@ export default function PricingPage() {
 
                 if (isCurrent) {
                   return (
-                    <span className="block text-center py-2.5 rounded-xl text-sm font-semibold mt-4 mb-4 bg-accent/10 text-accent border border-accent/30 cursor-default">
+                    <span className="block text-center py-2.5 rounded-xl text-sm font-semibold mt-4 mb-4 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 cursor-default">
                       {t("currentPlan")}
                     </span>
                   );
