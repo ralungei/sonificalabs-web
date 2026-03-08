@@ -110,6 +110,17 @@ export default function PricingPage() {
       features: t.raw("plans.free.features") as string[],
     },
     {
+      name: "Starter",
+      price: "9.99",
+      unit: t("perMonth"),
+      credits: t("plans.starter.credits"),
+      cta: t("plans.starter.cta"),
+      ctaStyle: "light" as const,
+      highlighted: false,
+      includes: t("plans.starter.includes"),
+      features: t.raw("plans.starter.features") as string[],
+    },
+    {
       name: "Pro",
       price: "29.99",
       unit: t("perMonth"),
@@ -163,8 +174,8 @@ export default function PricingPage() {
       </section>
 
       {/* Plans grid */}
-      <section className="max-w-4xl mx-auto px-4 pb-16">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <section className="max-w-5xl mx-auto px-4 pb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {PLANS.map((plan, i) => (
             <motion.div
               key={plan.name}

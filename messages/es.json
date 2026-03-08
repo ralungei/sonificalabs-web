@@ -170,11 +170,23 @@
           "Compartir vía enlace"
         ]
       },
+      "starter": {
+        "credits": "400 créditos / mes",
+        "cta": "Elegir Starter",
+        "includes": "Todo en Free, y además",
+        "features": [
+          "~20 producciones al mes",
+          "Hasta 1 minuto por audio",
+          "Hasta 3 voces por producción",
+          "Descarga en MP3",
+          "Licencia comercial"
+        ]
+      },
       "pro": {
         "credits": "2.000 créditos / mes",
         "cta": "Elegir Pro",
         "badge": "Popular",
-        "includes": "Todo en Free, y además",
+        "includes": "Todo en Starter, y además",
         "features": [
           "Hasta 2 minutos por audio",
           "Hasta 4 voces por producción",
@@ -189,7 +201,8 @@
         "includes": "Todo en Pro, y además",
         "features": [
           "Hasta 8 voces por producción",
-          "2.5x más créditos que Pro"
+          "2.5x más créditos que Pro",
+          "Prioridad en la cola de producción"
         ]
       }
     },
