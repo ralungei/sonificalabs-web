@@ -1,7 +1,7 @@
 {
   "nav": {
     "howItWorks": "Cómo funciona",
-    "pricing": "Pricing",
+    "pricing": "Precios",
     "credits": "créditos",
     "myAccount": "Mi cuenta",
     "manageSubscription": "Gestionar suscripción",
@@ -145,7 +145,7 @@
     "deleteTrack": "Eliminar pista"
   },
   "pricing": {
-    "title": "Pricing",
+    "title": "Precios",
     "subtitle": "Paga por lo que produces. Cancela cuando quieras.",
     "comingSoon": "Próximamente",
     "currentPlan": "Plan actual",
