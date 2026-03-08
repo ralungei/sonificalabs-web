@@ -6,7 +6,7 @@
 
 ### AI-Powered Audio Production Studio
 
-**Type a prompt. Get a fully produced audio piece — with real voices, music, SFX, and professional mixing.**
+**Type a prompt. Get a fully produced audio piece with real voices, music, SFX, and professional mixing.**
 
 No templates. No timelines. No audio skills needed.
 
@@ -18,9 +18,9 @@ No templates. No timelines. No audio skills needed.
 
 ## What is this?
 
-SonificaLabs turns a single sentence into broadcast-ready audio. Describe what you want in natural language — a true crime podcast intro, a radio spot for your pizzeria, an ASMR meditation — and the AI produces it end-to-end in ~30 seconds.
+SonificaLabs turns a single sentence into broadcast-ready audio. Describe what you want in natural language -a true crime podcast intro, a radio spot for your pizzeria, an ASMR meditation -and the AI produces it end-to-end in ~30 seconds.
 
-Behind the scenes: **Claude** writes a structured audio script (escaleta), **ElevenLabs** synthesizes 23+ realistic voices, and **FFmpeg** mixes everything with professional-grade processing — volume normalization, EQ, reverb, stereo panning, crossfades.
+Behind the scenes: **Claude** writes a structured audio script (escaleta), **ElevenLabs** synthesizes 23+ realistic voices, and **FFmpeg** mixes everything with professional-grade processing -volume normalization, EQ, reverb, stereo panning, crossfades.
 
 You just write. The AI produces.
 
@@ -32,13 +32,13 @@ You just write. The AI produces.
 
 ### The Pipeline
 
-Every production follows 5 automated steps — from your idea to a downloadable MP3.
+Every production follows 5 automated steps -from your idea to a downloadable MP3.
 
-1. **Your idea** — Write it like you'd tell a human
-2. **AI writes the script** — Claude generates a full escaleta with voices, music, SFX, and timing
-3. **23+ voices choose their role** — Automatically cast based on tone and character
-4. **Intelligent mixing** — Volume, EQ, reverb, stereo, fades — all automated
-5. **Audio ready** — Download in ~30 seconds
+1. **Your idea** -Write it like you'd tell a human
+2. **AI writes the script** -Claude generates a full escaleta with voices, music, SFX, and timing
+3. **23+ voices choose their role** -Automatically cast based on tone and character
+4. **Intelligent mixing** -Volume, EQ, reverb, stereo, fades -all automated
+5. **Audio ready** -Download in ~30 seconds
 
 </td>
 <td width="50%">
@@ -62,11 +62,11 @@ Every production follows 5 automated steps — from your idea to a downloadable 
 
 The AI doesn't just stitch clips together. Every production goes through a full mixing pipeline:
 
-- **Volume normalization** — Consistent loudness across all tracks
-- **Voice clarity** — Voices always sit above the mix
-- **EQ & compression** — Broadcast-standard processing
-- **Reverb & stereo** — Spatial depth and dimension
-- **Crossfades** — Smooth transitions between segments
+- **Volume normalization** -Consistent loudness across all tracks
+- **Voice clarity** -Voices always sit above the mix
+- **EQ & compression** -Broadcast-standard processing
+- **Reverb & stereo** -Spatial depth and dimension
+- **Crossfades** -Smooth transitions between segments
 
 </td>
 </tr>
@@ -142,7 +142,7 @@ Open [http://localhost:3000](http://localhost:3000).
 ```
 sonificalabs-web/
 ├── app/[locale]/          # Pages (i18n routing)
-│   ├── page.tsx           # Landing — hero, demos, pipeline
+│   ├── page.tsx           # Landing -hero, demos, pipeline
 │   ├── p/[id]/page.tsx    # Production viewer + SSE streaming
 │   ├── pricing/page.tsx   # Plans & Stripe checkout
 │   ├── account/page.tsx   # User account management
@@ -170,7 +170,7 @@ sonificalabs-web/
 
 ## Related
 
-- **[sonificalabs-api](https://github.com/ralungei/sonificalabs-api)** — Backend API (Hono, Claude, ElevenLabs, FFmpeg)
+- **[sonificalabs-api](https://github.com/ralungei/sonificalabs-api)** -Backend API (Hono, Claude, ElevenLabs, FFmpeg)
 
 ---
 
