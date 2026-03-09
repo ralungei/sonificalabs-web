@@ -30,8 +30,8 @@ export function TimelineRuler({
             className="absolute top-0 h-full flex flex-col items-center"
             style={{ left: m.ms * pxPerMs }}
           >
-            <div className="w-px h-2.5 bg-white/[0.08]" />
-            <span className="text-[9px] font-mono text-white/20 mt-0.5 select-none">
+            <div className="w-px h-2.5 bg-white/25" />
+            <span className="text-[10px] font-mono text-white/50 mt-0.5 select-none">
               {m.label}
             </span>
           </div>

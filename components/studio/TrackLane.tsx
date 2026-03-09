@@ -42,10 +42,7 @@ export function TrackLane({
 }) {
   const t = useTranslations("trackLane");
   const s = STYLE[track.type] || STYLE.voice;
-  const isBg = track.type === "music" || track.type === "ambience";
-  const visualDurationMs = isBg
-    ? Math.min(track.duration_ms, Math.max(0, actualDurationMs - track.start_ms))
-    : track.duration_ms;
+  const visualDurationMs = track.duration_ms;
 
   return (
     <div
@@ -63,7 +60,7 @@ export function TrackLane({
         {/* Type + Label */}
         <div className="flex items-center gap-1.5 min-w-0">
           <span
-            className="text-[9px] font-mono font-bold uppercase tracking-wider shrink-0"
+            className="text-[10px] font-mono font-bold uppercase tracking-wider shrink-0"
             style={{ color: s.accent }}
           >
             {s.label}
@@ -158,6 +155,7 @@ export function TrackLane({
               dimmed={dimmed}
               width={Math.max(visualDurationMs * pxPerMs, 20)}
               height={61}
+              volume={track.volume}
             />
           ) : (
             <div className="absolute inset-0 flex items-center px-2">

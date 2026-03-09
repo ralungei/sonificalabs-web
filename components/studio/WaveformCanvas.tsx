@@ -11,12 +11,14 @@ export function WaveformCanvas({
   dimmed,
   width,
   height,
+  volume = 1,
 }: {
   peaks: Float32Array;
   color: string;
   dimmed: boolean;
   width: number;
   height: number;
+  volume?: number;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -54,7 +56,7 @@ export function WaveformCanvas({
 
     for (let i = 0; i < numBars; i++) {
       const peakIdx = Math.floor((i / numBars) * peakData.length);
-      const peak = peakData[peakIdx];
+      const peak = peakData[peakIdx] * volume;
       const barH = Math.max(2, peak * h * 0.82);
       const x = i * step;
       const y = mid - barH / 2;
@@ -68,7 +70,7 @@ export function WaveformCanvas({
       }
       ctx.fill();
     }
-  }, [peakData, color, dimmed, width, height]);
+  }, [peakData, color, dimmed, width, height, volume]);
 
   return <canvas ref={canvasRef} className="absolute inset-0" style={{ width, height }} />;
 }

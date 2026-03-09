@@ -3,6 +3,7 @@ import { useState, useRef, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/cn";
 import { apiFetch } from "@/lib/api";
+import { useApiToken } from "@/components/Providers";
 
 // ─── Types ──────────────────────────────────────────────────────────
 export interface TimelineTrack {
@@ -50,6 +51,7 @@ const TYPE_LABELS: Record<string, string> = {
 
 // ─── Main Component ─────────────────────────────────────────────────
 export function TimelineEditor({ tracks: initialTracks, jobId, onRemixDone }: Props) {
+  const apiToken = useApiToken();
   const [tracks, setTracks] = useState<TimelineTrack[]>(initialTracks);
   const [pxPerMs, setPxPerMs] = useState(0.1); // 100px per second
   const [isRemixing, setIsRemixing] = useState(false);
@@ -123,7 +125,7 @@ export function TimelineEditor({ tracks: initialTracks, jobId, onRemixDone }: Pr
             volume: t.volume,
           })),
         }),
-      });
+      }, apiToken);
       if (!res.ok) throw new Error("Remix failed");
       const data = await res.json();
       onRemixDone(data.audioUrl);

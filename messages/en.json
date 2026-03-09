@@ -7,24 +7,25 @@
     "manageSubscription": "Manage subscription",
     "signOut": "Sign out",
     "signIn": "Sign in",
-    "admin": "Admin"
+    "admin": "Admin",
+    "about": "Who we are"
   },
   "home": {
     "heroLine": "Produce your next",
     "flipWords": "podcast,advertisement,trailer,radio drama,newscast,intro,audiobook,sketch",
+    "heroSub": "If you have an idea, you can turn it into audio here.",
     "tagline": "Real voices · Music · SFX · Professional mix",
     "listenExamples": "Listen to examples",
     "ctaTitle": "Try it now",
     "ctaSubtitle": "1 free production. Describe your idea and in 30 seconds you'll have professional-quality audio.",
     "ctaButton": "Create my audio for free",
+    "serviceUnavailable": "The service is temporarily unavailable. Please try again in a few seconds.",
     "footer": "© 2026 SonificaLabs",
     "capabilities": "Podcasts,Ads,Intros,Radio dramas,Documentaries,Cinematic scenes,Newscasts,Audiobooks,Trailers,Sketches,Meditations,Voiceovers",
     "demos": {
-      "truecrime": "True Crime",
       "pizzeria": "Radio Ad",
       "epica": "Epic Intro",
-      "humor": "Sketch",
-      "meditacion": "ASMR",
+      "meditacion": "Meditation",
       "informativo": "Newscast",
       "thriller": "Thriller",
       "documental": "Documentary",
@@ -127,7 +128,9 @@
     "createAnother": "Create another",
     "somethingWentWrong": "Something went wrong",
     "errorDescription": "An error occurred while generating your audio. Please try again in a few seconds.",
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "openEditor": "Open editor",
+    "close": "Close"
   },
   "masterDialog": {
     "shareLink": "Share link",
@@ -136,7 +139,7 @@
     "audioReady": "Your audio is ready",
     "masterReady": "Master ready",
     "normalizedLufs": "Normalized to -14 LUFS",
-    "downloadMp3": "Download MP3",
+    "downloadMp3": "MP3",
     "downloadInMp3": "Download MP3",
     "availableInPro": "Available in Pro plan",
     "pro": "Pro"
@@ -151,11 +154,13 @@
     "currentPlan": "Current plan",
     "priceNote": "Prices exclude VAT. Paid credits renew monthly.",
     "howCreditsWork": "How credits are spent",
+    "creditsUnit": "credits",
     "examples": "Examples",
     "faqTitle": "Frequently asked questions",
     "bottomCtaTitle": "Produce your first audio for free",
     "viewDemos": "View demos",
     "startFree": "Start free",
+    "cancelSubscription": "Manage subscription",
     "perMonth": "per month",
     "plans": {
       "free": {
@@ -191,7 +196,7 @@
           "Up to 2 minutes per audio",
           "Up to 4 voices per production",
           "27+ voices in Spanish, Latin and English",
-          "Advanced voice model",
+          "Expressive voices with emotion",
           "Download in MP3"
         ]
       },
@@ -260,7 +265,13 @@
     "typePlaceholder": "Type DELETE",
     "deleting": "Deleting...",
     "cancel": "Cancel",
-    "deleteError": "Could not delete the account. Please try again."
+    "deleteError": "Could not delete the account. Please try again.",
+    "subscription": "Subscription",
+    "manageSubscription": "Manage subscription",
+    "managingSubscription": "Redirecting...",
+    "cancelSubscription": "You can cancel or change your plan at any time from the Stripe portal.",
+    "pendingDowngrade": "Your plan will change to {plan} on {date}.",
+    "pendingDowngradeNoDate": "Your plan will change to {plan} at the end of the current period."
   },
   "signin": {
     "subtitle": "Sign in to create audio with AI",
@@ -269,6 +280,63 @@
     "continueWith": "Continue with",
     "termsNotice": "By continuing, you accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
     "backToHome": "Back to SonificaLabs"
+  },
+  "about": {
+    "heroTitle": "Your idea. Professional audio.\nNo excuses.",
+    "heroSubtitle": "Write what you want to hear. SonificaLabs turns it into audio with real voices, music, effects and professional mixing.",
+    "whatCards": [
+      {
+        "icon": "pen",
+        "title": "Describe your idea",
+        "desc": "Like you'd tell a friend. No formats, no templates, no audio knowledge needed."
+      },
+      {
+        "icon": "wand",
+        "title": "AI produces everything",
+        "desc": "Script, voices, music, sound effects and mixing. All automatic, all in seconds."
+      },
+      {
+        "icon": "download",
+        "title": "Ready-to-use audio",
+        "desc": "Download and publish. On your podcast, your video, your reel, your radio ad or your trailer."
+      }
+    ],
+    "forWhoTitle": "Made to create",
+    "forWhoSubtitle": "Whether you make videos, podcasts or work in production. If you have an idea, you can turn it into audio here.",
+    "forWhoItems": [
+      { "icon": "video", "label": "Content creators", "desc": "Intros, voiceovers and audio for reels, TikToks and YouTube" },
+      { "icon": "mic", "label": "Podcasters", "desc": "Intros, dramatized segments and transitions" },
+      { "icon": "film", "label": "Film & TV", "desc": "Pilot scenes, trailers and quick dramatizations" },
+      { "icon": "megaphone", "label": "Agencies & brands", "desc": "Radio spots, client demos and audio prototypes" },
+      { "icon": "book", "label": "Education", "desc": "Audiobooks, educational podcasts and learning materials" },
+      { "icon": "zap", "label": "Anyone with an idea", "desc": "If you can describe it, you can produce it" }
+    ],
+    "howTitle": "What happens when you hit produce",
+    "howSteps": [
+      {
+        "num": "01",
+        "title": "AI understands your idea",
+        "desc": "Analyzes your text and writes a complete script with dialogue, music and effects."
+      },
+      {
+        "num": "02",
+        "title": "Voices, music and effects",
+        "desc": "Selects the right voices from 23+ available, picks music from a sound library and adds effects."
+      },
+      {
+        "num": "03",
+        "title": "Mixing and mastering",
+        "desc": "Applies mixing and mastering techniques automatically to deliver studio-quality audio."
+      }
+    ],
+    "rasTitle": "Hey, I'm Ras",
+    "rasRole": "Founder of SonificaLabs",
+    "rasBio1": "Thanks for stopping by. I'm an engineer, content creator, and I've loved photo and video editing ever since I was a kid.",
+    "rasBio2": "I've always been amazed by how sound transforms any production, but creating it properly was expensive and painfully slow. I've been working with AI for a few years now, and combining skills I came up with the idea of building this platform.",
+    "rasBio3": "It's not perfect, but it sounds a little better every day. If you like it, great. If you find a bug, write me.",
+    "linkedIn": "LinkedIn",
+    "ctaLine": "Your first production is on us.",
+    "ctaButton": "Produce my first audio"
   },
   "localeSwitcher": {
     "es": "ES",

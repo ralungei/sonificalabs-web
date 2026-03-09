@@ -9,7 +9,9 @@ import { JobStatus } from "@/components/JobStatus";
 import { Studio, type TimelineTrack } from "@/components/Studio";
 import { MasterDialog } from "@/components/studio/MasterDialog";
 import { BackgroundBeams } from "@/components/ui/background-beams";
-import { apiFetch, apiUrl } from "@/lib/api";
+import { Navbar } from "@/components/Navbar";
+import { apiFetch, apiUrl, API_URL } from "@/lib/api";
+import { useApiToken } from "@/components/Providers";
 
 type JobState = "working" | "done" | "error";
 
@@ -26,18 +28,29 @@ export default function JobPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [prompt, setPrompt] = useState("");
   const [userPlan, setUserPlan] = useState<string>("free");
+  const [editorOpen, setEditorOpen] = useState(false);
   const canDownload = userPlan !== "free";
   const cleanupRef = useRef<(() => void) | null>(null);
+  const apiToken = useApiToken();
 
-  // Fetch user plan
   useEffect(() => {
-    apiFetch("/user/quota")
+    if (!editorOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setEditorOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [editorOpen]);
+
+  useEffect(() => {
+    if (!apiToken) return;
+    apiFetch("/user/quota", {}, apiToken)
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
         if (data?.plan) setUserPlan(data.plan);
       })
       .catch(() => {});
-  }, []);
+  }, [apiToken]);
 
   const handleData = useCallback(
     (data: {
@@ -55,15 +68,24 @@ export default function JobPage() {
       if (data.prompt) setPrompt(data.prompt);
 
       if (data.status === "done") {
-        setAudioUrl(data.audioUrl || null);
-        if (data.tracks) setTracks(data.tracks);
+        const raw = data.audioUrl;
+        const url = raw
+          ? raw.startsWith("http") ? raw : apiUrl(raw, apiToken)
+          : null;
+        setAudioUrl(url);
+        if (data.tracks) {
+          setTracks(data.tracks.map((tr: TimelineTrack) => ({
+            ...tr,
+            audioUrl: tr.audioUrl?.startsWith("http") ? tr.audioUrl : apiUrl(tr.audioUrl, apiToken),
+          })));
+        }
         setState("done");
       } else if (data.status === "error") {
         setErrorMsg(data.error || "Something went wrong");
         setState("error");
       }
     },
-    [],
+    [apiToken],
   );
 
   useEffect(() => {
@@ -74,7 +96,7 @@ export default function JobPage() {
 
     // Try SSE first, fall back to polling
     try {
-      eventSource = new EventSource(apiUrl(`/p/${id}/stream`));
+      eventSource = new EventSource(apiUrl(`/p/${id}/stream`, apiToken));
 
       eventSource.onmessage = (event) => {
         try {
@@ -101,7 +123,7 @@ export default function JobPage() {
       if (pollTimer) return;
       const poll = async () => {
         try {
-          const res = await apiFetch(`/p/${id}`);
+          const res = await apiFetch(`/p/${id}`, {}, apiToken);
           if (!res.ok) return;
           const data = await res.json();
           handleData(data);
@@ -124,41 +146,21 @@ export default function JobPage() {
       eventSource?.close();
       if (pollTimer) clearInterval(pollTimer);
     };
-  }, [id, handleData]);
+  }, [id, apiToken, handleData]);
 
   const handleCancel = useCallback(async () => {
-    await apiFetch(`/cancel/${id}`, { method: "POST" }).catch(() => {});
+    await apiFetch(`/cancel/${id}`, { method: "POST" }, apiToken).catch(() => {});
     cleanupRef.current?.();
     router.push("/");
   }, [id, router]);
 
   return (
+    <>
     <main className="relative flex min-h-screen flex-col items-center px-3 pt-[6vh] overflow-hidden">
       <BackgroundBeams />
+      <Navbar />
 
       <div className="relative z-10 flex flex-col items-center w-full max-w-6xl">
-        {/* Back button */}
-        <motion.button
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          onClick={() => router.push("/")}
-          className="self-start mb-6 flex items-center gap-2 text-xs font-body uppercase tracking-wider text-white/60 hover:text-white transition-colors duration-300"
-        >
-          <svg
-            className="h-3.5 w-3.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          {t("back")}
-        </motion.button>
 
         <AnimatePresence mode="wait">
           {/* Working state */}
@@ -185,7 +187,7 @@ export default function JobPage() {
             </motion.div>
           )}
 
-          {/* Done state — Free: inline master dialog / Paid: full editor */}
+          {/* Done state — always inline master, editor in fullscreen modal for paid */}
           {state === "done" && audioUrl && (
             <motion.div
               key="done"
@@ -193,90 +195,35 @@ export default function JobPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
-              className="flex flex-col items-center w-full"
+              className="flex flex-col items-center justify-center w-full pb-[10vh]"
+              style={{ minHeight: "calc(100dvh - 14vh)" }}
             >
-              {canDownload ? (
-                <>
-                  {/* Paid: full Studio editor */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.4 }}
-                    className="flex flex-col items-center gap-2 mb-4"
-                  >
-                    <div className="flex items-center gap-3">
-                      <motion.div
-                        className="h-2 w-2 rounded-full bg-done"
-                        animate={{ opacity: [1, 0.4, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      />
-                      <h2 className="text-2xl font-body font-semibold text-text-primary">
-                        {t("audioReady")}
-                      </h2>
-                    </div>
-                    {prompt && (
-                      <p className="text-sm text-text-muted text-center max-w-lg line-clamp-2">
-                        &ldquo;{prompt.replace(/\[.*?\]/g, "").trim()}&rdquo;
-                      </p>
-                    )}
-                  </motion.div>
+              <MasterDialog
+                show
+                masterUrl={audioUrl}
+                jobId={id}
+                onClose={() => {}}
+                canDownload={canDownload}
+                inline
+                prompt={prompt}
+                onOpenEditor={tracks && tracks.length > 0 ? () => setEditorOpen(true) : undefined}
+              />
 
-                  {tracks && tracks.length > 0 && (
-                    <Studio
-                      tracks={tracks}
-                      jobId={id}
-                      audioUrl={audioUrl}
-                      onRemixDone={(newUrl) => setAudioUrl(newUrl)}
-                      canDownload={canDownload}
-                    />
-                  )}
+              {/* Create another */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="mt-6"
+              >
+                <button
+                  onClick={() => router.push("/")}
+                  className="px-5 py-2.5 rounded-xl bg-white text-surface-0 text-sm font-body font-semibold hover:bg-white/90 transition-all active:scale-[0.98]"
+                >
+                  {t("createAnother")}
+                </button>
+              </motion.div>
 
-                  <div className="flex items-center gap-6 mt-8">
-                    <motion.a
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.6 }}
-                      href={`/api/srt/${id}`}
-                      download
-                      className="text-xs font-body uppercase tracking-wider text-white/40 hover:text-accent transition-colors duration-300"
-                    >
-                      SRT
-                    </motion.a>
-                    <motion.button
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.8 }}
-                      onClick={() => router.push("/")}
-                      className="px-5 py-2.5 rounded-xl bg-accent text-surface-0 text-sm font-body font-semibold hover:bg-accent-bright hover:shadow-[0_8px_32px_rgba(232,168,56,0.25)] transition-all active:scale-[0.98]"
-                    >
-                      {t("createAnother")}
-                    </motion.button>
-                  </div>
-                </>
-              ) : (
-                /* Free: inline master panel (no editor) */
-                <div className="flex flex-col items-center justify-center w-full pb-[10vh]" style={{ minHeight: "calc(100dvh - 14vh)" }}>
-                  <MasterDialog
-                    show
-                    masterUrl={audioUrl}
-                    jobId={id}
-                    onClose={() => {}}
-                    canDownload={false}
-                    inline
-                    prompt={prompt}
-                  />
-
-                  <motion.button
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.6 }}
-                    onClick={() => router.push("/")}
-                    className="mt-6 px-5 py-2.5 rounded-xl bg-accent text-surface-0 text-sm font-body font-semibold hover:bg-accent-bright hover:shadow-[0_8px_32px_rgba(232,168,56,0.25)] transition-all active:scale-[0.98]"
-                  >
-                    Crear otro
-                  </motion.button>
-                </div>
-              )}
             </motion.div>
           )}
 
@@ -325,5 +272,41 @@ export default function JobPage() {
         </AnimatePresence>
       </div>
     </main>
+
+      {/* Fullscreen editor — outside main to avoid overflow clipping */}
+      <AnimatePresence>
+        {editorOpen && tracks && tracks.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[60] bg-surface-0 flex flex-col"
+          >
+            {/* Header bar */}
+            <div className="flex items-center justify-between px-5 h-12 border-b border-white/[0.06] flex-shrink-0">
+              <span className="text-xs font-body uppercase tracking-wider text-white/40">Timeline</span>
+              <button
+                onClick={() => setEditorOpen(false)}
+                className="flex items-center justify-center w-8 h-8 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-all"
+              >
+                <Icon icon="solar:close-circle-linear" className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Studio fills remaining space */}
+            <div className="flex-1 overflow-y-auto px-3 py-4">
+              <Studio
+                tracks={tracks}
+                jobId={id}
+                audioUrl={audioUrl!}
+                onRemixDone={(newUrl) => setAudioUrl(newUrl)}
+                canDownload={canDownload}
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

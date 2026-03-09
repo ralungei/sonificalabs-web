@@ -7,9 +7,11 @@ import { useRouter } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { apiFetch } from "@/lib/api";
+import { useApiToken } from "@/components/Providers";
 
 const PLAN_LABELS: Record<string, string> = {
   free: "Free",
+  starter: "Starter",
   pro: "Pro",
   studio: "Studio",
 };
@@ -22,18 +24,22 @@ interface AccountData {
   creditsUsed: number;
   creditsLimit: number;
   createdAt: string;
+  pendingPlan: string | null;
+  currentPeriodEnd: string | null;
 }
 
 export default function AccountPage() {
   const t = useTranslations("account");
   const locale = useLocale();
   const { data: session, status } = useSession();
+  const apiToken = useApiToken();
   const router = useRouter();
   const [account, setAccount] = useState<AccountData | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [confirmText, setConfirmText] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [managingSubscription, setManagingSubscription] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -42,21 +48,21 @@ export default function AccountPage() {
   }, [status, router]);
 
   useEffect(() => {
-    if (status !== "authenticated") return;
-    apiFetch("/user/account")
+    if (!apiToken) return;
+    apiFetch("/user/account", {}, apiToken)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (data) setAccount(data);
       })
       .catch(() => {});
-  }, [status]);
+  }, [apiToken]);
 
   async function handleDelete() {
     if (confirmText !== t("deleteWord")) return;
     setDeleting(true);
     setError(null);
     try {
-      const res = await apiFetch("/user/account", { method: "DELETE" });
+      const res = await apiFetch("/user/account", { method: "DELETE" }, apiToken);
       if (!res.ok) throw new Error("Error al eliminar la cuenta");
       await signOut({ redirect: false });
       router.push("/");
@@ -134,6 +140,57 @@ export default function AccountPage() {
               </div>
             </div>
           </div>
+
+          {/* Pending downgrade notice */}
+          {account?.pendingPlan && (() => {
+            const planLabel = PLAN_LABELS[account.pendingPlan] ?? account.pendingPlan;
+            const dateStr = account.currentPeriodEnd
+              ? new Date(account.currentPeriodEnd).toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric" })
+              : null;
+            return (
+              <div className="rounded-2xl border border-amber-500/30 bg-amber-500/[0.06] p-5 mb-6">
+                <p className="text-sm text-amber-400">
+                  {dateStr
+                    ? t("pendingDowngrade", { plan: planLabel, date: dateStr })
+                    : t("pendingDowngradeNoDate", { plan: planLabel })}
+                </p>
+              </div>
+            );
+          })()}
+
+          {/* Subscription management */}
+          {account && account.plan !== "free" && (
+            <div className="rounded-2xl border border-white/[0.08] bg-surface-1/60 backdrop-blur-sm p-6 mb-6">
+              <h2 className="text-sm font-semibold text-text-primary mb-4">{t("subscription")}</h2>
+              <button
+                onClick={async () => {
+                  setManagingSubscription(true);
+                  try {
+                    const res = await apiFetch("/stripe/portal", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ locale }),
+                    }, apiToken);
+                    const data = await res.json();
+                    if (data.url) {
+                      window.location.href = data.url;
+                    } else {
+                      setManagingSubscription(false);
+                    }
+                  } catch {
+                    setManagingSubscription(false);
+                  }
+                }}
+                disabled={managingSubscription}
+                className="px-4 py-2 rounded-lg text-xs font-semibold bg-white/[0.06] text-text-primary border border-white/[0.1] hover:bg-white/[0.1] transition-colors cursor-pointer disabled:opacity-50"
+              >
+                {managingSubscription ? t("managingSubscription") : t("manageSubscription")}
+              </button>
+              <p className="text-[11px] text-text-muted mt-2">
+                {t("cancelSubscription")}
+              </p>
+            </div>
+          )}
 
           {/* Danger zone */}
           <div className="rounded-2xl border border-red-500/20 bg-red-500/[0.04] p-6">

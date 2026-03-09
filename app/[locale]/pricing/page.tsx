@@ -7,6 +7,7 @@ import { Navbar } from "@/components/Navbar";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 import { apiFetch } from "@/lib/api";
+import { useApiToken } from "@/components/Providers";
 
 /* ── Check icon ────────────────────────────────────────────────── */
 
@@ -63,15 +64,23 @@ export default function PricingPage() {
   const t = useTranslations("pricing");
   const locale = useLocale();
   const { data: session } = useSession();
+  const apiToken = useApiToken();
   const [loading, setLoading] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<string>("free");
+  const [pendingPlan, setPendingPlan] = useState<string | null>(null);
+  const [periodEnd, setPeriodEnd] = useState<string | null>(null);
 
   useEffect(() => {
-    apiFetch("/user/quota")
+    if (!apiToken) return;
+    apiFetch("/user/quota", {}, apiToken)
       .then((r) => r.ok ? r.json() : null)
-      .then((data) => { if (data?.plan) setCurrentPlan(data.plan); })
+      .then((data) => {
+        if (data?.plan) setCurrentPlan(data.plan);
+        if (data?.pendingPlan) setPendingPlan(data.pendingPlan);
+        if (data?.currentPeriodEnd) setPeriodEnd(data.currentPeriodEnd);
+      })
       .catch(() => {});
-  }, [session]);
+  }, [apiToken]);
 
   async function handleCheckout(planId: string) {
     if (!session?.user) {
@@ -84,9 +93,10 @@ export default function PricingPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ plan: planId, locale }),
-      });
+      }, apiToken);
       const data = await res.json();
       if (data.url) {
+        // Always redirect to Stripe (Checkout or Billing Portal)
         window.location.href = data.url;
       } else {
         alert(data.error || "Error");
@@ -95,6 +105,18 @@ export default function PricingPage() {
     } catch {
       setLoading(null);
     }
+  }
+
+  async function handleCancelDowngrade() {
+    try {
+      const res = await apiFetch("/stripe/cancel-downgrade", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }, apiToken);
+      if (res.ok) {
+        setPendingPlan(null);
+      }
+    } catch {}
   }
 
   const PLANS = [
@@ -213,6 +235,7 @@ export default function PricingPage() {
               {(() => {
                 const planKey = plan.name.toLowerCase();
                 const isCurrent = currentPlan === planKey;
+                const isPending = pendingPlan === planKey;
 
                 if (isCurrent) {
                   return (
@@ -222,17 +245,52 @@ export default function PricingPage() {
                   );
                 }
 
+                if (isPending) {
+                  const dateStr = periodEnd
+                    ? new Date(periodEnd).toLocaleDateString(locale, { day: "numeric", month: "long" })
+                    : null;
+                  return (
+                    <div className="mt-4 mb-4 space-y-2">
+                      <span className="block text-center py-2.5 rounded-xl text-sm font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30 cursor-default">
+                        {t("downgradeScheduled")}
+                      </span>
+                      {dateStr && (
+                        <p className="text-center text-[11px] text-text-muted">{dateStr}</p>
+                      )}
+                      <button
+                        onClick={handleCancelDowngrade}
+                        className="block w-full text-center py-1.5 rounded-lg text-xs font-medium text-text-muted hover:text-text-primary transition-colors cursor-pointer"
+                      >
+                        {t("cancelDowngrade")}
+                      </button>
+                    </div>
+                  );
+                }
+
                 if (planKey === "free") {
-                  return session?.user ? (
+                  if (!session?.user) {
+                    return (
+                      <Link
+                        href="/signin"
+                        className="block text-center py-2.5 rounded-xl text-sm font-semibold mt-4 mb-4 transition-all duration-200 bg-white/[0.06] text-text-primary border border-white/[0.1] hover:bg-white/[0.1]"
+                      >
+                        {plan.cta}
+                      </Link>
+                    );
+                  }
+                  if (currentPlan !== "free") {
+                    return (
+                      <Link
+                        href="/account"
+                        className="block text-center py-2.5 rounded-xl text-sm font-semibold mt-4 mb-4 transition-all duration-200 bg-white/[0.06] text-text-primary border border-white/[0.1] hover:bg-white/[0.1]"
+                      >
+                        {t("cancelSubscription")}
+                      </Link>
+                    );
+                  }
+                  return (
                     <Link
                       href="/"
-                      className="block text-center py-2.5 rounded-xl text-sm font-semibold mt-4 mb-4 transition-all duration-200 bg-white/[0.06] text-text-primary border border-white/[0.1] hover:bg-white/[0.1]"
-                    >
-                      {plan.cta}
-                    </Link>
-                  ) : (
-                    <Link
-                      href="/signin"
                       className="block text-center py-2.5 rounded-xl text-sm font-semibold mt-4 mb-4 transition-all duration-200 bg-white/[0.06] text-text-primary border border-white/[0.1] hover:bg-white/[0.1]"
                     >
                       {plan.cta}
@@ -307,7 +365,7 @@ export default function PricingPage() {
               <div key={c.action} className="flex items-center justify-between py-2 border-b border-white/[0.06]">
                 <span className="text-sm text-text-secondary">{c.action}</span>
                 <span className="text-sm font-semibold text-text-primary font-mono">
-                  {c.credits} créditos
+                  {c.credits} {t("creditsUnit")}
                 </span>
               </div>
             ))}
@@ -376,6 +434,7 @@ export default function PricingPage() {
           <p className="text-[11px] text-white/40">© 2026 SonificaLabs</p>
         </div>
       </footer>
+
     </main>
   );
 }

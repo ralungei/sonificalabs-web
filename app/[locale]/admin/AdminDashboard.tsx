@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { apiFetch } from "@/lib/api";
+import { useApiToken } from "@/components/Providers";
 
 interface Production {
   id: string;
@@ -53,19 +54,21 @@ function timeAgo(dateStr: string): string {
 }
 
 export function AdminDashboard() {
+  const apiToken = useApiToken();
   const [data, setData] = useState<StatsData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<"productions" | "users">("productions");
 
   const fetchData = useCallback(() => {
-    apiFetch("/admin/stats")
+    if (!apiToken) return;
+    apiFetch("/admin/stats", {}, apiToken)
       .then((r) => {
         if (!r.ok) throw new Error("Unauthorized");
         return r.json();
       })
       .then(setData)
       .catch((e) => setError(e.message));
-  }, []);
+  }, [apiToken]);
 
   useEffect(() => {
     fetchData();

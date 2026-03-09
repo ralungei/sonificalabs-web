@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
+
 
 import { type TimelineTrack, PREVIEW_GAIN, PEAK_RES } from "./studio/types";
 import { TransportBar } from "./studio/TransportBar";
@@ -8,6 +8,7 @@ import { TimelineRuler } from "./studio/TimelineRuler";
 import { TrackLane } from "./studio/TrackLane";
 import { MasterDialog } from "./studio/MasterDialog";
 import { apiFetch } from "@/lib/api";
+import { useApiToken } from "@/components/Providers";
 
 export type { TimelineTrack };
 
@@ -52,6 +53,7 @@ interface StudioProps {
 }
 
 export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, canDownload = true }: StudioProps) {
+  const apiToken = useApiToken();
   // ─── State ──────────────────────────────────────────────
   const [tracks, setTracks] = useState(initialTracks);
   const [pxPerMs, setPxPerMs] = useState(0.1);
@@ -107,16 +109,11 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
 
   // ─── Derived values ─────────────────────────────────────
   const actualDurationMs = useMemo(() => {
-    let fgMax = 0;
+    let maxMs = 0;
     for (const t of tracks) {
-      const isBg = t.type === "music" || t.type === "ambience";
-      if (!isBg) fgMax = Math.max(fgMax, t.start_ms + t.duration_ms);
+      maxMs = Math.max(maxMs, t.start_ms + t.duration_ms);
     }
-    if (fgMax === 0) {
-      for (const t of tracks)
-        fgMax = Math.max(fgMax, Math.min(t.start_ms + t.duration_ms, 30_000));
-    }
-    return fgMax;
+    return maxMs;
   }, [tracks]);
   const totalDurationMs = actualDurationMs + 2000;
   const actualRef = useRef(actualDurationMs);
@@ -581,7 +578,7 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
               volume: t.volume,
             })),
           }),
-        });
+        }, apiToken);
         if (!res.ok) throw new Error("Remix failed");
         const data = await res.json();
         onRemixDone(data.audioUrl);
@@ -595,7 +592,7 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
     } finally {
       setIsRemixing(false);
     }
-  }, [jobId, isDirty, onRemixDone, pause]);
+  }, [jobId, isDirty, onRemixDone, pause, apiToken]);
 
   // ─── Keyboard ──────────────────────────────────────────
   useEffect(() => {
@@ -625,11 +622,9 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
 
   // ─── Render ─────────────────────────────────────────────
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="w-full mx-auto"
+    <div
+      className="w-full mx-auto transition-opacity duration-300"
+      style={{ opacity: isLoaded ? 1 : 0 }}
     >
       <div className="rounded-2xl border border-white/[0.06] bg-surface-1/70 backdrop-blur-xl shadow-[0_8px_60px_-12px_rgba(0,0,0,0.5)] overflow-hidden">
         {/* Transport */}
@@ -688,8 +683,8 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
                 ref={hoverLineEl}
                 className="absolute top-0 bottom-0 opacity-0 transition-opacity duration-75"
               >
-                <div className="absolute -top-px left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-white/25" />
-                <div className="absolute top-0 bottom-0 left-1/2 w-px -translate-x-[0.5px] bg-white/15" />
+                <div className="absolute -top-px left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-white/30" />
+                <div className="absolute top-0 bottom-0 left-1/2 w-px -translate-x-[0.5px] bg-white/20" />
               </div>
             </div>
 
@@ -752,7 +747,7 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
         {/* Footer */}
         <div className="flex items-center justify-between px-4 py-2.5 bg-surface-0/40 border-t border-white/[0.04]">
           <div className="flex items-center gap-2">
-            <span className="text-[9px] font-mono uppercase tracking-wider text-text-muted">
+            <span className="text-xs font-body uppercase tracking-wider text-white/50">
               Zoom
             </span>
             <button
@@ -787,11 +782,16 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
               </svg>
             </button>
           </div>
-          <span className="text-[9px] font-mono text-white/15 select-none hidden sm:block">
-            espacio para reproducir · arrastra para mover pistas
+          <span className="text-xs font-body text-white/60 select-none hidden sm:block">
+            Espacio para reproducir · Arrastra para mover pistas
           </span>
         </div>
       </div>
+
+      {/* Pre-master note */}
+      <p className="mt-3 text-xs font-body text-white/50 text-center leading-relaxed">
+        Vista previa sin masterizar. Los volúmenes y la mezcla final pueden sonar diferente al audio masterizado.
+      </p>
 
       {/* Master dialog */}
       <MasterDialog
@@ -801,6 +801,6 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
         onClose={() => setShowMaster(false)}
         canDownload={canDownload}
       />
-    </motion.div>
+    </div>
   );
 }

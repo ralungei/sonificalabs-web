@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import { encode } from "next-auth/jwt";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -38,10 +39,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return token;
     },
-    session({ session, token }) {
+    async session({ session, token }) {
       if (token.email && session.user) {
         session.user.email = token.email as string;
       }
+      // Encode the JWT as JWE so the client can send it to the API as Bearer token.
+      // The backend decrypts this with the same NEXTAUTH_SECRET.
+      const apiToken = await encode({
+        token,
+        secret: process.env.AUTH_SECRET!,
+        salt: "",
+      });
+      // @ts-expect-error - extending session with apiToken
+      session.apiToken = apiToken;
       return session;
     },
   },

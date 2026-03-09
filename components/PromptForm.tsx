@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 import { apiFetch } from "@/lib/api";
+import { useApiToken } from "@/components/Providers";
 
 interface DropdownOption {
   value: string;
@@ -282,6 +283,7 @@ export function PromptForm({
   const PLACEHOLDERS = t.raw("placeholders") as string[];
   const TIPOS = (t("tipos") as string).split(",");
   const { data: session, status: authStatus } = useSession();
+  const apiToken = useApiToken();
   const [prompt, setPrompt] = useState("");
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
@@ -290,14 +292,13 @@ export function PromptForm({
   const [rateLimitCountdown, setRateLimitCountdown] = useState(0);
   const [quota, setQuota] = useState<QuotaData | null>(null);
 
-  // Fetch quota when authenticated
   useEffect(() => {
-    if (!session?.user?.email) return;
-    apiFetch("/user/quota")
-      .then((r) => r.json())
-      .then((data) => setQuota(data))
+    if (!apiToken) return;
+    apiFetch("/user/quota", {}, apiToken)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data) setQuota(data); })
       .catch(() => {});
-  }, [session?.user?.email]);
+  }, [apiToken]);
 
   const plan = quota?.plan ?? "free";
   const remaining = quota?.remaining ?? null;
@@ -485,7 +486,11 @@ export function PromptForm({
           {/* Right — counter + submit */}
           <div className="flex items-center gap-3">
             {remaining === null ? (
-              session ? <span className="hidden sm:block h-4 w-16 rounded bg-white/[0.06] animate-pulse" /> : null
+              session
+                ? <span className="hidden sm:block h-4 w-16 rounded bg-white/[0.06] animate-pulse" />
+                : <span className="text-[11px] text-white/50 whitespace-nowrap hidden sm:flex items-center gap-1.5">
+                    {t("credits", { count: 20 })}
+                  </span>
             ) : remaining > 0 ? (
               <span className="text-[11px] text-white/50 whitespace-nowrap hidden sm:flex items-center gap-1.5">
                 {(plan === "pro" || plan === "studio") && (
@@ -548,7 +553,7 @@ export function PromptForm({
               "mt-3 rounded-xl border px-4 py-3 text-sm text-center font-body",
               rateLimitCountdown > 0
                 ? "border-accent/20 bg-accent/5 text-accent animate-pulse"
-                : "border-fail/20 bg-fail/5 text-fail",
+                : "border-fail/30 bg-fail/90 text-white",
             )}
           >
             {rateLimitCountdown > 0

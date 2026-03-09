@@ -181,7 +181,7 @@ function MasterPlayer({
 function ShareField({ jobId }: { jobId: string }) {
   const t = useTranslations("masterDialog");
   const [copied, setCopied] = useState(false);
-  const url = typeof window !== "undefined" ? `${window.location.origin}/job/${jobId}` : "";
+  const url = typeof window !== "undefined" ? `${window.location.origin}/p/${jobId}` : "";
 
   const copy = useCallback(() => {
     navigator.clipboard.writeText(url).then(() => {
@@ -198,7 +198,7 @@ function ShareField({ jobId }: { jobId: string }) {
       </label>
       <div className="flex items-center rounded-xl border border-white/[0.08] bg-surface-0/60 overflow-hidden">
         <div className="flex-1 px-3.5 py-2.5 text-xs font-body text-text-secondary truncate select-all min-w-0">
-          {url || `…/job/${jobId}`}
+          {url || `…/p/${jobId}`}
         </div>
         <button
           onClick={copy}
@@ -248,6 +248,7 @@ function MasterPanel({
   onClose,
   inline,
   prompt,
+  onOpenEditor,
 }: {
   masterUrl: string;
   jobId: string;
@@ -255,6 +256,7 @@ function MasterPanel({
   onClose: () => void;
   inline: boolean;
   prompt?: string;
+  onOpenEditor?: () => void;
 }) {
   const t = useTranslations("masterDialog");
   const masterRef = useRef<HTMLAudioElement | null>(null);
@@ -275,11 +277,19 @@ function MasterPanel({
     setMasterPlaying(true);
   }, [masterUrl, masterPlaying]);
 
-  const downloadMaster = useCallback(() => {
-    const a = document.createElement("a");
-    a.href = masterUrl;
-    a.download = `sonificalabs-${jobId}.mp3`;
-    a.click();
+  const downloadMaster = useCallback(async () => {
+    try {
+      const res = await fetch(masterUrl);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `sonificalabs-${jobId}.mp3`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      window.open(masterUrl, "_blank");
+    }
   }, [masterUrl, jobId]);
 
   // Cleanup on unmount
@@ -449,22 +459,57 @@ function MasterPanel({
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35 }}
-          className="w-full flex items-end gap-3"
+          className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-3"
         >
           {/* Share field takes remaining space */}
           <div className="flex-1 min-w-0">
             <ShareField jobId={jobId} />
           </div>
 
-          {/* Download CTA */}
-          <Link
-            href="/pricing"
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-accent/20 bg-accent/[0.06] hover:bg-accent/[0.12] text-accent text-xs font-body font-medium transition-all whitespace-nowrap shrink-0"
-          >
-            <Icon icon="solar:download-minimalistic-bold" className="h-3.5 w-3.5" />
-            {t("downloadMp3")}
-            <span className="text-[9px] text-accent/60 uppercase">{t("pro")}</span>
-          </Link>
+          {/* Download + Editor buttons */}
+          <div className="flex items-center gap-3 shrink-0">
+          {canDownload ? (
+            <>
+              <button
+                onClick={downloadMaster}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent text-surface-0 text-xs font-body font-semibold uppercase tracking-wider transition-all hover:bg-accent-bright hover:shadow-[0_8px_32px_rgba(232,168,56,0.25)] active:scale-[0.98] whitespace-nowrap shrink-0"
+              >
+                <Icon icon="solar:download-minimalistic-bold" className="h-3.5 w-3.5" />
+                {t("downloadMp3")}
+              </button>
+              {onOpenEditor && (
+                <button
+                  onClick={onOpenEditor}
+                  className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-surface-0 text-xs font-body font-semibold uppercase tracking-wider transition-all hover:shadow-[0_8px_32px_rgba(232,168,56,0.3)] active:scale-[0.98] whitespace-nowrap shrink-0 overflow-hidden"
+                  style={{ background: "linear-gradient(135deg, #d4a229 0%, #e8a838 40%, #f0c45c 60%, #e8a838 100%)" }}
+                >
+                  <svg className="absolute inset-0 w-full h-full opacity-[0.12] pointer-events-none" xmlns="http://www.w3.org/2000/svg"><filter id="edGrain"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#edGrain)"/></svg>
+                  <Icon icon="solar:tuning-2-bold" className="h-3.5 w-3.5 relative z-10" />
+                  <span className="relative z-10">Editor</span>
+                </button>
+              )}
+            </>
+          ) : (
+            <>
+              <Link
+                href="/pricing"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-accent/20 bg-accent/[0.06] hover:bg-accent/[0.12] text-accent text-xs font-body font-medium transition-all whitespace-nowrap shrink-0"
+              >
+                <Icon icon="solar:download-minimalistic-bold" className="h-3.5 w-3.5" />
+                {t("downloadMp3")}
+                <span className="text-[9px] text-accent/60 uppercase">{t("pro")}</span>
+              </Link>
+              <Link
+                href="/pricing"
+                className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl border border-accent/25 bg-accent/[0.08] hover:bg-accent/[0.15] text-accent text-xs font-body font-medium transition-all whitespace-nowrap shrink-0 overflow-hidden"
+              >
+                <Icon icon="solar:tuning-2-bold" className="h-3.5 w-3.5" />
+                Editor
+                <span className="text-[9px] text-accent/60 uppercase">{t("pro")}</span>
+              </Link>
+            </>
+          )}
+          </div>
         </motion.div>
       </motion.div>
     );
@@ -494,6 +539,7 @@ export function MasterDialog({
   canDownload = true,
   inline = false,
   prompt,
+  onOpenEditor,
 }: {
   show: boolean;
   masterUrl: string | null;
@@ -502,6 +548,7 @@ export function MasterDialog({
   canDownload?: boolean;
   inline?: boolean;
   prompt?: string;
+  onOpenEditor?: () => void;
 }) {
   const handleClose = useCallback(() => {
     onClose();
@@ -519,6 +566,7 @@ export function MasterDialog({
         onClose={handleClose}
         inline
         prompt={prompt}
+        onOpenEditor={onOpenEditor}
       />
     );
   }

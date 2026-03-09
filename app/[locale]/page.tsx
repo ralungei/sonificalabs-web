@@ -9,6 +9,7 @@ import { PipelineReveal } from "@/components/PipelineReveal";
 import { LayoutTextFlip } from "@/components/ui/layout-text-flip";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { apiFetch } from "@/lib/api";
+import { useApiToken } from "@/components/Providers";
 
 /* ── Demos ─────────────────────────────────────────────────────── */
 
@@ -25,10 +26,8 @@ const NEUTRAL_TEXTURE: React.CSSProperties = {
 };
 
 const DEMO_DATA = [
-  { id: "truecrime", key: "truecrime", icon: "🎙", filename: "demo-podcast-truecrime.mp3" },
   { id: "pizzeria", key: "pizzeria", icon: "📢", filename: "demo-spot-pizzeria.mp3" },
   { id: "epica", key: "epica", icon: "🎬", filename: "demo-intro-epica.mp3" },
-  { id: "humor", key: "humor", icon: "😂", filename: "demo-sketch-humor.mp3" },
   { id: "meditacion", key: "meditacion", icon: "🧘", filename: "demo-meditacion-asmr.mp3" },
   { id: "informativo", key: "informativo", icon: "📰", filename: "demo-noticiero.mp3" },
   { id: "thriller", key: "thriller", icon: "🔪", filename: "demo-thriller.mp3" },
@@ -494,6 +493,7 @@ export default function Home() {
   const t = useTranslations("home");
   const locale = useLocale();
   const router = useRouter();
+  const apiToken = useApiToken();
 
   const DEMOS: Demo[] = DEMO_DATA.map(d => ({
     ...d,
@@ -513,11 +513,16 @@ export default function Home() {
       if (savedModel) adminOverrides.model = savedModel;
       if (savedTts) adminOverrides.ttsModel = savedTts;
 
-      const res = await apiFetch("/produce", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, ...adminOverrides }),
-      });
+      let res: Response;
+      try {
+        res = await apiFetch("/produce", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt, ...adminOverrides }),
+        }, apiToken);
+      } catch {
+        throw new Error(t("serviceUnavailable"));
+      }
 
       if (!res.ok) {
         if (res.status === 401) {
@@ -544,7 +549,7 @@ export default function Home() {
       const { jobId } = await res.json();
       router.push(`/p/${jobId}`);
     },
-    [router],
+    [router, apiToken, t],
   );
 
   return (
@@ -570,9 +575,6 @@ export default function Home() {
             <div className="-translate-x-10">
               <DemoCircle demo={DEMOS[3]} delay={1.86} size={72} />
             </div>
-            <div className="translate-x-7">
-              <DemoCircle demo={DEMOS[4]} delay={1.98} size={72} />
-            </div>
           </div>
 
           {/* Center hero content */}
@@ -591,6 +593,9 @@ export default function Home() {
                 words={(t("flipWords") as string).split(",")}
                 duration={2500}
               />
+            </span>
+            <span className="block -mt-1 text-sm sm:text-base text-white/40 font-body tracking-normal">
+              {t("heroSub")}
             </span>
           </motion.div>
 
@@ -623,7 +628,7 @@ export default function Home() {
               {t("listenExamples")}
             </p>
             <div className="flex items-center justify-center gap-5 flex-wrap">
-              {DEMOS.slice(0, 7).map((demo, i) => (
+              {DEMOS.map((demo, i) => (
                 <DemoCircle key={demo.id} demo={demo} delay={1.5 + i * 0.1} />
               ))}
             </div>
@@ -633,19 +638,16 @@ export default function Home() {
           {/* Right column — alternating offsets (mirrored) */}
           <div className="hidden lg:flex flex-col items-center gap-6 flex-shrink-0">
             <div className="-translate-x-7">
-              <DemoCircle demo={DEMOS[5]} delay={1.55} size={72} />
+              <DemoCircle demo={DEMOS[4]} delay={1.55} size={72} />
             </div>
             <div className="translate-x-9">
-              <DemoCircle demo={DEMOS[6]} delay={1.67} size={72} />
+              <DemoCircle demo={DEMOS[5]} delay={1.67} size={72} />
             </div>
             <div className="-translate-x-4">
-              <DemoCircle demo={DEMOS[7]} delay={1.79} size={72} />
+              <DemoCircle demo={DEMOS[6]} delay={1.79} size={72} />
             </div>
             <div className="translate-x-10">
-              <DemoCircle demo={DEMOS[8]} delay={1.91} size={72} />
-            </div>
-            <div className="-translate-x-8">
-              <DemoCircle demo={DEMOS[9]} delay={2.03} size={72} />
+              <DemoCircle demo={DEMOS[7]} delay={1.91} size={72} />
             </div>
           </div>
         </div>

@@ -7,24 +7,25 @@
     "manageSubscription": "Gestionar suscripción",
     "signOut": "Cerrar sesión",
     "signIn": "Iniciar sesión",
-    "admin": "Admin"
+    "admin": "Admin",
+    "about": "Quiénes somos"
   },
   "home": {
     "heroLine": "Produce tu siguiente",
     "flipWords": "podcast,spot,tráiler,radionovela,informativo,intro,audiocuento,sketch",
+    "heroSub": "Si tienes una idea, aquí la conviertes en audio.",
     "tagline": "Voces reales · Música · SFX · Mezcla profesional",
     "listenExamples": "Escucha ejemplos",
     "ctaTitle": "Pruébalo ahora",
     "ctaSubtitle": "1 producción gratis. Escribe tu idea y en 30 segundos tendrás tu audio con calidad profesional.",
     "ctaButton": "Crear mi audio gratis",
+    "serviceUnavailable": "El servicio no está disponible en este momento. Inténtalo de nuevo en unos segundos.",
     "footer": "© 2026 SonificaLabs",
     "capabilities": "Podcasts,Spots publicitarios,Intros,Radionovelas,Documentales,Escenas cinemáticas,Informativos,Audiocuentos,Tráilers,Sketches,Meditaciones,Doblajes",
     "demos": {
-      "truecrime": "True Crime",
       "pizzeria": "Spot Radio",
-      "epica": "Intro Epica",
-      "humor": "Sketch",
-      "meditacion": "ASMR",
+      "epica": "Intro Épica",
+      "meditacion": "Meditación",
       "informativo": "Informativo",
       "thriller": "Thriller",
       "documental": "Documental",
@@ -127,7 +128,9 @@
     "createAnother": "Crear otro",
     "somethingWentWrong": "Algo ha fallado",
     "errorDescription": "Ha ocurrido un error al generar tu audio. Inténtalo de nuevo en unos segundos.",
-    "tryAgain": "Intentar de nuevo"
+    "tryAgain": "Intentar de nuevo",
+    "openEditor": "Abrir editor",
+    "close": "Cerrar"
   },
   "masterDialog": {
     "shareLink": "Enlace para compartir",
@@ -136,7 +139,7 @@
     "audioReady": "Tu audio está listo",
     "masterReady": "Master listo",
     "normalizedLufs": "Normalizado a -14 LUFS",
-    "downloadMp3": "Descargar MP3",
+    "downloadMp3": "MP3",
     "downloadInMp3": "Descargar en MP3",
     "availableInPro": "Disponible en el plan Pro",
     "pro": "Pro"
@@ -151,11 +154,13 @@
     "currentPlan": "Plan actual",
     "priceNote": "Precios sin IVA. Los créditos de pago se renuevan cada mes.",
     "howCreditsWork": "Cómo se gastan los créditos",
+    "creditsUnit": "créditos",
     "examples": "Ejemplos",
     "faqTitle": "Preguntas frecuentes",
     "bottomCtaTitle": "Produce tu primer audio gratis",
     "viewDemos": "Ver demos",
     "startFree": "Empezar gratis",
+    "cancelSubscription": "Gestionar suscripción",
     "perMonth": "por mes",
     "plans": {
       "free": {
@@ -191,7 +196,7 @@
           "Hasta 2 minutos por audio",
           "Hasta 4 voces por producción",
           "27+ voces en español, latino e inglés",
-          "Modelo avanzado de voces",
+          "Voces expresivas con emoción",
           "Descarga en MP3"
         ]
       },
@@ -260,7 +265,13 @@
     "typePlaceholder": "Escribe ELIMINAR",
     "deleting": "Eliminando...",
     "cancel": "Cancelar",
-    "deleteError": "No se pudo eliminar la cuenta. Inténtalo de nuevo."
+    "deleteError": "No se pudo eliminar la cuenta. Inténtalo de nuevo.",
+    "subscription": "Suscripción",
+    "manageSubscription": "Gestionar suscripción",
+    "managingSubscription": "Redirigiendo...",
+    "cancelSubscription": "Puedes cancelar o cambiar tu plan en cualquier momento desde el portal de Stripe.",
+    "pendingDowngrade": "Tu plan cambiará a {plan} el {date}.",
+    "pendingDowngradeNoDate": "Tu plan cambiará a {plan} al final del periodo actual."
   },
   "signin": {
     "subtitle": "Inicia sesion para crear audio con IA",
@@ -269,6 +280,63 @@
     "continueWith": "Continuar con",
     "termsNotice": "Al continuar, aceptas los <terms>terminos de uso</terms> y la <privacy>politica de privacidad</privacy>.",
     "backToHome": "Volver a SonificaLabs"
+  },
+  "about": {
+    "heroTitle": "Escríbelo.\nEscúchalo.",
+    "heroSubtitle": "SonificaLabs convierte tus ideas en audio profesional con voces reales, música, efectos de sonido y mezcla automática.",
+    "whatCards": [
+      {
+        "icon": "pen",
+        "title": "Cuenta tu idea",
+        "desc": "Como se la contarías a un amigo. Sin formatos, sin plantillas, sin saber nada de audio."
+      },
+      {
+        "icon": "wand",
+        "title": "La IA lo produce",
+        "desc": "Guión, voces, música, efectos de sonido y mezcla. Todo automático, todo en segundos."
+      },
+      {
+        "icon": "download",
+        "title": "Descarga y publica",
+        "desc": "En tu podcast, tu vídeo, tu reel, tu cuña de radio, tu tráiler o donde quieras."
+      }
+    ],
+    "forWhoTitle": "Hecho para crear",
+    "forWhoSubtitle": "Da igual si haces vídeos, podcasts o trabajas en producción. Si tienes una idea, aquí la conviertes en audio.",
+    "forWhoItems": [
+      { "icon": "video", "label": "Creadores de contenido", "desc": "Intros, voiceovers y audio para reels, TikToks y YouTube" },
+      { "icon": "mic", "label": "Podcasters", "desc": "Entradillas, secciones dramatizadas y transiciones con voz profesional" },
+      { "icon": "film", "label": "Cine y televisión", "desc": "Escenas piloto, tráilers y dramatizaciones rápidas para preproducción" },
+      { "icon": "megaphone", "label": "Agencias y marcas", "desc": "Spots de radio, demos para clientes y prototipos de audio en minutos" },
+      { "icon": "book", "label": "Educación", "desc": "Audiocuentos, podcasts educativos y material didáctico accesible" },
+      { "icon": "zap", "label": "Cualquiera con una idea", "desc": "Si puedes describirlo, puedes producirlo" }
+    ],
+    "howTitle": "De texto a audio en 3 pasos",
+    "howSteps": [
+      {
+        "num": "01",
+        "title": "La IA escribe el guión",
+        "desc": "Interpreta tu idea y genera un guión completo con diálogos, indicaciones musicales y efectos de sonido."
+      },
+      {
+        "num": "02",
+        "title": "Voces, música y efectos",
+        "desc": "Selecciona las voces adecuadas entre más de 23 disponibles, elige música de una biblioteca de sonidos y añade efectos."
+      },
+      {
+        "num": "03",
+        "title": "Mezcla y masterización",
+        "desc": "Aplica técnicas de mezcla y masterización automáticamente para entregar un audio con calidad de estudio."
+      }
+    ],
+    "rasTitle": "Hola, soy Ras",
+    "rasRole": "Fundador de SonificaLabs",
+    "rasBio1": "Gracias por pasarte por aquí. Soy ingeniero, creador de contenido y desde pequeño siempre me ha gustado la edición de foto y vídeo.",
+    "rasBio2": "Siempre me ha flipado cómo el sonido transforma cualquier producción, pero crearlo bien era carísimo y lentísimo. Llevo unos años trabajando con inteligencia artificial, y combinando habilidades se me ocurrió crear esta plataforma.",
+    "rasBio3": "No es perfecta, pero cada día suena un poco mejor. Si te gusta, genial. Si encuentras un fallo, escríbeme.",
+    "linkedIn": "LinkedIn",
+    "ctaLine": "Tu primera producción va por nuestra cuenta.",
+    "ctaButton": "Producir mi primer audio"
   },
   "localeSwitcher": {
     "es": "ES",
