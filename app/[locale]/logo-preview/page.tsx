@@ -29,54 +29,54 @@ export default function LogoPreview() {
 
   return (
     <main className="min-h-screen bg-surface-0 px-6 py-12">
-      <h1 className="text-3xl font-logo tracking-wide text-white text-center mb-2">
+      <h1 className="text-3xl font-logo tracking-wide text-contrast text-center mb-2">
         Microphone Bold × Fuentes naturales
       </h1>
-      <p className="text-sm text-white/50 text-center mb-16 font-mono">
+      <p className="text-sm text-contrast/50 text-center mb-16 font-mono">
         Google Fonts · Humanistas, redondeadas, orgánicas
       </p>
 
       <div className="max-w-5xl mx-auto space-y-12">
         {FONTS.map((font) => (
           <div key={font.name} className="flex flex-col items-center gap-5">
-            <p className="text-[10px] text-white/25 font-mono uppercase tracking-widest">
+            <p className="text-[10px] text-contrast/25 font-mono uppercase tracking-widest">
               {font.name} ({font.weight})
             </p>
 
             {/* Big hero */}
             <div className="flex items-center gap-4">
-              <MicBold className="h-14 w-14 text-white" />
+              <MicBold className="h-14 w-14 text-contrast" />
               <span
-                className="text-6xl sm:text-7xl tracking-[0.02em] text-white"
+                className="text-6xl sm:text-7xl tracking-[0.02em] text-contrast"
                 style={{ fontFamily: `'${font.name}'`, fontWeight: font.weight }}
               >
-                <span className="text-white">sonifica</span><span className="text-accent">labs</span>
+                <span className="text-contrast">sonifica</span><span className="text-accent">labs</span>
               </span>
             </div>
 
             {/* Navbar */}
-            <div className="flex items-center gap-2.5 bg-surface-1/60 border border-white/[0.06] rounded-xl px-5 py-2.5">
-              <MicBold className="h-6 w-6 text-white flex-shrink-0" />
+            <div className="flex items-center gap-2.5 bg-surface-1/60 border border-contrast/[0.06] rounded-xl px-5 py-2.5">
+              <MicBold className="h-6 w-6 text-contrast flex-shrink-0" />
               <span
-                className="text-xl tracking-[0.04em] text-white"
+                className="text-xl tracking-[0.04em] text-contrast"
                 style={{ fontFamily: `'${font.name}'`, fontWeight: font.weight }}
               >
-                <span className="text-white">sonifica</span><span className="text-accent">labs</span>
+                <span className="text-contrast">sonifica</span><span className="text-accent">labs</span>
               </span>
             </div>
 
             {/* Favicon size */}
             <div className="flex items-center gap-2">
-              <MicBold className="h-4 w-4 text-white/70" />
+              <MicBold className="h-4 w-4 text-contrast/70" />
               <span
-                className="text-sm tracking-[0.02em] text-white/70"
+                className="text-sm tracking-[0.02em] text-contrast/70"
                 style={{ fontFamily: `'${font.name}'`, fontWeight: font.weight }}
               >
-                <span className="text-white">sonifica</span><span className="text-accent">labs</span>
+                <span className="text-contrast">sonifica</span><span className="text-accent">labs</span>
               </span>
             </div>
 
-            <div className="border-b border-white/[0.04] w-full max-w-lg mt-1" />
+            <div className="border-b border-contrast/[0.04] w-full max-w-lg mt-1" />
           </div>
         ))}
       </div>

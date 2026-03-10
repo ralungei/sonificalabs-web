@@ -92,10 +92,10 @@ export default function AccountPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <h1 className="text-2xl font-brand text-white mb-8">{t("title")}</h1>
+          <h1 className="text-2xl font-brand text-contrast mb-8">{t("title")}</h1>
 
           {/* Profile card */}
-          <div className="rounded-2xl border border-white/[0.08] bg-surface-1/60 backdrop-blur-sm p-6 mb-6">
+          <div className="rounded-2xl border border-contrast/[0.08] bg-surface-1/60 backdrop-blur-sm p-6 mb-6">
             <div className="flex items-center gap-4 mb-6">
               {session.user?.image ? (
                 <img
@@ -110,7 +110,7 @@ export default function AccountPage() {
                 </div>
               )}
               <div>
-                <p className="text-white font-medium">{session.user?.name}</p>
+                <p className="text-contrast font-medium">{session.user?.name}</p>
                 <p className="text-sm text-text-secondary">{session.user?.email}</p>
               </div>
             </div>
@@ -118,17 +118,17 @@ export default function AccountPage() {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <p className="text-text-muted text-xs mb-1">{t("plan")}</p>
-                <p className="text-white font-medium">
+                <p className="text-contrast font-medium">
                   {PLAN_LABELS[account?.plan ?? "free"] ?? account?.plan ?? "Free"}
                 </p>
               </div>
               <div>
                 <p className="text-text-muted text-xs mb-1">{t("creditsUsed")}</p>
-                <p className="text-white font-medium">{account?.creditsUsed ?? 0} / {account?.creditsLimit ?? 0}</p>
+                <p className="text-contrast font-medium">{account?.creditsUsed ?? 0} / {account?.creditsLimit ?? 0}</p>
               </div>
               <div className="col-span-2">
                 <p className="text-text-muted text-xs mb-1">{t("memberSince")}</p>
-                <p className="text-white font-medium">
+                <p className="text-contrast font-medium">
                   {account?.createdAt
                     ? new Date(account.createdAt).toLocaleDateString(locale, {
                         year: "numeric",
@@ -160,7 +160,7 @@ export default function AccountPage() {
 
           {/* Subscription management */}
           {account && account.plan !== "free" && (
-            <div className="rounded-2xl border border-white/[0.08] bg-surface-1/60 backdrop-blur-sm p-6 mb-6">
+            <div className="rounded-2xl border border-contrast/[0.08] bg-surface-1/60 backdrop-blur-sm p-6 mb-6">
               <h2 className="text-sm font-semibold text-text-primary mb-4">{t("subscription")}</h2>
               <button
                 onClick={async () => {
@@ -182,7 +182,7 @@ export default function AccountPage() {
                   }
                 }}
                 disabled={managingSubscription}
-                className="px-4 py-2 rounded-lg text-xs font-semibold bg-white/[0.06] text-text-primary border border-white/[0.1] hover:bg-white/[0.1] transition-colors cursor-pointer disabled:opacity-50"
+                className="px-4 py-2 rounded-lg text-xs font-semibold bg-contrast/[0.06] text-text-primary border border-contrast/[0.1] hover:bg-contrast/[0.1] transition-colors cursor-pointer disabled:opacity-50"
               >
                 {managingSubscription ? t("managingSubscription") : t("manageSubscription")}
               </button>
@@ -209,13 +209,13 @@ export default function AccountPage() {
 
         {/* Delete confirmation dialog */}
         {showDeleteDialog && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className="fixed inset-0 z-[var(--z-dropdown)] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="w-full max-w-sm rounded-2xl border border-white/[0.08] bg-surface-2 p-6 shadow-2xl"
+              className="w-full max-w-sm rounded-2xl border border-contrast/[0.08] bg-surface-2 p-6 shadow-2xl"
             >
-              <h3 className="text-white font-semibold mb-2">
+              <h3 className="text-contrast font-semibold mb-2">
                 {t("confirmDeletion")}
               </h3>
               <p className="text-xs text-text-secondary mb-4">
@@ -228,7 +228,7 @@ export default function AccountPage() {
                 value={confirmText}
                 onChange={(e) => setConfirmText(e.target.value)}
                 placeholder={t("typePlaceholder")}
-                className="w-full px-3 py-2 rounded-lg bg-surface-0 border border-white/[0.08] text-white text-sm placeholder:text-text-muted focus:outline-none focus:border-red-500/50 mb-4"
+                className="w-full px-3 py-2 rounded-lg bg-surface-0 border border-contrast/[0.08] text-contrast text-sm placeholder:text-text-muted focus:outline-none focus:border-red-500/50 mb-4"
                 autoFocus
               />
               {error && (
@@ -241,7 +241,7 @@ export default function AccountPage() {
                     setConfirmText("");
                     setError(null);
                   }}
-                  className="px-4 py-2 rounded-lg text-xs text-text-secondary hover:text-white transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-lg text-xs text-text-secondary hover:text-contrast transition-colors cursor-pointer"
                 >
                   {t("cancel")}
                 </button>

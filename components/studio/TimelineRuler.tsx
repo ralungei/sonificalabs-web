@@ -12,9 +12,9 @@ export function TimelineRuler({
   onSeek: (ms: number) => void;
 }) {
   return (
-    <div className="flex h-7 border-b border-white/[0.04] bg-surface-0/30">
+    <div className="flex h-7 border-b border-contrast/[0.04] bg-surface-0/30">
       <div
-        className="shrink-0 sticky left-0 z-20 bg-surface-1/95 backdrop-blur-sm border-r border-white/[0.04]"
+        className="shrink-0 sticky left-0 z-[var(--z-sticky)] bg-surface-1/95 backdrop-blur-sm border-r border-contrast/[0.04]"
         style={{ width: sidebarW }}
       />
       <div
@@ -30,8 +30,8 @@ export function TimelineRuler({
             className="absolute top-0 h-full flex flex-col items-center"
             style={{ left: m.ms * pxPerMs }}
           >
-            <div className="w-px h-2.5 bg-white/25" />
-            <span className="text-[10px] font-mono text-white/50 mt-0.5 select-none">
+            <div className="w-px h-2.5 bg-contrast/25" />
+            <span className="text-[10px] font-mono text-contrast/50 mt-0.5 select-none">
               {m.label}
             </span>
           </div>

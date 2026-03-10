@@ -82,7 +82,7 @@ export function JobStatus({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.25 }}
-            className="text-lg font-body font-semibold uppercase tracking-[0.25em] text-white"
+            className="text-lg font-body font-semibold uppercase tracking-[0.25em] text-contrast"
           >
             {phaseLabel}
           </motion.h2>
@@ -95,7 +95,7 @@ export function JobStatus({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.2 }}
-            className="text-sm text-white/80 text-center"
+            className="text-sm text-contrast/80 text-center"
           >
             {displayText}
           </motion.p>
@@ -116,8 +116,8 @@ export function JobStatus({
                 "rounded-full",
                 i < currentPhase && "bg-accent/40",
                 i === currentPhase && "bg-accent",
-                i > currentPhase && "bg-white/10",
-                isQueued && "bg-white/10",
+                i > currentPhase && "bg-contrast/10",
+                isQueued && "bg-contrast/10",
               )}
             />
             {/* Pulse on active dot */}

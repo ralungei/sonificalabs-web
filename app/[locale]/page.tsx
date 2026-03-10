@@ -10,6 +10,7 @@ import { LayoutTextFlip } from "@/components/ui/layout-text-flip";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { apiFetch } from "@/lib/api";
 import { useApiToken } from "@/components/Providers";
+import { ACCENT } from "@/lib/theme";
 
 /* ── Demos ─────────────────────────────────────────────────────── */
 
@@ -276,7 +277,7 @@ function DemoCircle({
             cx="32" cy="32" r={CIRCLE_R}
             fill="none" stroke="currentColor"
             strokeWidth={hovering ? "14" : "12"}
-            className="text-white/[0.08] transition-all duration-200"
+            className="text-contrast/[0.08] transition-all duration-200"
           />
           {/* Progress ring */}
           {showProgress && (
@@ -295,7 +296,7 @@ function DemoCircle({
             <circle
               cx="32" cy="32" r={CIRCLE_R}
               fill="none" stroke="currentColor" strokeWidth="14"
-              className="text-white/[0.15]"
+              className="text-contrast/[0.15]"
               strokeDasharray={CIRCLE_C}
               strokeDashoffset={CIRCLE_C * (1 - hoverRatio)}
               strokeLinecap="butt"
@@ -310,7 +311,7 @@ function DemoCircle({
           animate={{ opacity: showHighlight ? 1 : 0 }}
           transition={{ duration: 0.8 }}
           className="absolute inset-[10px] rounded-full pointer-events-none border-2 border-accent/40"
-          style={{ background: "radial-gradient(circle, rgba(232,168,56,0.2) 0%, rgba(232,168,56,0.06) 100%)", zIndex: 5 }}
+          style={{ background: `radial-gradient(circle, rgba(${ACCENT.rgb},0.2) 0%, rgba(${ACCENT.rgb},0.06) 100%)`, zIndex: 5 }}
         />
         <motion.button
           type="button"
@@ -326,7 +327,7 @@ function DemoCircle({
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           style={demo.texture}
-          className="absolute inset-[10px] rounded-full cursor-pointer flex items-center justify-center border border-white/[0.12] shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_2px_8px_rgba(0,0,0,0.4)] transition-all duration-300 group"
+          className="absolute inset-[10px] rounded-full cursor-pointer flex items-center justify-center border border-contrast/[0.12] shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_2px_8px_rgba(0,0,0,0.4)] transition-all duration-300 group"
         >
           {playing ? (
             <svg className="h-4 w-4 text-accent transition-transform duration-200 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
@@ -345,7 +346,7 @@ function DemoCircle({
                   ? { duration: 1.6, ease: "easeInOut", repeat: Infinity }
                   : { duration: 0.6, ease: "easeOut" }
                 }
-                className="h-4 w-4 text-white/70 group-hover:text-accent group-hover:scale-110"
+                className="h-4 w-4 text-contrast/70 group-hover:text-accent group-hover:scale-110"
                 fill="currentColor" viewBox="0 0 24 24"
               >
                 <path d="M19.266 13.516a1.917 1.917 0 0 0 0-3.032A35.8 35.8 0 0 0 9.35 5.068l-.653-.232c-1.248-.443-2.567.401-2.736 1.69a42.5 42.5 0 0 0 0 10.948c.17 1.289 1.488 2.133 2.736 1.69l.653-.232a35.8 35.8 0 0 0 9.916-5.416"/>
@@ -372,7 +373,7 @@ function DemoCircle({
       </div>
 
       {/* Label just below the circle */}
-      <span className="text-[10px] text-white/60 font-medium tracking-widest uppercase">
+      <span className="text-[10px] text-contrast/60 font-medium tracking-widest uppercase">
         {demo.title}
       </span>
     </motion.div>
@@ -451,7 +452,7 @@ function ScrollingTags({
         {tripled.map((label, i) => (
           <span
             key={`${label}-${i}`}
-            className="inline-flex items-center whitespace-nowrap rounded-full bg-white/[0.04] border border-white/[0.08] px-4 py-1.5 text-[13px] text-white/50 cursor-default transition-all duration-300 hover:bg-white/[0.08] hover:text-white/80"
+            className="inline-flex items-center whitespace-nowrap rounded-full bg-contrast/[0.04] border border-contrast/[0.08] px-4 py-1.5 text-[13px] text-contrast/50 cursor-default transition-all duration-300 hover:bg-contrast/[0.08] hover:text-contrast/80"
           >
             {label}
           </span>
@@ -594,7 +595,7 @@ export default function Home() {
                 duration={2500}
               />
             </span>
-            <span className="block -mt-1 text-sm sm:text-base text-white/40 font-body tracking-normal">
+            <span className="block -mt-1 text-sm sm:text-base text-contrast/40 font-body tracking-normal">
               {t("heroSub")}
             </span>
           </motion.div>
@@ -612,7 +613,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.65 }}
-            className="mt-5 text-[11px] text-white/90 text-center font-body uppercase tracking-[0.2em]"
+            className="mt-5 text-[11px] text-contrast/90 text-center font-body uppercase tracking-[0.2em]"
           >
             {t("tagline")}
           </motion.p>
@@ -624,7 +625,7 @@ export default function Home() {
             transition={{ delay: 0.8 }}
             className="lg:hidden mt-10 w-full"
           >
-            <p className="text-[10px] font-mono text-white/60 uppercase tracking-[0.2em] text-center mb-4">
+            <p className="text-[10px] font-mono text-contrast/60 uppercase tracking-[0.2em] text-center mb-4">
               {t("listenExamples")}
             </p>
             <div className="flex items-center justify-center gap-5 flex-wrap">
@@ -664,7 +665,7 @@ export default function Home() {
           <motion.svg
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-            className="w-6 h-6 text-white/30 hover:text-accent transition-colors"
+            className="w-6 h-6 text-contrast/30 hover:text-accent transition-colors"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -681,10 +682,10 @@ export default function Home() {
       {/* ── CTA (above the scrolling tags) ──────────────────── */}
       <section className="relative z-10 w-full max-w-2xl px-4 pt-16 pb-8 text-center">
         <FadeIn>
-          <h2 className="text-3xl md:text-4xl font-logo tracking-wide text-white mb-4">
+          <h2 className="text-3xl md:text-4xl font-logo tracking-wide text-contrast mb-4">
             {t("ctaTitle")}
           </h2>
-          <p className="text-sm text-white/60 mb-8 max-w-md mx-auto">
+          <p className="text-sm text-contrast/60 mb-8 max-w-md mx-auto">
             {t("ctaSubtitle")}
           </p>
           <button
@@ -708,17 +709,17 @@ export default function Home() {
       </section>
 
       {/* ── Footer ──────────────────────────────────────────── */}
-      <footer className="relative z-10 w-full border-t border-white/[0.06] py-8 text-center">
+      <footer className="relative z-10 w-full border-t border-contrast/[0.06] py-8 text-center">
         <div className="flex flex-col items-center gap-2">
           <div className="flex items-center gap-2">
-            <svg viewBox="0 0 24 24" className="h-4 w-4 text-white" fill="currentColor" aria-hidden>
+            <svg viewBox="0 0 24 24" className="h-4 w-4 text-contrast" fill="currentColor" aria-hidden>
               <path d="m20.713 7.128-.246.566a.506.506 0 0 1-.934 0l-.246-.566a4.36 4.36 0 0 0-2.22-2.25l-.759-.339a.53.53 0 0 1 0-.963l.717-.319A4.37 4.37 0 0 0 19.276.931L19.53.32a.506.506 0 0 1 .942 0l.253.61a4.37 4.37 0 0 0 2.25 2.327l.718.32a.53.53 0 0 1 0 .962l-.76.338a4.36 4.36 0 0 0-2.219 2.251M7 6a5 5 0 0 1 7.697-4.21l-1.08 1.682A3 3 0 0 0 9 6v6a3 3 0 1 0 6 0V7h2v5a5 5 0 0 1-10 0zm-4.808 7.962 1.962-.393a8.003 8.003 0 0 0 15.692 0l1.962.393C20.896 18.545 16.852 22 12 22s-8.896-3.455-9.808-8.038" />
             </svg>
             <span className="text-base font-brand tracking-[0.04em]">
-              <span className="text-white">sonifica</span><span className="text-accent">labs</span>
+              <span className="text-contrast">sonifica</span><span className="text-accent">labs</span>
             </span>
           </div>
-          <p className="text-[11px] text-white/40">
+          <p className="text-[11px] text-contrast/40">
             {t("footer")}
           </p>
         </div>

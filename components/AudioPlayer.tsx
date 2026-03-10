@@ -3,6 +3,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/cn";
+import { ACCENT } from "@/lib/theme";
 
 export function AudioPlayer({ audioUrl }: { audioUrl: string }) {
   const t = useTranslations("audioPlayer");
@@ -33,9 +34,9 @@ export function AudioPlayer({ audioUrl }: { audioUrl: string }) {
       if (cancelled) return;
       ws = WaveSurfer.create({
         container: waveformRef.current!,
-        waveColor: "#8a6b20",
-        progressColor: "#e8a838",
-        cursorColor: "#f5c842",
+        waveColor: ACCENT.dim,
+        progressColor: ACCENT.base,
+        cursorColor: ACCENT.bright,
         barWidth: 2,
         barGap: 2,
         barRadius: 4,
@@ -143,7 +144,7 @@ export function AudioPlayer({ audioUrl }: { audioUrl: string }) {
             <a
               href={audioUrl}
               download
-              className="group flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-white/70 hover:text-white transition-colors duration-300"
+              className="group flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-contrast/70 hover:text-contrast transition-colors duration-300"
             >
               <svg
                 className="h-4 w-4 transition-transform group-hover:-translate-y-0.5"

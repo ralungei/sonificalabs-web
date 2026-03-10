@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { ACCENT } from "@/lib/theme";
 
 function SignInContent() {
   const t = useTranslations("signin");
@@ -19,7 +20,7 @@ function SignInContent() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 60% 50% at 50% 40%, rgba(232,168,56,0.06) 0%, transparent 70%)",
+            `radial-gradient(ellipse 60% 50% at 50% 40%, rgba(${ACCENT.rgb},0.06) 0%, transparent 70%)`,
         }}
       />
 
@@ -30,15 +31,15 @@ function SignInContent() {
         className="relative z-10 w-full max-w-sm mx-4"
       >
         {/* Card */}
-        <div className="rounded-2xl border border-white/[0.08] bg-surface-1/80 backdrop-blur-xl p-8 shadow-2xl">
+        <div className="rounded-2xl border border-contrast/[0.08] bg-surface-1/80 backdrop-blur-xl p-8 shadow-2xl">
           {/* Logo */}
           <div className="flex flex-col items-center mb-8">
             <div className="flex items-center gap-2.5 mb-3">
-              <svg viewBox="0 0 24 24" className="h-7 w-7 text-white" fill="currentColor" aria-hidden>
+              <svg viewBox="0 0 24 24" className="h-7 w-7 text-contrast" fill="currentColor" aria-hidden>
                 <path d="m20.713 7.128-.246.566a.506.506 0 0 1-.934 0l-.246-.566a4.36 4.36 0 0 0-2.22-2.25l-.759-.339a.53.53 0 0 1 0-.963l.717-.319A4.37 4.37 0 0 0 19.276.931L19.53.32a.506.506 0 0 1 .942 0l.253.61a4.37 4.37 0 0 0 2.25 2.327l.718.32a.53.53 0 0 1 0 .962l-.76.338a4.36 4.36 0 0 0-2.219 2.251M7 6a5 5 0 0 1 7.697-4.21l-1.08 1.682A3 3 0 0 0 9 6v6a3 3 0 1 0 6 0V7h2v5a5 5 0 0 1-10 0zm-4.808 7.962 1.962-.393a8.003 8.003 0 0 0 15.692 0l1.962.393C20.896 18.545 16.852 22 12 22s-8.896-3.455-9.808-8.038" />
               </svg>
               <span className="text-xl font-brand tracking-[0.04em]">
-                <span className="text-white">sonifica</span><span className="text-accent">labs</span>
+                <span className="text-contrast">sonifica</span><span className="text-accent">labs</span>
               </span>
             </div>
             <p className="text-sm text-text-secondary text-center">
@@ -61,11 +62,11 @@ function SignInContent() {
 
           {/* Divider label */}
           <div className="flex items-center gap-3 mb-5">
-            <div className="flex-1 h-px bg-white/[0.08]" />
+            <div className="flex-1 h-px bg-contrast/[0.08]" />
             <span className="text-[10px] text-text-muted uppercase tracking-[0.15em]">
               {t("continueWith")}
             </span>
-            <div className="flex-1 h-px bg-white/[0.08]" />
+            <div className="flex-1 h-px bg-contrast/[0.08]" />
           </div>
 
           {/* Google button */}

@@ -1,4 +1,5 @@
 "use client";
+import { ACCENT } from "@/lib/theme";
 
 const FONTS = [
   { name: "Falling", family: "Falling", src: "/fonts/falling.woff", format: "woff" },
@@ -40,10 +41,10 @@ export default function FontPreview() {
         `).join("")}
       `}</style>
 
-      <h1 className="text-3xl font-logo tracking-wide text-white text-center mb-2">
+      <h1 className="text-3xl font-logo tracking-wide text-contrast text-center mb-2">
         Font Preview
       </h1>
-      <p className="text-sm text-white/50 text-center mb-16 font-mono">
+      <p className="text-sm text-contrast/50 text-center mb-16 font-mono">
         Cómo queda SONIFICALABS con cada fuente
       </p>
 
@@ -51,7 +52,7 @@ export default function FontPreview() {
         {FONTS.map((font) => (
           <div key={font.name} className="space-y-6">
             {/* Font name label */}
-            <p className="text-xs text-white/40 font-mono uppercase tracking-widest text-center">
+            <p className="text-xs text-contrast/40 font-mono uppercase tracking-widest text-center">
               {font.name}
             </p>
 
@@ -65,7 +66,7 @@ export default function FontPreview() {
 
             {/* Navbar simulation */}
             <div className="flex justify-center">
-              <div className="inline-flex items-center gap-2.5 bg-surface-1/60 border border-white/[0.06] rounded-xl px-5 py-2.5">
+              <div className="inline-flex items-center gap-2.5 bg-surface-1/60 border border-contrast/[0.06] rounded-xl px-5 py-2.5">
                 <div className="h-7 w-7 flex-shrink-0">
                   <LogoSVG />
                 </div>
@@ -82,26 +83,26 @@ export default function FontPreview() {
             <div className="flex justify-center gap-10 text-center">
               <div>
                 <p
-                  className="text-4xl tracking-[0.04em] text-white/90 mb-1"
+                  className="text-4xl tracking-[0.04em] text-contrast/90 mb-1"
                   style={{ fontFamily: font.src ? `'${font.family}'` : font.family }}
                 >
-                  <span>sonifica</span><span style={{ color: "#e8a838" }}>labs</span>
+                  <span>sonifica</span><span style={{ color: ACCENT.base }}>labs</span>
                 </p>
-                <p className="text-[10px] text-white/30 font-mono">minúsculas</p>
+                <p className="text-[10px] text-contrast/30 font-mono">minúsculas</p>
               </div>
               <div>
                 <p
-                  className="text-4xl tracking-[0.04em] text-white/90 mb-1"
+                  className="text-4xl tracking-[0.04em] text-contrast/90 mb-1"
                   style={{ fontFamily: font.src ? `'${font.family}'` : font.family }}
                 >
                   SonificaLabs
                 </p>
-                <p className="text-[10px] text-white/30 font-mono">capitalizada</p>
+                <p className="text-[10px] text-contrast/30 font-mono">capitalizada</p>
               </div>
             </div>
 
             {/* Divider */}
-            <div className="border-b border-white/[0.06]" />
+            <div className="border-b border-contrast/[0.06]" />
           </div>
         ))}
       </div>

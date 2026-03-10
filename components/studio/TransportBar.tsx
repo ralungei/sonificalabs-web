@@ -36,7 +36,7 @@ export function TransportBar({
   onMasterize: () => void;
 }) {
   return (
-    <div className="flex items-center gap-3 px-4 py-3 bg-surface-0/50 border-b border-white/[0.04]">
+    <div className="flex items-center gap-3 px-4 py-3 bg-surface-0/50 border-b border-contrast/[0.04]">
       {/* Play */}
       <button
         onClick={onTogglePlay}
@@ -135,15 +135,15 @@ export function TransportBar({
         <span ref={timeRef} className="text-text-primary">
           0:00.0
         </span>
-        <span className="text-white/40">/</span>
-        <span className="text-white/50">{fmt(actualDurationMs)}</span>
+        <span className="text-contrast/40">/</span>
+        <span className="text-contrast/50">{fmt(actualDurationMs)}</span>
       </div>
 
       <div className="flex-1" />
 
       {/* Loading */}
       {!isLoaded && (
-        <span className="text-xs font-body text-white/50 animate-pulse shrink-0">
+        <span className="text-xs font-body text-contrast/50 animate-pulse shrink-0">
           Cargando pistas...
         </span>
       )}
@@ -155,7 +155,7 @@ export function TransportBar({
         className={cn(
           "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-body font-semibold uppercase tracking-wider transition-all duration-200 shrink-0",
           isRemixing || !isLoaded
-            ? "bg-surface-2 text-white/20 border border-transparent cursor-not-allowed"
+            ? "bg-surface-2 text-contrast/20 border border-transparent cursor-not-allowed"
             : "bg-accent/15 text-accent border border-accent/20 hover:bg-accent/25",
         )}
       >

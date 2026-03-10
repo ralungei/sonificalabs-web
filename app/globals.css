@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
 @theme {
+  /* ═══════════════════════════════════════════
+     COLORS
+     ═══════════════════════════════════════════ */
+
   /* Surfaces — deep black with subtle blue undertone */
   --color-surface-0: #060608;
   --color-surface-1: #0e0e12;
@@ -17,6 +21,9 @@
   --color-text-secondary: #8a857d;
   --color-text-muted: #4a4740;
 
+  /* Contrast — foreground/glass color (flips in light mode) */
+  --color-contrast: #ffffff;
+
   /* Borders */
   --color-border-subtle: #1c1c24;
 
@@ -24,11 +31,41 @@
   --color-done: #4ade80;
   --color-fail: #f87171;
 
-  /* Fonts */
+  /* ═══════════════════════════════════════════
+     TYPOGRAPHY
+     ═══════════════════════════════════════════ */
+
+  /* Font families */
   --font-brand: var(--font-brand), system-ui, sans-serif;
   --font-logo: var(--font-logo), system-ui, sans-serif;
   --font-body: var(--font-body), system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
+
+  /* ═══════════════════════════════════════════
+     BORDER RADIUS — uses Tailwind 4 defaults
+     Override here to change all radii at once
+     (xs=0.125 sm=0.25 md=0.375 lg=0.5 xl=0.75 2xl=1 3xl=1.5 4xl=2)
+     ═══════════════════════════════════════════ */
+
+  /* ═══════════════════════════════════════════
+     Z-INDEX SCALE
+     ═══════════════════════════════════════════ */
+  --z-sticky: 20;
+  --z-dropdown: 50;
+  --z-overlay: 55;
+  --z-mobile-menu: 56;
+  --z-editor: 60;
+
+  /* ═══════════════════════════════════════════
+     SHADOWS — accent glow + depth
+     ═══════════════════════════════════════════ */
+  --shadow-glow-sm: 0 0 20px rgba(232, 168, 56, 0.2);
+  --shadow-glow-md: 0 0 20px rgba(232, 168, 56, 0.3);
+  --shadow-glow-lg: 0 0 24px rgba(232, 168, 56, 0.3);
+  --shadow-glow-button: 0 8px 32px rgba(232, 168, 56, 0.25);
+  --shadow-depth-card: 0 8px 60px -12px rgba(0, 0, 0, 0.5);
+  --shadow-depth-modal: 0 16px 48px -12px rgba(0, 0, 0, 0.6);
+  --shadow-depth-elevated: 0 32px 80px -16px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(232, 168, 56, 0.06);
 }
 
 body {

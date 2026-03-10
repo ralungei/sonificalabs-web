@@ -30,7 +30,7 @@ function Reveal({
 
 /* ── Icons (forWho) — large ────────────────────────────────────── */
 
-const ICON_SIZE = "w-11 h-11";
+const ICON_SIZE = "w-14 h-14";
 
 const FOR_WHO_ICONS: Record<string, React.ReactNode> = {
   video: (
@@ -86,7 +86,7 @@ export default function AboutPage() {
   const howSteps = t.raw("howSteps") as { num: string; title: string; desc: string }[];
 
   return (
-    <main className="min-h-screen bg-surface-0 text-white overflow-x-hidden">
+    <main className="min-h-screen bg-surface-0 text-contrast overflow-x-hidden">
       <Navbar />
 
       {/* ── Hero ──────────────────────────────────────────────── */}
@@ -171,7 +171,7 @@ export default function AboutPage() {
           </h1>
         </Reveal>
         <Reveal delay={0.1}>
-          <p className="relative mt-8 text-lg md:text-xl text-white/40 max-w-2xl mx-auto leading-relaxed">
+          <p className="relative mt-8 text-lg md:text-xl text-contrast/40 max-w-2xl mx-auto leading-relaxed">
             {t("heroSubtitle")}
           </p>
         </Reveal>
@@ -185,20 +185,20 @@ export default function AboutPage() {
               <div className="relative group py-10 px-8 md:px-12 h-full">
                 {/* Vertical divider (desktop) */}
                 {i > 0 && (
-                  <div className="hidden md:block absolute left-0 top-4 bottom-4 w-px bg-gradient-to-b from-transparent via-white/[0.07] to-transparent" />
+                  <div className="hidden md:block absolute left-0 top-4 bottom-4 w-px bg-gradient-to-b from-transparent via-contrast/[0.07] to-transparent" />
                 )}
                 {/* Horizontal divider (mobile) */}
                 {i > 0 && (
-                  <div className="md:hidden absolute left-8 right-8 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
+                  <div className="md:hidden absolute left-8 right-8 top-0 h-px bg-gradient-to-r from-transparent via-contrast/[0.07] to-transparent" />
                 )}
 
                 {/* Big step number */}
-                <span className="block text-5xl md:text-6xl font-mono font-bold text-accent leading-none select-none">
+                <span className="block text-7xl md:text-8xl font-mono font-black text-accent/80 leading-none select-none tracking-tighter">
                   {String(i + 1).padStart(2, "0")}
                 </span>
 
-                <h3 className="text-xl md:text-2xl font-brand text-white mt-5 mb-4">{card.title}</h3>
-                <p className="text-base text-white/35 leading-relaxed">{card.desc}</p>
+                <h3 className="text-2xl md:text-3xl font-brand text-contrast mt-6 mb-4">{card.title}</h3>
+                <p className="text-base md:text-lg text-contrast/40 leading-relaxed">{card.desc}</p>
               </div>
             </Reveal>
           ))}
@@ -211,7 +211,7 @@ export default function AboutPage() {
           <h2 className="text-3xl md:text-4xl font-brand text-center mb-5">
             {t("forWhoTitle")}
           </h2>
-          <p className="text-base text-white/30 text-center mb-16 max-w-lg mx-auto leading-relaxed">
+          <p className="text-base text-contrast/30 text-center mb-16 max-w-lg mx-auto leading-relaxed">
             {t("forWhoSubtitle")}
           </p>
         </Reveal>
@@ -221,7 +221,7 @@ export default function AboutPage() {
               <motion.div
                 whileHover={{ y: -5, scale: 1.02 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
-                className="group relative p-8 rounded-2xl border border-white/[0.08] hover:border-white/[0.15] transition-all duration-300 cursor-default h-full overflow-hidden"
+                className="group relative p-8 rounded-2xl border border-contrast/[0.08] hover:border-contrast/[0.15] transition-all duration-300 cursor-default h-full overflow-hidden"
                 style={{ background: CARD_GRADIENTS[i] || CARD_GRADIENTS[5] }}
               >
                 {/* Grain overlay */}
@@ -233,13 +233,13 @@ export default function AboutPage() {
                   <rect width="100%" height="100%" filter={`url(#grain-${i})`} />
                 </svg>
                 {/* Subtle inner glow */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.04] rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-contrast/[0.04] rounded-full blur-3xl pointer-events-none" />
 
-                <span className="relative block mb-5 text-white/80 group-hover:text-white transition-colors duration-300">
+                <span className="relative block mb-6 text-contrast/80 group-hover:text-accent/80 transition-colors duration-300">
                   {FOR_WHO_ICONS[item.icon]}
                 </span>
-                <p className="relative text-lg font-semibold text-white mb-2">{item.label}</p>
-                <p className="relative text-sm text-white/50 leading-relaxed group-hover:text-white/65 transition-colors duration-300">{item.desc}</p>
+                <p className="relative text-xl font-semibold text-contrast mb-3">{item.label}</p>
+                <p className="relative text-base text-contrast/50 leading-relaxed group-hover:text-contrast/65 transition-colors duration-300">{item.desc}</p>
               </motion.div>
             </Reveal>
           ))}
@@ -247,32 +247,34 @@ export default function AboutPage() {
       </section>
 
       {/* ── How it works ──────────────────────────────────────── */}
-      <section className="pb-36 px-6 max-w-4xl mx-auto">
+      <section className="pb-36 px-6 max-w-5xl mx-auto">
         <Reveal>
-          <h2 className="text-3xl md:text-4xl font-brand text-center mb-20">
+          <h2 className="text-3xl md:text-4xl font-brand text-center mb-24">
             {t("howTitle")}
           </h2>
         </Reveal>
 
         <div className="relative">
-          {/* Connecting line */}
-          <div className="absolute left-[35px] md:left-[47px] top-12 bottom-12 w-px bg-gradient-to-b from-accent/20 via-accent/10 to-transparent" />
+          {/* Connecting line — thick accent gradient */}
+          <div className="absolute left-[52px] md:left-[72px] top-20 bottom-20 w-[2px] bg-gradient-to-b from-accent/30 via-accent/10 to-transparent" />
 
-          <div className="space-y-16">
+          <div className="space-y-20 md:space-y-24">
             {howSteps.map((step, i) => (
               <Reveal key={i} delay={i * 0.14}>
-                <div className="flex items-start gap-8 md:gap-10">
-                  {/* Number circle */}
+                <div className="flex items-start gap-8 md:gap-14">
+                  {/* Number — oversized, bold presence */}
                   <div className="relative flex-shrink-0">
-                    <div className="w-[72px] h-[72px] md:w-24 md:h-24 rounded-full border border-accent/15 bg-surface-0 flex items-center justify-center">
-                      <span className="text-2xl md:text-3xl font-mono font-bold text-accent/50">{step.num}</span>
+                    <div className="w-[104px] h-[104px] md:w-36 md:h-36 rounded-3xl border border-accent/15 bg-surface-1/60 backdrop-blur-sm flex items-center justify-center">
+                      <span className="text-5xl md:text-7xl font-mono font-black text-accent/70 tracking-tighter">{step.num}</span>
                     </div>
-                    {/* Glow behind circle */}
-                    <div className="absolute inset-0 rounded-full bg-accent/[0.06] blur-xl pointer-events-none" />
+                    {/* Glow behind */}
+                    <div className="absolute -inset-3 rounded-3xl bg-accent/[0.06] blur-2xl pointer-events-none" />
+                    {/* Corner accent dot */}
+                    <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-accent/40" />
                   </div>
-                  <div className="pt-3 md:pt-5">
-                    <h3 className="text-xl md:text-2xl font-brand text-white mb-3">{step.title}</h3>
-                    <p className="text-base text-white/35 leading-relaxed max-w-lg">{step.desc}</p>
+                  <div className="pt-4 md:pt-10">
+                    <h3 className="text-2xl md:text-3xl font-brand text-contrast mb-4">{step.title}</h3>
+                    <p className="text-base md:text-lg text-contrast/40 leading-relaxed max-w-lg">{step.desc}</p>
                   </div>
                 </div>
               </Reveal>
@@ -282,63 +284,80 @@ export default function AboutPage() {
       </section>
 
       {/* ── Ras ───────────────────────────────────────────────── */}
-      <section className="pb-36 px-6 max-w-4xl mx-auto">
+      <section className="pb-36 px-6 max-w-5xl mx-auto">
         <Reveal>
           <div className="relative">
-            {/* Outer glow */}
-            <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-accent/[0.08] via-transparent to-accent/[0.04] blur-2xl pointer-events-none" />
+            {/* Outer glow — dramatic */}
+            <div className="absolute -inset-8 rounded-4xl bg-gradient-to-br from-accent/[0.1] via-transparent to-accent/[0.06] blur-3xl pointer-events-none" />
 
-            <div className="relative rounded-[2rem] border border-white/[0.06] bg-surface-1/40 backdrop-blur-md overflow-hidden">
-              {/* Top accent line */}
-              <div className="h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
+            <div className="relative rounded-4xl border border-contrast/[0.08] overflow-hidden"
+              style={{ background: "linear-gradient(160deg, #161620 0%, #0e0e14 40%, #12111a 100%)" }}>
+              {/* Top accent bar — thicker */}
+              <div className="h-[2px] bg-gradient-to-r from-transparent via-accent/40 to-transparent" />
 
-              <div className="p-8 md:p-12 lg:p-14">
-                {/* Photo + name row */}
-                <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-                  {/* Photo — large, with accent ring */}
-                  <div className="relative flex-shrink-0">
-                    <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-accent/20 via-accent/5 to-transparent blur-sm" />
-                    <img
-                      src="/team/ras.jpg"
-                      alt="Ras Alungei"
-                      className="relative w-28 h-28 md:w-32 md:h-32 rounded-2xl object-cover ring-1 ring-white/[0.1]"
-                    />
-                  </div>
+              {/* Grain texture */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none mix-blend-soft-light opacity-40" aria-hidden>
+                <filter id="grain-ras">
+                  <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="4" stitchTiles="stitch" />
+                  <feColorMatrix type="saturate" values="0" />
+                </filter>
+                <rect width="100%" height="100%" filter="url(#grain-ras)" />
+              </svg>
 
-                  {/* Name + role + bio */}
-                  <div className="flex-1 text-center md:text-left">
-                    <h2 className="text-2xl md:text-3xl font-brand text-white leading-tight">{t("rasTitle")}</h2>
-                    <p className="text-sm text-accent/60 mt-1.5 font-body tracking-wide">{t("rasRole")}</p>
+              <div className="relative p-8 md:p-14 lg:p-16">
+                {/* Layout: stacked on mobile, side-by-side on desktop */}
+                <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
 
-                    {/* Bio paragraphs — breathing room between each */}
-                    <div className="mt-8 space-y-5">
-                      <p className="text-base text-white/50 leading-[1.85]">
-                        {t("rasBio1")}
-                      </p>
-                      <p className="text-base text-white/50 leading-[1.85]">
-                        {t("rasBio2")}
-                      </p>
-                      <p className="text-base text-white/45 leading-[1.85]">
-                        {t("rasBio3")}
-                      </p>
+                  {/* Left column: photo + name + social */}
+                  <div className="flex flex-col items-center lg:items-start flex-shrink-0 lg:w-64">
+                    {/* Photo — large with accent glow */}
+                    <div className="relative mb-8">
+                      <div className="absolute -inset-3 rounded-3xl bg-gradient-to-br from-accent/25 via-accent/5 to-transparent blur-lg" />
+                      <img
+                        src="/team/ras.jpg"
+                        alt="Ras Alungei"
+                        className="relative w-40 h-40 md:w-48 md:h-48 rounded-3xl object-cover ring-1 ring-contrast/[0.1] shadow-2xl"
+                      />
+                      {/* Floating accent dot */}
+                      <div className="absolute -bottom-2 -right-2 w-5 h-5 rounded-full bg-accent/60 blur-[1px]" />
                     </div>
 
-                    {/* LinkedIn */}
-                    <div className="mt-8 pt-6 border-t border-white/[0.05]">
-                      <a
-                        href="https://www.linkedin.com/in/ras-alungei/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2.5 text-sm text-white/40 hover:text-accent transition-colors duration-200"
-                      >
-                        <svg viewBox="0 0 24 24" className="w-4.5 h-4.5" fill="currentColor">
-                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                        </svg>
-                        {t("linkedIn")}
-                        <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 opacity-40" fill="none" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-                        </svg>
-                      </a>
+                    {/* Name + role */}
+                    <h2 className="text-3xl md:text-4xl font-brand text-contrast leading-tight text-center lg:text-left">{t("rasTitle")}</h2>
+                    <p className="text-base text-accent/50 mt-2 font-body tracking-widest uppercase text-center lg:text-left">{t("rasRole")}</p>
+
+                    {/* LinkedIn — prominent */}
+                    <a
+                      href="https://www.linkedin.com/in/ras-alungei/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-8 inline-flex items-center gap-3 px-5 py-3 rounded-xl border border-contrast/[0.08] bg-contrast/[0.03] hover:border-accent/30 hover:bg-accent/[0.05] text-contrast/50 hover:text-accent transition-all duration-300"
+                    >
+                      <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                      </svg>
+                      <span className="text-sm font-medium">{t("linkedIn")}</span>
+                      <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 opacity-40" fill="none" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                      </svg>
+                    </a>
+                  </div>
+
+                  {/* Right column: bio — large, spacious, easy to read */}
+                  <div className="flex-1 lg:pt-4">
+                    {/* Vertical accent line on desktop */}
+                    <div className="hidden lg:block absolute left-[calc(16rem+3.5rem)] top-16 bottom-16 w-px bg-gradient-to-b from-accent/20 via-accent/5 to-transparent" />
+
+                    <div className="space-y-7">
+                      <p className="text-lg md:text-xl text-contrast/60 leading-[1.9] font-body">
+                        {t("rasBio1")}
+                      </p>
+                      <p className="text-lg md:text-xl text-contrast/55 leading-[1.9] font-body">
+                        {t("rasBio2")}
+                      </p>
+                      <p className="text-lg md:text-xl text-contrast/45 leading-[1.9] font-body italic">
+                        {t("rasBio3")}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -351,7 +370,7 @@ export default function AboutPage() {
       {/* ── CTA ───────────────────────────────────────────────── */}
       <section className="pb-40 px-6 max-w-4xl mx-auto text-center">
         <Reveal>
-          <p className="text-white/30 text-lg mb-10">{t("ctaLine")}</p>
+          <p className="text-contrast/30 text-lg mb-10">{t("ctaLine")}</p>
           <Link
             href="/"
             className="group relative inline-block"

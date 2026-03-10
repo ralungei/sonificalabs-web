@@ -250,7 +250,7 @@ export function TimelineEditor({ tracks: initialTracks, jobId, onRemixDone }: Pr
                     {/* Lane */}
                     <div className="flex items-stretch" style={{ minHeight: 72 }}>
                       {/* Track info sidebar */}
-                      <div className="sticky left-0 z-20 w-36 shrink-0 flex flex-col justify-center gap-1.5 px-3 py-2 bg-surface-1/90 backdrop-blur-sm border-r border-border-subtle">
+                      <div className="sticky left-0 z-[var(--z-sticky)] w-36 shrink-0 flex flex-col justify-center gap-1.5 px-3 py-2 bg-surface-1/90 backdrop-blur-sm border-r border-border-subtle">
                         <div className="flex items-center gap-2">
                           <span className={cn(
                             "inline-flex h-5 w-5 items-center justify-center rounded text-[9px] font-mono font-bold",

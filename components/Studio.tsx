@@ -9,6 +9,7 @@ import { TrackLane } from "./studio/TrackLane";
 import { MasterDialog } from "./studio/MasterDialog";
 import { apiFetch } from "@/lib/api";
 import { useApiToken } from "@/components/Providers";
+import { Z, ACCENT } from "@/lib/theme";
 
 export type { TimelineTrack };
 
@@ -626,7 +627,7 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
       className="w-full mx-auto transition-opacity duration-300"
       style={{ opacity: isLoaded ? 1 : 0 }}
     >
-      <div className="rounded-2xl border border-white/[0.06] bg-surface-1/70 backdrop-blur-xl shadow-[0_8px_60px_-12px_rgba(0,0,0,0.5)] overflow-hidden">
+      <div className="rounded-2xl border border-contrast/[0.06] bg-surface-1/70 backdrop-blur-xl shadow-[var(--shadow-depth-card)] overflow-hidden">
         {/* Transport */}
         <TransportBar
           isPlaying={isPlaying}
@@ -662,13 +663,13 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
               <div ref={playheadEl} className="absolute top-0 bottom-0" style={{ left: 0 }}>
                 <div
                   className="absolute -top-px left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-accent"
-                  style={{ boxShadow: "0 0 8px rgba(232,168,56,0.5)" }}
+                  style={{ boxShadow: `0 0 8px rgba(${ACCENT.rgb}, 0.5)` }}
                 />
                 <div
                   className="absolute top-0 bottom-0 left-1/2 w-[1.5px] -translate-x-[0.75px]"
                   style={{
-                    background: "rgba(232,168,56,0.8)",
-                    boxShadow: isPlaying ? "0 0 8px rgba(232,168,56,0.3)" : "none",
+                    background: `rgba(${ACCENT.rgb}, 0.8)`,
+                    boxShadow: isPlaying ? `0 0 8px rgba(${ACCENT.rgb}, 0.3)` : "none",
                   }}
                 />
               </div>
@@ -683,8 +684,8 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
                 ref={hoverLineEl}
                 className="absolute top-0 bottom-0 opacity-0 transition-opacity duration-75"
               >
-                <div className="absolute -top-px left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-white/30" />
-                <div className="absolute top-0 bottom-0 left-1/2 w-px -translate-x-[0.5px] bg-white/20" />
+                <div className="absolute -top-px left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-contrast/30" />
+                <div className="absolute top-0 bottom-0 left-1/2 w-px -translate-x-[0.5px] bg-contrast/20" />
               </div>
             </div>
 
@@ -698,7 +699,7 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
                   className="absolute top-0 bottom-0 left-1/2 w-px -translate-x-[0.5px] bg-accent/50"
                   style={{
                     backgroundImage:
-                      "repeating-linear-gradient(to bottom, rgba(232,168,56,0.5) 0px, rgba(232,168,56,0.5) 4px, transparent 4px, transparent 8px)",
+                      `repeating-linear-gradient(to bottom, rgba(${ACCENT.rgb}, 0.5) 0px, rgba(${ACCENT.rgb}, 0.5) 4px, transparent 4px, transparent 8px)`,
                   }}
                 />
               </div>
@@ -745,27 +746,27 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-4 py-2.5 bg-surface-0/40 border-t border-white/[0.04]">
+        <div className="flex items-center justify-between px-4 py-2.5 bg-surface-0/40 border-t border-contrast/[0.04]">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-body uppercase tracking-wider text-white/50">
+            <span className="text-xs font-body uppercase tracking-wider text-contrast/50">
               Zoom
             </span>
             <button
               onClick={zoomOut}
-              className="h-6 w-6 rounded-md border border-white/[0.06] bg-surface-2 text-text-secondary hover:text-text-primary text-xs flex items-center justify-center transition-colors"
+              className="h-6 w-6 rounded-md border border-contrast/[0.06] bg-surface-2 text-text-secondary hover:text-text-primary text-xs flex items-center justify-center transition-colors"
             >
               −
             </button>
             <button
               onClick={zoomIn}
-              className="h-6 w-6 rounded-md border border-white/[0.06] bg-surface-2 text-text-secondary hover:text-text-primary text-xs flex items-center justify-center transition-colors"
+              className="h-6 w-6 rounded-md border border-contrast/[0.06] bg-surface-2 text-text-secondary hover:text-text-primary text-xs flex items-center justify-center transition-colors"
             >
               +
             </button>
             <button
               onClick={zoomFit}
               title="Ajustar al ancho"
-              className="h-6 w-6 rounded-md border border-white/[0.06] bg-surface-2 text-text-secondary hover:text-text-primary text-xs flex items-center justify-center transition-colors"
+              className="h-6 w-6 rounded-md border border-contrast/[0.06] bg-surface-2 text-text-secondary hover:text-text-primary text-xs flex items-center justify-center transition-colors"
             >
               <svg
                 className="h-3 w-3"
@@ -782,14 +783,14 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
               </svg>
             </button>
           </div>
-          <span className="text-xs font-body text-white/60 select-none hidden sm:block">
+          <span className="text-xs font-body text-contrast/60 select-none hidden sm:block">
             Espacio para reproducir · Arrastra para mover pistas
           </span>
         </div>
       </div>
 
       {/* Pre-master note */}
-      <p className="mt-3 text-xs font-body text-white/50 text-center leading-relaxed">
+      <p className="mt-3 text-xs font-body text-contrast/50 text-center leading-relaxed">
         Vista previa sin masterizar. Los volúmenes y la mezcla final pueden sonar diferente al audio masterizado.
       </p>
 

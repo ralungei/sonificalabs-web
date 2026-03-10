@@ -180,7 +180,7 @@ export default function JobPage() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
                 onClick={handleCancel}
-                className="mt-10 text-xs font-body uppercase tracking-wider text-white/40 hover:text-fail transition-colors duration-300"
+                className="mt-10 text-xs font-body uppercase tracking-wider text-contrast/40 hover:text-fail transition-colors duration-300"
               >
                 {t("cancel")}
               </motion.button>
@@ -261,7 +261,7 @@ export default function JobPage() {
                 {/* Retry button */}
                 <button
                   onClick={() => router.push("/")}
-                  className="mt-2 flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-surface-2 border border-white/[0.08] text-text-secondary hover:text-text-primary text-xs font-body uppercase tracking-wider transition-all hover:bg-surface-3 active:scale-[0.98]"
+                  className="mt-2 flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-surface-2 border border-contrast/[0.08] text-text-secondary hover:text-text-primary text-xs font-body uppercase tracking-wider transition-all hover:bg-surface-3 active:scale-[0.98]"
                 >
                   <Icon icon="solar:restart-bold" className="h-3.5 w-3.5" />
                   {t("tryAgain")}
@@ -281,14 +281,14 @@ export default function JobPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[60] bg-surface-0 flex flex-col"
+            className="fixed inset-0 z-[var(--z-editor)] bg-surface-0 flex flex-col"
           >
             {/* Header bar */}
-            <div className="flex items-center justify-between px-5 h-12 border-b border-white/[0.06] flex-shrink-0">
-              <span className="text-xs font-body uppercase tracking-wider text-white/40">Timeline</span>
+            <div className="flex items-center justify-between px-5 h-12 border-b border-contrast/[0.06] flex-shrink-0">
+              <span className="text-xs font-body uppercase tracking-wider text-contrast/40">Timeline</span>
               <button
                 onClick={() => setEditorOpen(false)}
-                className="flex items-center justify-center w-8 h-8 rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] transition-all"
+                className="flex items-center justify-center w-8 h-8 rounded-lg text-contrast/50 hover:text-contrast hover:bg-contrast/[0.06] transition-all"
               >
                 <Icon icon="solar:close-circle-linear" className="h-5 w-5" />
               </button>

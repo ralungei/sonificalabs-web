@@ -78,7 +78,7 @@ function WaveProgress({
               "flex-1 rounded-full transition-colors duration-150",
               played
                 ? "bg-accent group-hover:bg-accent-bright"
-                : "bg-white/[0.1] group-hover:bg-white/[0.15]",
+                : "bg-contrast/[0.1] group-hover:bg-contrast/[0.15]",
             )}
             style={{ height: `${h * 100}%` }}
           />
@@ -146,7 +146,7 @@ function MasterPlayer({
   );
 
   return (
-    <div className="w-full rounded-2xl bg-surface-0/80 border border-white/[0.06] p-4">
+    <div className="w-full rounded-2xl bg-surface-0/80 border border-contrast/[0.06] p-4">
       <div className="flex items-start gap-3">
         {/* Play button — aligned to waveform center (h-10 wave → offset by ~0px) */}
         <button
@@ -196,14 +196,14 @@ function ShareField({ jobId }: { jobId: string }) {
         <Icon icon="solar:link-bold" className="h-3 w-3" />
         {t("shareLink")}
       </label>
-      <div className="flex items-center rounded-xl border border-white/[0.08] bg-surface-0/60 overflow-hidden">
+      <div className="flex items-center rounded-xl border border-contrast/[0.08] bg-surface-0/60 overflow-hidden">
         <div className="flex-1 px-3.5 py-2.5 text-xs font-body text-text-secondary truncate select-all min-w-0">
           {url || `…/p/${jobId}`}
         </div>
         <button
           onClick={copy}
           className={cn(
-            "flex items-center gap-1.5 px-4 py-2.5 text-[11px] font-body uppercase tracking-wider border-l border-white/[0.08] transition-all duration-300 shrink-0",
+            "flex items-center gap-1.5 px-4 py-2.5 text-[11px] font-body uppercase tracking-wider border-l border-contrast/[0.08] transition-all duration-300 shrink-0",
             copied
               ? "bg-done/15 text-done"
               : "bg-surface-2 text-text-secondary hover:text-text-primary hover:bg-surface-3",
@@ -308,7 +308,7 @@ function MasterPanel({
       {!inline && (
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 h-7 w-7 rounded-full flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-white/[0.06] transition-all"
+          className="absolute top-4 right-4 h-7 w-7 rounded-full flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-contrast/[0.06] transition-all"
         >
           <Icon icon="solar:close-circle-linear" className="h-5 w-5" />
         </button>
@@ -412,7 +412,7 @@ function MasterPanel({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="relative flex flex-col items-center gap-5 bg-gradient-to-b from-surface-1 to-surface-0 border border-white/[0.08] rounded-3xl px-8 py-7 overflow-hidden w-full max-w-2xl mx-auto shadow-[0_16px_48px_-12px_rgba(0,0,0,0.6)]"
+        className="relative flex flex-col items-center gap-5 bg-gradient-to-b from-surface-1 to-surface-0 border border-contrast/[0.08] rounded-3xl px-8 py-7 overflow-hidden w-full max-w-2xl mx-auto shadow-[0_16px_48px_-12px_rgba(0,0,0,0.6)]"
       >
         {/* Ambient glow */}
         <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-72 h-52 bg-accent/[0.06] rounded-full blur-3xl pointer-events-none" />
@@ -480,10 +480,19 @@ function MasterPanel({
               {onOpenEditor && (
                 <button
                   onClick={onOpenEditor}
-                  className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-surface-0 text-xs font-body font-semibold uppercase tracking-wider transition-all hover:shadow-[0_8px_32px_rgba(232,168,56,0.3)] active:scale-[0.98] whitespace-nowrap shrink-0 overflow-hidden"
-                  style={{ background: "linear-gradient(135deg, #d4a229 0%, #e8a838 40%, #f0c45c 60%, #e8a838 100%)" }}
+                  className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-body font-semibold uppercase tracking-wider transition-all hover:shadow-[0_6px_28px_rgba(160,170,180,0.25)] active:scale-[0.98] whitespace-nowrap shrink-0 overflow-hidden"
+                  style={{
+                    background: "linear-gradient(145deg, #5a5e65 0%, #787d85 20%, #a0a6ae 45%, #8c929a 65%, #6b7078 85%, #52565d 100%)",
+                    color: "#e8eaee",
+                    textShadow: "0 1px 2px rgba(0,0,0,0.5)",
+                  }}
                 >
-                  <svg className="absolute inset-0 w-full h-full opacity-[0.12] pointer-events-none" xmlns="http://www.w3.org/2000/svg"><filter id="edGrain"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#edGrain)"/></svg>
+                  {/* Grain texture */}
+                  <svg className="absolute inset-0 w-full h-full opacity-[0.15] pointer-events-none mix-blend-overlay" xmlns="http://www.w3.org/2000/svg"><filter id="edGrain"><feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#edGrain)"/></svg>
+                  {/* Top edge highlight for metallic depth */}
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-contrast/30 to-transparent pointer-events-none" />
+                  {/* Bottom shadow edge */}
+                  <div className="absolute bottom-0 left-0 right-0 h-px bg-[#3a3d42]/80 pointer-events-none" />
                   <Icon icon="solar:tuning-2-bold" className="h-3.5 w-3.5 relative z-10" />
                   <span className="relative z-10">Editor</span>
                 </button>
@@ -501,11 +510,15 @@ function MasterPanel({
               </Link>
               <Link
                 href="/pricing"
-                className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl border border-accent/25 bg-accent/[0.08] hover:bg-accent/[0.15] text-accent text-xs font-body font-medium transition-all whitespace-nowrap shrink-0 overflow-hidden"
+                className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl border border-contrast/[0.12] text-xs font-body font-medium transition-all whitespace-nowrap shrink-0 overflow-hidden hover:border-contrast/25"
+                style={{
+                  background: "linear-gradient(145deg, rgba(120,125,133,0.12) 0%, rgba(160,166,174,0.08) 100%)",
+                  color: "#a0a6ae",
+                }}
               >
                 <Icon icon="solar:tuning-2-bold" className="h-3.5 w-3.5" />
                 Editor
-                <span className="text-[9px] text-accent/60 uppercase">{t("pro")}</span>
+                <span className="text-[9px] text-contrast/40 uppercase">{t("pro")}</span>
               </Link>
             </>
           )}
@@ -522,7 +535,7 @@ function MasterPanel({
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95, y: 8 }}
       transition={{ type: "spring", duration: 0.5, bounce: 0.15 }}
-      className="relative flex flex-col items-center gap-6 bg-gradient-to-b from-surface-1 to-surface-0 border border-white/[0.08] rounded-3xl px-8 py-8 overflow-hidden w-full max-w-md mx-4 shadow-[0_32px_80px_-16px_rgba(0,0,0,0.8),0_0_0_1px_rgba(232,168,56,0.06)]"
+      className="relative flex flex-col items-center gap-6 bg-gradient-to-b from-surface-1 to-surface-0 border border-contrast/[0.08] rounded-3xl px-8 py-8 overflow-hidden w-full max-w-md mx-4 shadow-[0_32px_80px_-16px_rgba(0,0,0,0.8),0_0_0_1px_rgba(232,168,56,0.06)]"
       onClick={(e) => e.stopPropagation()}
     >
       {content}
@@ -579,7 +592,7 @@ export function MasterDialog({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.25 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md"
+        className="fixed inset-0 z-[var(--z-dropdown)] flex items-center justify-center bg-black/70 backdrop-blur-md"
         onClick={handleClose}
       >
         <MasterPanel

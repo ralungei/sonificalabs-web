@@ -87,7 +87,7 @@ function DebugDropdown({
           "flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs transition-colors",
           hasOverride
             ? "bg-red-400/15 text-red-400 border border-red-400/25"
-            : "text-white/70 hover:text-white hover:bg-white/[0.06] border border-transparent",
+            : "text-contrast/70 hover:text-contrast hover:bg-contrast/[0.06] border border-transparent",
         )}
       >
         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 12.75c1.148 0 2.278.08 3.383.237 1.037.146 1.866.966 1.866 2.013 0 3.728-2.35 6.75-5.25 6.75S6.75 18.728 6.75 15c0-1.046.83-1.867 1.866-2.013A24.204 24.204 0 0112 12.75zm0 0c2.883 0 5.647.508 8.207 1.44a23.91 23.91 0 01-1.152-6.135 3.22 3.22 0 00-2.165-2.948A24.84 24.84 0 0012 4.5a24.84 24.84 0 00-4.89.607 3.22 3.22 0 00-2.165 2.948 23.91 23.91 0 01-1.152 6.135c2.56-.932 5.324-1.44 8.207-1.44zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125h-2.25A1.125 1.125 0 019.75 10.125v-1.5z" /></svg>
@@ -103,7 +103,7 @@ function DebugDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.97 }}
             transition={{ duration: 0.15 }}
-            className="absolute bottom-full mb-1.5 left-0 min-w-[220px] rounded-xl border border-white/[0.08] bg-surface-2/95 backdrop-blur-xl shadow-xl p-3 z-50 space-y-3"
+            className="absolute bottom-full mb-1.5 left-0 min-w-[220px] rounded-xl border border-contrast/[0.08] bg-surface-2/95 backdrop-blur-xl shadow-xl p-3 z-[var(--z-dropdown)] space-y-3"
           >
             <div>
               <label className="block text-[10px] text-text-muted font-mono uppercase tracking-wider mb-1">{labels.debugClaudeModel}</label>
@@ -114,7 +114,7 @@ function DebugDropdown({
                   if (e.target.value) localStorage.setItem("sonificalabs_admin_model", e.target.value);
                   else localStorage.removeItem("sonificalabs_admin_model");
                 }}
-                className="w-full text-xs bg-surface-0/60 border border-white/[0.08] rounded-lg px-2.5 py-1.5 text-text-primary font-mono cursor-pointer hover:border-white/[0.15] transition-colors focus:outline-none"
+                className="w-full text-xs bg-surface-0/60 border border-contrast/[0.08] rounded-lg px-2.5 py-1.5 text-text-primary font-mono cursor-pointer hover:border-contrast/[0.15] transition-colors focus:outline-none"
               >
                 <option value="">{labels.debugPlanDefault}</option>
                 <option value="claude-haiku-4-5-20251001">Haiku 4.5</option>
@@ -133,7 +133,7 @@ function DebugDropdown({
                   if (e.target.value) localStorage.setItem("sonificalabs_admin_tts_model", e.target.value);
                   else localStorage.removeItem("sonificalabs_admin_tts_model");
                 }}
-                className="w-full text-xs bg-surface-0/60 border border-white/[0.08] rounded-lg px-2.5 py-1.5 text-text-primary font-mono cursor-pointer hover:border-white/[0.15] transition-colors focus:outline-none"
+                className="w-full text-xs bg-surface-0/60 border border-contrast/[0.08] rounded-lg px-2.5 py-1.5 text-text-primary font-mono cursor-pointer hover:border-contrast/[0.15] transition-colors focus:outline-none"
               >
                 <option value="">{labels.debugPlanDefault}</option>
                 <option value="eleven_flash_v2_5">Flash v2.5</option>
@@ -188,7 +188,7 @@ function ToolbarDropdown({
           "flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs transition-colors",
           value
             ? "bg-accent/15 text-accent border border-accent/25"
-            : "text-white/70 hover:text-white hover:bg-white/[0.06] border border-transparent",
+            : "text-contrast/70 hover:text-contrast hover:bg-contrast/[0.06] border border-transparent",
         )}
       >
         {icon}
@@ -218,7 +218,7 @@ function ToolbarDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.97 }}
             transition={{ duration: 0.15 }}
-            className="absolute bottom-full mb-1.5 left-0 min-w-[120px] rounded-xl border border-white/[0.08] bg-surface-2/95 backdrop-blur-xl shadow-xl py-1 z-50"
+            className="absolute bottom-full mb-1.5 left-0 min-w-[120px] rounded-xl border border-contrast/[0.08] bg-surface-2/95 backdrop-blur-xl shadow-xl py-1 z-[var(--z-dropdown)]"
           >
             {value && (
               <button
@@ -227,7 +227,7 @@ function ToolbarDropdown({
                   onChange("");
                   setOpen(false);
                 }}
-                className="w-full text-left px-3 py-1.5 text-xs text-text-muted hover:bg-white/[0.06] transition-colors"
+                className="w-full text-left px-3 py-1.5 text-xs text-text-muted hover:bg-contrast/[0.06] transition-colors"
               >
                 {removeLabel}
               </button>
@@ -250,7 +250,7 @@ function ToolbarDropdown({
                     ? "opacity-60 cursor-pointer hover:opacity-80"
                     : opt.value === value
                       ? "text-accent bg-accent/10"
-                      : "text-text-primary hover:bg-white/[0.06]",
+                      : "text-text-primary hover:bg-contrast/[0.06]",
                 )}
               >
                 <span>{opt.value}</span>
@@ -435,7 +435,7 @@ export function PromptForm({
                   animate={{ opacity: 0.7, y: 0, filter: "blur(0px)" }}
                   exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
                   transition={{ duration: 0.35 }}
-                  className="text-base text-white/60 block truncate"
+                  className="text-base text-contrast/60 block truncate"
                 >
                   {PLACEHOLDERS[placeholderIdx]}
                 </motion.span>
@@ -444,14 +444,14 @@ export function PromptForm({
           )}
 
           {!prompt && isFocused && (
-            <span className="pointer-events-none absolute top-4 left-5 text-base text-white/40">
+            <span className="pointer-events-none absolute top-4 left-5 text-base text-contrast/40">
               {t("describePlaceholder")}
             </span>
           )}
         </div>
 
         {/* Bottom toolbar */}
-        <div className="flex items-center justify-between border-t border-white/[0.06] px-3 py-2 gap-2">
+        <div className="flex items-center justify-between border-t border-contrast/[0.06] px-3 py-2 gap-2">
           {/* Left — dropdowns */}
           <div className="flex items-center gap-1.5">
             <ToolbarDropdown
@@ -487,12 +487,12 @@ export function PromptForm({
           <div className="flex items-center gap-3">
             {remaining === null ? (
               session
-                ? <span className="hidden sm:block h-4 w-16 rounded bg-white/[0.06] animate-pulse" />
-                : <span className="text-[11px] text-white/50 whitespace-nowrap hidden sm:flex items-center gap-1.5">
+                ? <span className="hidden sm:block h-4 w-16 rounded bg-contrast/[0.06] animate-pulse" />
+                : <span className="text-[11px] text-contrast/50 whitespace-nowrap hidden sm:flex items-center gap-1.5">
                     {t("credits", { count: 20 })}
                   </span>
             ) : remaining > 0 ? (
-              <span className="text-[11px] text-white/50 whitespace-nowrap hidden sm:flex items-center gap-1.5">
+              <span className="text-[11px] text-contrast/50 whitespace-nowrap hidden sm:flex items-center gap-1.5">
                 {(plan === "pro" || plan === "studio") && (
                   <span className="text-[10px] font-semibold uppercase tracking-wide text-accent bg-accent/10 border border-accent/20 rounded px-1.5 py-0.5 leading-none">
                     {plan}

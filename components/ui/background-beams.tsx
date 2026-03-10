@@ -2,6 +2,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import { createNoise3D } from "simplex-noise";
 import { cn } from "@/lib/cn";
+import { ACCENT } from "@/lib/theme";
 
 export function BackgroundBeams({
   className,
@@ -33,7 +34,7 @@ export function BackgroundBeams({
   );
 
   const waveColors = colors ?? [
-    "#e8a838",
+    ACCENT.base,
     "#d47a2a",
     "#c06020",
     "#e8c868",

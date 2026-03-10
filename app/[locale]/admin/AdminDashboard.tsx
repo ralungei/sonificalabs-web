@@ -35,7 +35,7 @@ interface StatsData {
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-surface-1 p-5">
+    <div className="rounded-xl border border-contrast/[0.06] bg-surface-1 p-5">
       <p className="text-xs text-text-secondary uppercase tracking-wider">{label}</p>
       <p className="text-2xl font-brand text-text-primary mt-1">{value}</p>
     </div>
@@ -106,7 +106,7 @@ export function AdminDashboard() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-4 border-b border-white/[0.06]">
+      <div className="flex gap-1 mb-4 border-b border-contrast/[0.06]">
         <button
           onClick={() => setTab("productions")}
           className={`px-4 py-2 text-sm transition-colors ${
@@ -131,7 +131,7 @@ export function AdminDashboard() {
 
       {/* Productions table */}
       {tab === "productions" && (
-        <div className="overflow-x-auto rounded-xl border border-white/[0.06]">
+        <div className="overflow-x-auto rounded-xl border border-contrast/[0.06]">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-surface-1 text-text-secondary text-xs uppercase tracking-wider">
@@ -143,9 +143,9 @@ export function AdminDashboard() {
                 <th className="text-center px-4 py-3">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.04]">
+            <tbody className="divide-y divide-contrast/[0.04]">
               {data.recentProductions.map((p) => (
-                <tr key={p.id} className="hover:bg-white/[0.02] transition-colors">
+                <tr key={p.id} className="hover:bg-contrast/[0.02] transition-colors">
                   <td className="px-4 py-3 text-text-secondary whitespace-nowrap">
                     {timeAgo(p.created_at)}
                   </td>
@@ -184,7 +184,7 @@ export function AdminDashboard() {
 
       {/* Users table */}
       {tab === "users" && (
-        <div className="overflow-x-auto rounded-xl border border-white/[0.06]">
+        <div className="overflow-x-auto rounded-xl border border-contrast/[0.06]">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-surface-1 text-text-secondary text-xs uppercase tracking-wider">
@@ -195,9 +195,9 @@ export function AdminDashboard() {
                 <th className="text-left px-4 py-3">Registro</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.04]">
+            <tbody className="divide-y divide-contrast/[0.04]">
               {data.users.map((u) => (
-                <tr key={u.email} className="hover:bg-white/[0.02] transition-colors">
+                <tr key={u.email} className="hover:bg-contrast/[0.02] transition-colors">
                   <td className="px-4 py-3 text-text-primary font-mono text-xs">{u.email}</td>
                   <td className="px-4 py-3 text-text-secondary">{u.name || "—"}</td>
                   <td className="px-4 py-3 text-center">
@@ -207,7 +207,7 @@ export function AdminDashboard() {
                           ? "bg-accent/20 text-accent"
                           : u.plan === "studio"
                             ? "bg-violet-500/20 text-violet-400"
-                            : "bg-white/[0.08] text-text-secondary"
+                            : "bg-contrast/[0.08] text-text-secondary"
                       }`}
                     >
                       {u.plan}

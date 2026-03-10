@@ -47,14 +47,14 @@ export function TrackLane({
   return (
     <div
       className={cn(
-        "flex border-b border-white/[0.03] transition-opacity duration-200",
+        "flex border-b border-contrast/[0.03] transition-opacity duration-200",
         dimmed ? "opacity-40" : "opacity-100",
-        laneIdx % 2 === 1 && "bg-white/[0.008]",
+        laneIdx % 2 === 1 && "bg-contrast/[0.008]",
       )}
     >
       {/* Sidebar */}
       <div
-        className="sticky left-0 z-20 flex flex-col justify-center gap-1 px-2.5 py-2 bg-surface-1/95 backdrop-blur-sm border-r border-white/[0.04] shrink-0"
+        className="sticky left-0 z-[var(--z-sticky)] flex flex-col justify-center gap-1 px-2.5 py-2 bg-surface-1/95 backdrop-blur-sm border-r border-contrast/[0.04] shrink-0"
         style={{ width: sidebarW, minWidth: sidebarW }}
       >
         {/* Type + Label */}
@@ -159,7 +159,7 @@ export function TrackLane({
             />
           ) : (
             <div className="absolute inset-0 flex items-center px-2">
-              <div className="w-full h-5 rounded bg-white/[0.03] animate-pulse" />
+              <div className="w-full h-5 rounded bg-contrast/[0.03] animate-pulse" />
             </div>
           )}
         </div>
