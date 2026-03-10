@@ -103,7 +103,7 @@ function DebugDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.97 }}
             transition={{ duration: 0.15 }}
-            className="absolute bottom-full mb-1.5 left-0 min-w-[220px] rounded-xl border border-contrast/[0.08] bg-surface-2/95 backdrop-blur-xl shadow-xl p-3 z-[var(--z-dropdown)] space-y-3"
+            className="absolute bottom-full mb-1.5 left-0 min-w-[220px] rounded-xl border border-contrast/[0.08] bg-white/95 backdrop-blur-xl shadow-xl p-3 z-[var(--z-dropdown)] space-y-3"
           >
             <div>
               <label className="block text-[10px] text-text-muted font-mono uppercase tracking-wider mb-1">{labels.debugClaudeModel}</label>
@@ -218,7 +218,7 @@ function ToolbarDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.97 }}
             transition={{ duration: 0.15 }}
-            className="absolute bottom-full mb-1.5 left-0 min-w-[120px] rounded-xl border border-contrast/[0.08] bg-surface-2/95 backdrop-blur-xl shadow-xl py-1 z-[var(--z-dropdown)]"
+            className="absolute bottom-full mb-1.5 left-0 min-w-[120px] rounded-xl border border-contrast/[0.08] bg-white/95 backdrop-blur-xl shadow-xl py-1 z-[var(--z-dropdown)]"
           >
             {value && (
               <button
@@ -395,10 +395,8 @@ export function PromptForm({
       <div
         className={cn(
           "relative rounded-2xl border transition-all duration-500",
-          "bg-surface-1/60 backdrop-blur-md",
-          isFocused
-            ? "border-accent/40 shadow-[0_0_40px_rgba(232,168,56,0.08),inset_0_1px_0_rgba(232,168,56,0.1)]"
-            : "border-border-subtle shadow-[0_2px_20px_rgba(0,0,0,0.3)]",
+          "bg-surface-1/85 backdrop-blur-md",
+          "border-border-subtle shadow-[0_1px_2px_rgba(0,0,0,0.04),0_2px_8px_rgba(0,0,0,0.06)]",
         )}
       >
         {/* Top accent line on focus */}
@@ -518,8 +516,8 @@ export function PromptForm({
                 "flex items-center justify-center h-8 w-8 rounded-xl",
                 "transition-all duration-300",
                 prompt.trim() && !isLoading
-                  ? "bg-accent text-surface-0 shadow-[0_0_24px_rgba(232,168,56,0.2)] hover:shadow-[0_0_40px_rgba(232,168,56,0.35)]"
-                  : "bg-surface-3 text-text-muted cursor-not-allowed",
+                  ? "bg-accent text-white"
+                  : "bg-contrast/5 text-contrast/25 cursor-not-allowed",
               )}
             >
               {isLoading ? (

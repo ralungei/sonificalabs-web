@@ -673,7 +673,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.5 }}
-              className="block mt-6 text-sm sm:text-base text-contrast/35 font-body tracking-normal max-w-md"
+              className="block mt-3 text-sm sm:text-base text-contrast/35 font-body tracking-normal max-w-md"
             >
               {t("heroSub")}
             </motion.span>
@@ -689,23 +689,6 @@ export default function Home() {
             <PromptForm onSubmit={handleSubmit} />
           </motion.div>
 
-          {/* Tagline pills */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.85 }}
-            className="mt-6 flex flex-wrap items-center justify-center gap-2"
-          >
-            {(t("tagline") as string).split("·").map((tag, i) => (
-              <span
-                key={i}
-                className="text-xs sm:text-sm font-medium text-white px-4 py-1.5 rounded-full bg-gradient-to-br from-[#064E3B]/40 to-[#2DD4BF]/30 backdrop-blur-md ring-1 ring-inset ring-white/20"
-              >
-                {tag.trim()}
-              </span>
-            ))}
-          </motion.div>
-
           {/* Mobile circles — horizontal scrollable */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -718,7 +701,7 @@ export default function Home() {
             </p>
             <div className="flex items-center justify-center gap-5 flex-wrap">
               {DEMOS.map((demo, i) => (
-                <DemoCircle key={demo.id} demo={demo} delay={1.5 + i * 0.1} />
+                <DemoCircle key={demo.id} demo={demo} delay={1.5 + i * 0.1} size={80} />
               ))}
             </div>
           </motion.div>
