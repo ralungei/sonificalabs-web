@@ -10,7 +10,6 @@ import { TextScramble } from "@/components/ui/text-scramble";
 
 import { apiFetch } from "@/lib/api";
 import { useApiToken } from "@/components/Providers";
-import { ACCENT } from "@/lib/theme";
 import { LogoIcon } from "@/components/Logo";
 import { GalaxyButton } from "@/components/GalaxyButton";
 
@@ -199,10 +198,12 @@ function DemoCircle({
     if (highlighted) {
       if (glowTimeout.current) { clearTimeout(glowTimeout.current); glowTimeout.current = null; }
       setGlowing(true);
+      if (videoRef.current && !playing && !hovering) videoRef.current.play();
     } else {
+      if (videoRef.current && !playing && !hovering) { videoRef.current.pause(); videoRef.current.currentTime = 0; }
       glowTimeout.current = setTimeout(() => setGlowing(false), 600);
     }
-  }, [highlighted]);
+  }, [highlighted, playing, hovering]);
 
   const ensureAudio = () => {
     if (!audioRef.current) {
@@ -274,7 +275,7 @@ function DemoCircle({
   const hasAudio = audioRef.current !== null;
   const showProgress = playing || (hasAudio && progress > 0);
   // Highlight glow only on unlistened, non-playing circles
-  const showHighlight = glowing && !listened && !playing;
+  const showHighlight = glowing && !playing;
 
   return (
     <motion.div
@@ -335,25 +336,9 @@ function DemoCircle({
         </svg>
 
         {/* Center button — mesh gradient per demo */}
-        {/* Accent tint overlay — fades in/out smoothly */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: showHighlight ? 1 : 0 }}
-          transition={{ duration: 0.8 }}
-          className="absolute inset-[10px] rounded-full pointer-events-none border-2 border-accent/40"
-          style={{ background: `radial-gradient(circle, rgba(${ACCENT.rgb},0.2) 0%, rgba(${ACCENT.rgb},0.06) 100%)`, zIndex: 5 }}
-        />
         <motion.button
           type="button"
           onClick={(e) => { e.stopPropagation(); toggle(); }}
-          animate={showHighlight
-            ? { scale: [1, 1.12, 1] }
-            : { scale: 1 }
-          }
-          transition={showHighlight
-            ? { duration: 1.6, ease: "easeInOut", repeat: Infinity }
-            : { duration: 0.15, ease: "easeOut" }
-          }
           whileHover={{ scale: 1.1, transition: { duration: 0.15 } }}
           whileTap={{ scale: 0.9 }}
           style={demo.texture}
@@ -369,8 +354,8 @@ function DemoCircle({
               preload="auto"
               className="absolute inset-0 w-full h-full object-cover rounded-full pointer-events-none transition-all duration-500"
               style={{
-                opacity: hovering || playing ? 1 : 0,
-                filter: hovering || playing ? "brightness(0.95) saturate(1.2)" : "brightness(0.75) saturate(0.4)",
+                opacity: hovering || playing || showHighlight ? 1 : 0,
+                filter: hovering || playing ? "brightness(0.95) saturate(1.2)" : showHighlight ? "brightness(0.85) saturate(0.9)" : "brightness(0.75) saturate(0.4)",
               }}
             />
           )}
@@ -381,37 +366,13 @@ function DemoCircle({
             </svg>
           ) : (
             <>
-              {/* Play icon — always visible */}
-              <motion.svg
-                animate={showHighlight
-                  ? { scale: [1, 1.25, 1] }
-                  : { scale: 1 }
-                }
-                transition={showHighlight
-                  ? { duration: 1.6, ease: "easeInOut", repeat: Infinity }
-                  : { duration: 0.6, ease: "easeOut" }
-                }
-                className={`h-4 w-4 group-hover:scale-110 transition-colors duration-300 ${hovering ? "text-white drop-shadow-md" : "text-contrast/70"}`}
+              {/* Play icon */}
+              <svg
+                className={`h-4 w-4 group-hover:scale-110 transition-colors duration-300 ${hovering || showHighlight ? "text-white drop-shadow-md" : "text-contrast/70"}`}
                 fill="currentColor" viewBox="0 0 24 24"
               >
                 <path d="M19.266 13.516a1.917 1.917 0 0 0 0-3.032A35.8 35.8 0 0 0 9.35 5.068l-.653-.232c-1.248-.443-2.567.401-2.736 1.69a42.5 42.5 0 0 0 0 10.948c.17 1.289 1.488 2.133 2.736 1.69l.653-.232a35.8 35.8 0 0 0 9.916-5.416"/>
-              </motion.svg>
-              {/* Glowing accent play icon — fades in/out on top */}
-              <motion.svg
-                initial={{ opacity: 0 }}
-                animate={showHighlight
-                  ? { opacity: 1, scale: [1, 1.25, 1] }
-                  : { opacity: 0, scale: 1 }
-                }
-                transition={showHighlight
-                  ? { opacity: { duration: 0.8, ease: "easeIn" }, scale: { duration: 1.6, ease: "easeInOut", repeat: Infinity } }
-                  : { opacity: { duration: 0.8, ease: "easeOut" }, scale: { duration: 0.6, ease: "easeOut" } }
-                }
-                className="h-4 w-4 text-white play-glow absolute"
-                fill="currentColor" viewBox="0 0 24 24"
-              >
-                <path d="M19.266 13.516a1.917 1.917 0 0 0 0-3.032A35.8 35.8 0 0 0 9.35 5.068l-.653-.232c-1.248-.443-2.567.401-2.736 1.69a42.5 42.5 0 0 0 0 10.948c.17 1.289 1.488 2.133 2.736 1.69l.653-.232a35.8 35.8 0 0 0 9.916-5.416"/>
-              </motion.svg>
+              </svg>
             </>
           )}
         </motion.button>
