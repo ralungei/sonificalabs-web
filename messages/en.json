@@ -14,7 +14,7 @@
     "heroLine": "Produce your next",
     "flipWords": "podcast,advertisement,trailer,radio drama,newscast,intro,audiobook,sketch",
     "heroSub": "If you have an idea, you can turn it into audio here.",
-    "tagline": "Real voices · Music · SFX · Professional mix",
+    "tagline": "Voices · Music · SFX · Professional mix",
     "listenExamples": "Listen to examples",
     "ctaTitle": "Try it now",
     "ctaSubtitle": "1 free production. Describe your idea and in 30 seconds you'll have professional-quality audio.",
@@ -142,7 +142,8 @@
     "downloadMp3": "MP3",
     "downloadInMp3": "Download MP3",
     "availableInPro": "Available in Pro plan",
-    "pro": "Pro"
+    "pro": "Pro",
+    "yourText": "Instruction"
   },
   "trackLane": {
     "deleteTrack": "Delete track"
@@ -176,7 +177,7 @@
         ]
       },
       "starter": {
-        "credits": "400 credits / month",
+        "credits": "400 credits per month",
         "cta": "Choose Starter",
         "includes": "Everything in Free, plus",
         "features": [
@@ -188,7 +189,7 @@
         ]
       },
       "pro": {
-        "credits": "2,000 credits / month",
+        "credits": "2,000 credits per month",
         "cta": "Choose Pro",
         "badge": "Popular",
         "includes": "Everything in Starter, plus",
@@ -201,7 +202,7 @@
         ]
       },
       "studio": {
-        "credits": "5,000 credits / month",
+        "credits": "5,000 credits per month",
         "cta": "Choose Studio",
         "includes": "Everything in Pro, plus",
         "features": [
@@ -282,25 +283,6 @@
     "backToHome": "Back to SonificaLabs"
   },
   "about": {
-    "heroTitle": "Your idea. Professional audio.\nNo excuses.",
-    "heroSubtitle": "Write what you want to hear. SonificaLabs turns it into audio with real voices, music, effects and professional mixing.",
-    "whatCards": [
-      {
-        "icon": "pen",
-        "title": "Describe your idea",
-        "desc": "Like you'd tell a friend. No formats, no templates, no audio knowledge needed."
-      },
-      {
-        "icon": "wand",
-        "title": "AI produces everything",
-        "desc": "Script, voices, music, sound effects and mixing. All automatic, all in seconds."
-      },
-      {
-        "icon": "download",
-        "title": "Ready-to-use audio",
-        "desc": "Download and publish. On your podcast, your video, your reel, your radio ad or your trailer."
-      }
-    ],
     "forWhoTitle": "Made to create",
     "forWhoSubtitle": "Whether you make videos, podcasts or work in production. If you have an idea, you can turn it into audio here.",
     "forWhoItems": [
@@ -311,31 +293,13 @@
       { "icon": "book", "label": "Education", "desc": "Audiobooks, educational podcasts and learning materials" },
       { "icon": "zap", "label": "Anyone with an idea", "desc": "If you can describe it, you can produce it" }
     ],
-    "howTitle": "What happens when you hit produce",
-    "howSteps": [
-      {
-        "num": "01",
-        "title": "AI understands your idea",
-        "desc": "Analyzes your text and writes a complete script with dialogue, music and effects."
-      },
-      {
-        "num": "02",
-        "title": "Voices, music and effects",
-        "desc": "Selects the right voices from 23+ available, picks music from a sound library and adds effects."
-      },
-      {
-        "num": "03",
-        "title": "Mixing and mastering",
-        "desc": "Applies mixing and mastering techniques automatically to deliver studio-quality audio."
-      }
-    ],
     "rasTitle": "Hey, I'm Ras",
     "rasRole": "Founder of SonificaLabs",
     "rasBio1": "Thanks for stopping by. I'm an engineer, content creator, and I've loved photo and video editing ever since I was a kid.",
     "rasBio2": "I've always been amazed by how sound transforms any production, but creating it properly was expensive and painfully slow. I've been working with AI for a few years now, and combining skills I came up with the idea of building this platform.",
     "rasBio3": "It's not perfect, but it sounds a little better every day. If you like it, great. If you find a bug, write me.",
     "linkedIn": "LinkedIn",
-    "ctaLine": "Your first production is on us.",
+    "ctaLine": "Your first production is on me.",
     "ctaButton": "Produce my first audio"
   },
   "localeSwitcher": {

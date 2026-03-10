@@ -14,7 +14,7 @@
     "heroLine": "Produce tu siguiente",
     "flipWords": "podcast,spot,tráiler,radionovela,informativo,intro,audiocuento,sketch",
     "heroSub": "Si tienes una idea, aquí la conviertes en audio.",
-    "tagline": "Voces reales · Música · SFX · Mezcla profesional",
+    "tagline": "Voces · Música · SFX · Mezcla profesional",
     "listenExamples": "Escucha ejemplos",
     "ctaTitle": "Pruébalo ahora",
     "ctaSubtitle": "1 producción gratis. Escribe tu idea y en 30 segundos tendrás tu audio con calidad profesional.",
@@ -142,7 +142,8 @@
     "downloadMp3": "MP3",
     "downloadInMp3": "Descargar en MP3",
     "availableInPro": "Disponible en el plan Pro",
-    "pro": "Pro"
+    "pro": "Pro",
+    "yourText": "Instrucción"
   },
   "trackLane": {
     "deleteTrack": "Eliminar pista"
@@ -176,7 +177,7 @@
         ]
       },
       "starter": {
-        "credits": "400 créditos / mes",
+        "credits": "400 créditos al mes",
         "cta": "Elegir Starter",
         "includes": "Todo en Free, y además",
         "features": [
@@ -188,7 +189,7 @@
         ]
       },
       "pro": {
-        "credits": "2.000 créditos / mes",
+        "credits": "2.000 créditos al mes",
         "cta": "Elegir Pro",
         "badge": "Popular",
         "includes": "Todo en Starter, y además",
@@ -201,7 +202,7 @@
         ]
       },
       "studio": {
-        "credits": "5.000 créditos / mes",
+        "credits": "5.000 créditos al mes",
         "cta": "Elegir Studio",
         "includes": "Todo en Pro, y además",
         "features": [
@@ -282,25 +283,6 @@
     "backToHome": "Volver a SonificaLabs"
   },
   "about": {
-    "heroTitle": "Escríbelo.\nEscúchalo.",
-    "heroSubtitle": "SonificaLabs convierte tus ideas en audio profesional con voces reales, música, efectos de sonido y mezcla automática.",
-    "whatCards": [
-      {
-        "icon": "pen",
-        "title": "Cuenta tu idea",
-        "desc": "Como se la contarías a un amigo. Sin formatos, sin plantillas, sin saber nada de audio."
-      },
-      {
-        "icon": "wand",
-        "title": "La IA lo produce",
-        "desc": "Guión, voces, música, efectos de sonido y mezcla. Todo automático, todo en segundos."
-      },
-      {
-        "icon": "download",
-        "title": "Descarga y publica",
-        "desc": "En tu podcast, tu vídeo, tu reel, tu cuña de radio, tu tráiler o donde quieras."
-      }
-    ],
     "forWhoTitle": "Hecho para crear",
     "forWhoSubtitle": "Da igual si haces vídeos, podcasts o trabajas en producción. Si tienes una idea, aquí la conviertes en audio.",
     "forWhoItems": [
@@ -311,31 +293,13 @@
       { "icon": "book", "label": "Educación", "desc": "Audiocuentos, podcasts educativos y material didáctico accesible" },
       { "icon": "zap", "label": "Cualquiera con una idea", "desc": "Si puedes describirlo, puedes producirlo" }
     ],
-    "howTitle": "De texto a audio en 3 pasos",
-    "howSteps": [
-      {
-        "num": "01",
-        "title": "La IA escribe el guión",
-        "desc": "Interpreta tu idea y genera un guión completo con diálogos, indicaciones musicales y efectos de sonido."
-      },
-      {
-        "num": "02",
-        "title": "Voces, música y efectos",
-        "desc": "Selecciona las voces adecuadas entre más de 23 disponibles, elige música de una biblioteca de sonidos y añade efectos."
-      },
-      {
-        "num": "03",
-        "title": "Mezcla y masterización",
-        "desc": "Aplica técnicas de mezcla y masterización automáticamente para entregar un audio con calidad de estudio."
-      }
-    ],
     "rasTitle": "Hola, soy Ras",
     "rasRole": "Fundador de SonificaLabs",
     "rasBio1": "Gracias por pasarte por aquí. Soy ingeniero, creador de contenido y desde pequeño siempre me ha gustado la edición de foto y vídeo.",
     "rasBio2": "Siempre me ha flipado cómo el sonido transforma cualquier producción, pero crearlo bien era carísimo y lentísimo. Llevo unos años trabajando con inteligencia artificial, y combinando habilidades se me ocurrió crear esta plataforma.",
     "rasBio3": "No es perfecta, pero cada día suena un poco mejor. Si te gusta, genial. Si encuentras un fallo, escríbeme.",
     "linkedIn": "LinkedIn",
-    "ctaLine": "Tu primera producción va por nuestra cuenta.",
+    "ctaLine": "Tu primera producción va por mi cuenta.",
     "ctaButton": "Producir mi primer audio"
   },
   "localeSwitcher": {
