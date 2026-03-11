@@ -60,12 +60,12 @@ export function TrackLane({
         {/* Type + Label */}
         <div className="flex items-center gap-1.5 min-w-0">
           <span
-            className="text-[10px] font-mono font-bold uppercase tracking-wider shrink-0"
+            className="text-caption-md font-mono font-bold uppercase tracking-wider shrink-0"
             style={{ color: s.accent }}
           >
             {s.label}
           </span>
-          <span className="text-[11px] text-text-secondary truncate" title={track.label}>
+          <span className="text-label-sm text-text-secondary truncate" title={track.label}>
             {track.label}
           </span>
         </div>

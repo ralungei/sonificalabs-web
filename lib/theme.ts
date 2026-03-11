@@ -24,8 +24,8 @@ export const DURATION = {
 
 /* ── Accent color (for inline styles / canvas) ─ */
 export const ACCENT = {
-  base: "#e8a838",
-  bright: "#f5c842",
-  dim: "#8a6b20",
-  rgb: "232, 168, 56",
+  base: "#0d9488",
+  bright: "#14b8a6",
+  dim: "#115e56",
+  rgb: "13, 148, 136",
 } as const;

@@ -32,7 +32,7 @@ export function MovingBorderButton({
       />
       <span
         className={cn(
-          "inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-zinc-900 px-6 py-1 text-sm font-medium text-yellow-50 backdrop-blur-3xl",
+          "inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-zinc-900 px-6 py-1 text-body-md font-medium text-yellow-50 backdrop-blur-3xl",
           className,
         )}
         style={{ borderRadius: `calc(${borderRadius} - 2px)` }}

@@ -36,8 +36,8 @@ interface StatsData {
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="rounded-xl border border-contrast/[0.06] bg-surface-1 p-5">
-      <p className="text-xs text-text-secondary uppercase tracking-wider">{label}</p>
-      <p className="text-2xl font-brand text-text-primary mt-1">{value}</p>
+      <p className="text-label-md text-text-secondary uppercase tracking-wider">{label}</p>
+      <p className="text-heading-lg font-brand text-text-primary mt-1">{value}</p>
     </div>
   );
 }
@@ -94,7 +94,7 @@ export function AdminDashboard() {
 
   return (
     <div className="min-h-screen pt-20 pb-12 px-4 md:px-8 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-brand text-text-primary mb-6">Admin Dashboard</h1>
+      <h1 className="text-heading-lg font-brand text-text-primary mb-6">Admin Dashboard</h1>
 
       {/* Stats cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
@@ -109,7 +109,7 @@ export function AdminDashboard() {
       <div className="flex gap-1 mb-4 border-b border-contrast/[0.06]">
         <button
           onClick={() => setTab("productions")}
-          className={`px-4 py-2 text-sm transition-colors ${
+          className={`px-4 py-2 text-body-md transition-colors ${
             tab === "productions"
               ? "text-accent border-b-2 border-accent"
               : "text-text-secondary hover:text-text-primary"
@@ -119,7 +119,7 @@ export function AdminDashboard() {
         </button>
         <button
           onClick={() => setTab("users")}
-          className={`px-4 py-2 text-sm transition-colors ${
+          className={`px-4 py-2 text-body-md transition-colors ${
             tab === "users"
               ? "text-accent border-b-2 border-accent"
               : "text-text-secondary hover:text-text-primary"
@@ -132,9 +132,9 @@ export function AdminDashboard() {
       {/* Productions table */}
       {tab === "productions" && (
         <div className="overflow-x-auto rounded-xl border border-contrast/[0.06]">
-          <table className="w-full text-sm">
+          <table className="w-full text-body-md">
             <thead>
-              <tr className="bg-surface-1 text-text-secondary text-xs uppercase tracking-wider">
+              <tr className="bg-surface-1 text-text-secondary text-label-md uppercase tracking-wider">
                 <th className="text-left px-4 py-3">Fecha</th>
                 <th className="text-left px-4 py-3">Email</th>
                 <th className="text-left px-4 py-3">Prompt</th>
@@ -149,7 +149,7 @@ export function AdminDashboard() {
                   <td className="px-4 py-3 text-text-secondary whitespace-nowrap">
                     {timeAgo(p.created_at)}
                   </td>
-                  <td className="px-4 py-3 text-text-primary font-mono text-xs">
+                  <td className="px-4 py-3 text-text-primary font-mono text-label-md">
                     {p.email}
                   </td>
                   <td className="px-4 py-3 text-text-secondary max-w-xs truncate">
@@ -159,7 +159,7 @@ export function AdminDashboard() {
                   <td className="px-4 py-3 text-center text-accent">{p.credits_used}</td>
                   <td className="px-4 py-3 text-center">
                     <span
-                      className={`text-xs px-2 py-0.5 rounded-full ${
+                      className={`text-label-md px-2 py-0.5 rounded-full ${
                         p.status === "done"
                           ? "bg-done/15 text-done"
                           : "bg-fail/15 text-fail"
@@ -185,9 +185,9 @@ export function AdminDashboard() {
       {/* Users table */}
       {tab === "users" && (
         <div className="overflow-x-auto rounded-xl border border-contrast/[0.06]">
-          <table className="w-full text-sm">
+          <table className="w-full text-body-md">
             <thead>
-              <tr className="bg-surface-1 text-text-secondary text-xs uppercase tracking-wider">
+              <tr className="bg-surface-1 text-text-secondary text-label-md uppercase tracking-wider">
                 <th className="text-left px-4 py-3">Email</th>
                 <th className="text-left px-4 py-3">Nombre</th>
                 <th className="text-center px-4 py-3">Plan</th>
@@ -198,11 +198,11 @@ export function AdminDashboard() {
             <tbody className="divide-y divide-contrast/[0.04]">
               {data.users.map((u) => (
                 <tr key={u.email} className="hover:bg-contrast/[0.02] transition-colors">
-                  <td className="px-4 py-3 text-text-primary font-mono text-xs">{u.email}</td>
+                  <td className="px-4 py-3 text-text-primary font-mono text-label-md">{u.email}</td>
                   <td className="px-4 py-3 text-text-secondary">{u.name || "—"}</td>
                   <td className="px-4 py-3 text-center">
                     <span
-                      className={`text-xs px-2 py-0.5 rounded-full ${
+                      className={`text-label-md px-2 py-0.5 rounded-full ${
                         u.plan === "pro"
                           ? "bg-accent/20 text-accent"
                           : u.plan === "studio"

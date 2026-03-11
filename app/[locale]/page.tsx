@@ -2,7 +2,7 @@
 import { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { useRouter, Link } from "@/i18n/navigation";
 import { Navbar } from "@/components/Navbar";
 import { PromptForm } from "@/components/PromptForm";
 import { PipelineReveal } from "@/components/PipelineReveal";
@@ -499,6 +499,7 @@ function FadeIn({
 export default function Home() {
   const t = useTranslations("home");
   const tAbout = useTranslations("about");
+  const tFooter = useTranslations("footer");
   const locale = useLocale();
   const router = useRouter();
   const apiToken = useApiToken();
@@ -771,12 +772,19 @@ export default function Home() {
 
       {/* ── Footer ──────────────────────────────────────────── */}
       <footer className="relative z-10 w-full border-t border-contrast/[0.06] py-8 text-center">
-        <div className="flex flex-col items-center gap-2">
+        <div className="flex flex-col items-center gap-3">
           <div className="flex items-center gap-2">
             <LogoIcon className="h-6 w-auto text-contrast" />
             <span className="text-lg font-body tracking-normal">
               <span className="text-contrast font-bold">sonifica</span><span className="text-contrast font-light">labs</span><sup className="text-xs text-contrast/50 ml-0.5">™</sup>
             </span>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs text-contrast/35">
+            <span>{t("footer")}</span>
+            <span>·</span>
+            <Link href="/privacy" className="hover:text-contrast/60 transition-colors">{tFooter("privacy")}</Link>
+            <span>·</span>
+            <Link href="/terms" className="hover:text-contrast/60 transition-colors">{tFooter("terms")}</Link>
           </div>
         </div>
       </footer>

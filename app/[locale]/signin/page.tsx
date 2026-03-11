@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ACCENT } from "@/lib/theme";
+import { LogoIcon } from "@/components/Logo";
 
 function SignInContent() {
   const t = useTranslations("signin");
@@ -35,14 +36,12 @@ function SignInContent() {
           {/* Logo */}
           <div className="flex flex-col items-center mb-8">
             <div className="flex items-center gap-2.5 mb-3">
-              <svg viewBox="0 0 24 24" className="h-7 w-7 text-contrast" fill="currentColor" aria-hidden>
-                <path d="m20.713 7.128-.246.566a.506.506 0 0 1-.934 0l-.246-.566a4.36 4.36 0 0 0-2.22-2.25l-.759-.339a.53.53 0 0 1 0-.963l.717-.319A4.37 4.37 0 0 0 19.276.931L19.53.32a.506.506 0 0 1 .942 0l.253.61a4.37 4.37 0 0 0 2.25 2.327l.718.32a.53.53 0 0 1 0 .962l-.76.338a4.36 4.36 0 0 0-2.219 2.251M7 6a5 5 0 0 1 7.697-4.21l-1.08 1.682A3 3 0 0 0 9 6v6a3 3 0 1 0 6 0V7h2v5a5 5 0 0 1-10 0zm-4.808 7.962 1.962-.393a8.003 8.003 0 0 0 15.692 0l1.962.393C20.896 18.545 16.852 22 12 22s-8.896-3.455-9.808-8.038" />
-              </svg>
-              <span className="text-xl font-brand tracking-[0.04em]">
-                <span className="text-contrast">sonifica</span><span className="text-accent">labs</span>
+              <LogoIcon className="h-8 w-auto text-contrast" />
+              <span className="text-heading-md font-body tracking-normal">
+                <span className="text-contrast font-bold">sonifica</span><span className="text-contrast font-light">labs</span>
               </span>
             </div>
-            <p className="text-sm text-text-secondary text-center">
+            <p className="text-body-md text-text-secondary text-center">
               {t("subtitle")}
             </p>
           </div>
@@ -52,7 +51,7 @@ function SignInContent() {
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
-              className="mb-5 rounded-lg bg-fail/10 border border-fail/20 px-4 py-3 text-xs text-fail text-center"
+              className="mb-5 rounded-lg bg-fail/10 border border-fail/20 px-4 py-3 text-label-md text-fail text-center"
             >
               {error === "OAuthAccountNotLinked"
                 ? t("oauthError")
@@ -63,7 +62,7 @@ function SignInContent() {
           {/* Divider label */}
           <div className="flex items-center gap-3 mb-5">
             <div className="flex-1 h-px bg-contrast/[0.08]" />
-            <span className="text-[10px] text-text-muted uppercase tracking-[0.15em]">
+            <span className="text-caption-md text-text-muted uppercase tracking-[0.15em]">
               {t("continueWith")}
             </span>
             <div className="flex-1 h-px bg-contrast/[0.08]" />
@@ -74,7 +73,7 @@ function SignInContent() {
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => signIn("google", { callbackUrl })}
-            className="w-full flex items-center justify-center gap-3 rounded-xl bg-white px-4 py-3 text-sm font-medium text-zinc-800 transition-all duration-200 hover:bg-zinc-100 hover:shadow-lg cursor-pointer"
+            className="w-full flex items-center justify-center gap-3 rounded-xl bg-white px-4 py-3 text-body-md font-medium text-zinc-800 transition-all duration-200 hover:bg-zinc-100 hover:shadow-lg cursor-pointer"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -98,7 +97,7 @@ function SignInContent() {
           </motion.button>
 
           {/* Terms */}
-          <p className="mt-6 text-[10px] text-text-muted text-center leading-relaxed">
+          <p className="mt-6 text-caption-md text-text-muted text-center leading-relaxed">
             {t.rich("termsNotice", {
               terms: (chunks) => <span className="text-text-secondary">{chunks}</span>,
               privacy: (chunks) => <span className="text-text-secondary">{chunks}</span>,
@@ -110,7 +109,7 @@ function SignInContent() {
         <div className="mt-6 text-center">
           <Link
             href="/"
-            className="text-xs text-text-secondary hover:text-text-primary transition-colors"
+            className="text-label-md text-text-secondary hover:text-text-primary transition-colors"
           >
             {t("backToHome")}
           </Link>

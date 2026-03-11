@@ -154,8 +154,8 @@ function MasterPlayer({
           className={cn(
             "mt-[2px] h-11 w-11 flex-shrink-0 rounded-full flex items-center justify-center transition-all duration-200",
             playing
-              ? "bg-accent text-surface-0 shadow-[0_0_24px_rgba(232,168,56,0.3)]"
-              : "bg-accent text-surface-0 hover:shadow-[0_0_24px_rgba(232,168,56,0.25)] active:scale-95",
+              ? "bg-contrast text-surface-0"
+              : "bg-contrast text-surface-0 hover:bg-contrast/90 active:scale-95",
           )}
         >
           <Icon
@@ -168,8 +168,8 @@ function MasterPlayer({
         <div className="flex-1 flex flex-col gap-1">
           <WaveProgress progress={progress} onClick={seek} />
           <div className="flex justify-between px-1">
-            <span className="text-[10px] font-mono text-text-secondary tabular-nums">{currentTime}</span>
-            <span className="text-[10px] font-mono text-text-muted tabular-nums">{duration}</span>
+            <span className="text-caption-md font-mono text-text-secondary tabular-nums">{currentTime}</span>
+            <span className="text-caption-md font-mono text-text-muted tabular-nums">{duration}</span>
           </div>
         </div>
       </div>
@@ -192,18 +192,18 @@ function ShareField({ jobId }: { jobId: string }) {
 
   return (
     <div className="w-full space-y-2">
-      <label className="text-[11px] font-body uppercase tracking-wider text-text-muted flex items-center gap-1.5">
+      <label className="text-label-sm font-body uppercase tracking-wider text-text-muted flex items-center gap-1.5">
         <Icon icon="solar:link-bold" className="h-3 w-3" />
         {t("shareLink")}
       </label>
-      <div className="flex items-center rounded-xl border border-contrast/[0.08] bg-surface-0/60 overflow-hidden">
-        <div className="flex-1 px-3.5 py-2.5 text-xs font-body text-text-secondary truncate select-all min-w-0">
+      <div className="flex items-stretch rounded-xl border border-contrast/[0.08] bg-surface-0/60 overflow-hidden">
+        <div className="flex-1 px-3.5 py-2.5 text-label-md font-body text-text-secondary truncate select-all min-w-0 flex items-center">
           {url || `…/p/${jobId}`}
         </div>
         <button
           onClick={copy}
           className={cn(
-            "flex items-center gap-1.5 px-4 py-2.5 text-[11px] font-body uppercase tracking-wider border-l border-contrast/[0.08] transition-all duration-300 shrink-0",
+            "flex items-center gap-1.5 px-3 text-[0.65rem] font-body uppercase tracking-wider border-l border-contrast/[0.08] transition-all duration-300 shrink-0",
             copied
               ? "bg-done/15 text-done"
               : "bg-surface-2 text-text-secondary hover:text-text-primary hover:bg-surface-3",
@@ -332,7 +332,7 @@ function MasterPanel({
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-lg font-body font-semibold text-text-primary"
+            className="text-heading-sm font-body font-semibold text-text-primary"
           >
             {inline ? t("audioReady") : t("masterReady")}
           </motion.h2>
@@ -340,7 +340,7 @@ function MasterPanel({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-[11px] text-text-muted font-body flex items-center gap-1.5"
+            className="text-label-sm text-text-muted font-body flex items-center gap-1.5"
           >
             <Icon icon="solar:tuning-2-linear" className="h-3 w-3" />
             {t("normalizedLufs")}
@@ -374,7 +374,7 @@ function MasterPanel({
           <>
             <button
               onClick={downloadMaster}
-              className="w-full flex items-center justify-center gap-2.5 px-5 py-3 rounded-xl bg-accent text-surface-0 font-body text-xs uppercase tracking-wider font-semibold transition-all hover:bg-accent-bright hover:shadow-[0_8px_32px_rgba(232,168,56,0.25)] active:scale-[0.98]"
+              className="w-full flex items-center justify-center gap-2.5 px-5 py-3 rounded-xl bg-accent text-surface-0 font-body text-label-md uppercase tracking-wider font-semibold transition-all hover:bg-accent-bright hover:shadow-[0_8px_32px_rgba(232,168,56,0.25)] active:scale-[0.98]"
             >
               <Icon icon="solar:download-minimalistic-bold" className="h-4.5 w-4.5" />
               {t("downloadMp3")}
@@ -393,8 +393,8 @@ function MasterPanel({
                   <Icon icon="solar:download-minimalistic-bold" className="h-4 w-4 text-accent" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-xs font-body font-medium text-text-primary">{t("downloadInMp3")}</span>
-                  <span className="text-[10px] text-text-muted">{t("availableInPro")}</span>
+                  <span className="text-label-md font-body font-medium text-text-primary">{t("downloadInMp3")}</span>
+                  <span className="text-caption-md text-text-muted">{t("availableInPro")}</span>
                 </div>
               </div>
               <Icon icon="solar:alt-arrow-right-linear" className="h-4 w-4 text-text-muted group-hover:text-accent transition-colors" />
@@ -405,125 +405,129 @@ function MasterPanel({
     </>
   );
 
-  // Inline: wide card — title top, player middle, share+download row bottom
+  // Inline: wide card — title top, two columns (prompt left, player+actions right)
   if (inline) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="relative flex flex-col items-center gap-5 bg-gradient-to-b from-surface-1 to-surface-0 border border-contrast/[0.08] rounded-3xl px-8 py-7 overflow-hidden w-full max-w-2xl mx-auto shadow-[0_16px_48px_-12px_rgba(0,0,0,0.6)]"
+        className="relative bg-gradient-to-b from-surface-1 to-surface-0 border border-contrast/[0.08] rounded-3xl px-8 py-7 overflow-hidden w-full max-w-3xl mx-auto shadow-[0_16px_48px_-12px_rgba(0,0,0,0.6)]"
       >
         {/* Ambient glow */}
         <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-72 h-52 bg-accent/[0.06] rounded-full blur-3xl pointer-events-none" />
 
-        {/* Header */}
-        <div className="flex flex-col items-center gap-1.5">
-          <motion.h2
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-2xl font-body font-semibold text-text-primary"
-          >
-            {t("audioReady")}
-          </motion.h2>
+        {/* Title */}
+        <motion.h2
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-heading-lg font-body font-semibold text-text-primary mb-5"
+        >
+          {t("audioReady")}
+        </motion.h2>
+
+        {/* Two-column layout */}
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Left column: user prompt */}
           {prompt && (
-            <motion.p
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="text-sm text-text-muted text-center line-clamp-2"
+              className="md:w-2/5 shrink-0"
             >
-              &ldquo;{prompt.replace(/\[.*?\]/g, "").trim()}&rdquo;
-            </motion.p>
+              <label className="text-label-sm font-body uppercase tracking-wider text-text-muted flex items-center gap-1.5 mb-2">
+                <Icon icon="solar:document-text-linear" className="h-3 w-3" />
+                {t("yourText")}
+              </label>
+              <p className="text-body-sm text-text-secondary leading-relaxed">
+                {prompt.replace(/\[.*?\]/g, "").trim()}
+              </p>
+            </motion.div>
           )}
-        </div>
 
-        {/* Player */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
-          className="w-full"
-        >
-          <MasterPlayer
-            url={masterUrl}
-            playing={masterPlaying}
-            onToggle={toggleMasterPlay}
-            audioRef={masterRef}
-          />
-        </motion.div>
+          {/* Right column: player + share + buttons */}
+          <div className={cn("flex flex-col gap-4", prompt ? "md:w-3/5" : "w-full")}>
+            {/* Player */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
+            >
+              <MasterPlayer
+                url={masterUrl}
+                playing={masterPlaying}
+                onToggle={toggleMasterPlay}
+                audioRef={masterRef}
+              />
+            </motion.div>
 
-        {/* Share + Download row */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-          className="w-full flex flex-col sm:flex-row items-stretch sm:items-end gap-3"
-        >
-          {/* Share field takes remaining space */}
-          <div className="flex-1 min-w-0">
-            <ShareField jobId={jobId} />
-          </div>
+            {/* Share + Download + Editor */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+              className="flex flex-col gap-3"
+            >
+              <ShareField jobId={jobId} />
 
-          {/* Download + Editor buttons */}
-          <div className="flex items-center gap-3 shrink-0">
-          {canDownload ? (
-            <>
-              <button
-                onClick={downloadMaster}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent text-surface-0 text-xs font-body font-semibold uppercase tracking-wider transition-all hover:bg-accent-bright hover:shadow-[0_8px_32px_rgba(232,168,56,0.25)] active:scale-[0.98] whitespace-nowrap shrink-0"
-              >
-                <Icon icon="solar:download-minimalistic-bold" className="h-3.5 w-3.5" />
-                {t("downloadMp3")}
-              </button>
-              {onOpenEditor && (
-                <button
-                  onClick={onOpenEditor}
-                  className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-body font-semibold uppercase tracking-wider transition-all hover:shadow-[0_6px_28px_rgba(160,170,180,0.25)] active:scale-[0.98] whitespace-nowrap shrink-0 overflow-hidden"
-                  style={{
-                    background: "linear-gradient(145deg, #5a5e65 0%, #787d85 20%, #a0a6ae 45%, #8c929a 65%, #6b7078 85%, #52565d 100%)",
-                    color: "#e8eaee",
-                    textShadow: "0 1px 2px rgba(0,0,0,0.5)",
-                  }}
-                >
-                  {/* Grain texture */}
-                  <svg className="absolute inset-0 w-full h-full opacity-[0.15] pointer-events-none mix-blend-overlay" xmlns="http://www.w3.org/2000/svg"><filter id="edGrain"><feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#edGrain)"/></svg>
-                  {/* Top edge highlight for metallic depth */}
-                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-contrast/30 to-transparent pointer-events-none" />
-                  {/* Bottom shadow edge */}
-                  <div className="absolute bottom-0 left-0 right-0 h-px bg-[#3a3d42]/80 pointer-events-none" />
-                  <Icon icon="solar:tuning-2-bold" className="h-3.5 w-3.5 relative z-10" />
-                  <span className="relative z-10">Editor</span>
-                </button>
+              <div className="flex items-center gap-3">
+              {canDownload ? (
+                <>
+                  <button
+                    onClick={downloadMaster}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-contrast text-surface-0 text-label-md font-body font-semibold uppercase tracking-wider transition-all hover:bg-contrast/90 active:scale-[0.98] whitespace-nowrap shrink-0"
+                  >
+                    <Icon icon="solar:download-minimalistic-bold" className="h-3.5 w-3.5" />
+                    {t("downloadMp3")}
+                  </button>
+                  {onOpenEditor && (
+                    <button
+                      onClick={onOpenEditor}
+                      className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-label-md font-body font-semibold uppercase tracking-wider transition-all hover:shadow-[0_6px_28px_rgba(160,170,180,0.25)] active:scale-[0.98] whitespace-nowrap shrink-0 overflow-hidden"
+                      style={{
+                        background: "linear-gradient(145deg, #5a5e65 0%, #787d85 20%, #a0a6ae 45%, #8c929a 65%, #6b7078 85%, #52565d 100%)",
+                        color: "#e8eaee",
+                        textShadow: "0 1px 2px rgba(0,0,0,0.5)",
+                      }}
+                    >
+                      <svg className="absolute inset-0 w-full h-full opacity-[0.15] pointer-events-none mix-blend-overlay" xmlns="http://www.w3.org/2000/svg"><filter id="edGrain"><feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#edGrain)"/></svg>
+                      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-contrast/30 to-transparent pointer-events-none" />
+                      <div className="absolute bottom-0 left-0 right-0 h-px bg-[#3a3d42]/20 pointer-events-none" />
+                      <Icon icon="solar:tuning-2-bold" className="h-3.5 w-3.5 relative z-10" />
+                      <span className="relative z-10">Editor</span>
+                    </button>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/pricing"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-accent/20 bg-accent/[0.06] hover:bg-accent/[0.12] text-accent text-label-md font-body font-medium transition-all whitespace-nowrap shrink-0"
+                  >
+                    <Icon icon="solar:download-minimalistic-bold" className="h-3.5 w-3.5" />
+                    {t("downloadMp3")}
+                    <span className="text-caption-sm text-accent/60 uppercase">{t("pro")}</span>
+                  </Link>
+                  <Link
+                    href="/pricing"
+                    className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl border border-contrast/[0.12] text-label-md font-body font-medium transition-all whitespace-nowrap shrink-0 overflow-hidden hover:border-contrast/25"
+                    style={{
+                      background: "linear-gradient(145deg, rgba(120,125,133,0.12) 0%, rgba(160,166,174,0.08) 100%)",
+                      color: "#a0a6ae",
+                    }}
+                  >
+                    <Icon icon="solar:tuning-2-bold" className="h-3.5 w-3.5" />
+                    Editor
+                    <span className="text-caption-sm text-contrast/40 uppercase">{t("pro")}</span>
+                  </Link>
+                </>
               )}
-            </>
-          ) : (
-            <>
-              <Link
-                href="/pricing"
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-accent/20 bg-accent/[0.06] hover:bg-accent/[0.12] text-accent text-xs font-body font-medium transition-all whitespace-nowrap shrink-0"
-              >
-                <Icon icon="solar:download-minimalistic-bold" className="h-3.5 w-3.5" />
-                {t("downloadMp3")}
-                <span className="text-[9px] text-accent/60 uppercase">{t("pro")}</span>
-              </Link>
-              <Link
-                href="/pricing"
-                className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl border border-contrast/[0.12] text-xs font-body font-medium transition-all whitespace-nowrap shrink-0 overflow-hidden hover:border-contrast/25"
-                style={{
-                  background: "linear-gradient(145deg, rgba(120,125,133,0.12) 0%, rgba(160,166,174,0.08) 100%)",
-                  color: "#a0a6ae",
-                }}
-              >
-                <Icon icon="solar:tuning-2-bold" className="h-3.5 w-3.5" />
-                Editor
-                <span className="text-[9px] text-contrast/40 uppercase">{t("pro")}</span>
-              </Link>
-            </>
-          )}
+              </div>
+            </motion.div>
           </div>
-        </motion.div>
+        </div>
       </motion.div>
     );
   }

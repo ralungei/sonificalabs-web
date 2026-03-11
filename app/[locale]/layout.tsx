@@ -1,35 +1,22 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Plus_Jakarta_Sans, JetBrains_Mono, Quicksand } from "next/font/google";
+import { DM_Sans, Be_Vietnam_Pro } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { Providers } from "@/components/Providers";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
-const quicksand = Quicksand({
-  weight: "600",
-  subsets: ["latin"],
-  variable: "--font-brand",
-  display: "swap",
-});
-
-const bebasNeue = Bebas_Neue({
-  weight: "400",
+const dmSans = DM_Sans({
+  weight: ["700", "800"],
   subsets: ["latin"],
   variable: "--font-logo",
   display: "swap",
 });
 
-const plusJakarta = Plus_Jakarta_Sans({
+const beVietnam = Be_Vietnam_Pro({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-body",
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-mono",
   display: "swap",
 });
 
@@ -57,7 +44,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`dark ${quicksand.variable} ${bebasNeue.variable} ${plusJakarta.variable} ${jetbrainsMono.variable} bg-surface-0`}>
+    <html lang={locale} className={`${dmSans.variable} ${beVietnam.variable} bg-surface-0`}>
       <body className="min-h-screen font-body antialiased bg-surface-0">
         <NextIntlClientProvider messages={messages}>
           <Providers>{children}</Providers>

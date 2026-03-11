@@ -134,7 +134,7 @@ export function AudioPlayer({ audioUrl }: { audioUrl: string }) {
                 )}
               </motion.button>
 
-              <span className="text-sm text-text-secondary font-mono tabular-nums tracking-wide">
+              <span className="text-body-md text-text-secondary font-mono tabular-nums tracking-wide">
                 {currentTime}{" "}
                 <span className="text-text-muted/60">/</span>{" "}
                 {duration}
@@ -144,7 +144,7 @@ export function AudioPlayer({ audioUrl }: { audioUrl: string }) {
             <a
               href={audioUrl}
               download
-              className="group flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-contrast/70 hover:text-contrast transition-colors duration-300"
+              className="group flex items-center gap-2 text-label-md font-mono uppercase tracking-wider text-contrast/70 hover:text-contrast transition-colors duration-300"
             >
               <svg
                 className="h-4 w-4 transition-transform group-hover:-translate-y-0.5"

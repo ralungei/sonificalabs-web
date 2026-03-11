@@ -31,7 +31,7 @@ function TypewriterViz({ text }: { text: string }) {
         <div className="h-2.5 w-2.5 rounded-full bg-contrast/10" />
         <div className="h-2.5 w-2.5 rounded-full bg-contrast/10" />
       </div>
-      <p className="font-mono text-sm text-contrast/80 leading-relaxed min-h-[3em]">
+      <p className="font-mono text-body-md text-contrast/80 leading-relaxed min-h-[3em]">
         {text.slice(0, charCount)}
         <span className="inline-block w-[2px] h-[1.1em] bg-accent align-text-bottom ml-px animate-pulse" />
       </p>
@@ -54,10 +54,10 @@ function EscaletaViz({ lines, label }: { lines: EscaletaLine[]; label: string })
   return (
     <div
       ref={ref}
-      className="w-full rounded-xl border border-contrast/[0.08] bg-surface-1/80 p-4 font-mono text-xs overflow-hidden"
+      className="w-full rounded-xl border border-contrast/[0.08] bg-surface-1/80 p-4 font-mono text-label-md overflow-hidden"
     >
       <div className="flex items-center gap-2 mb-3">
-        <span className="text-[10px] text-contrast/30 uppercase tracking-wider">{label}</span>
+        <span className="text-caption-md text-contrast/30 uppercase tracking-wider">{label}</span>
       </div>
       <div className="space-y-1">
         {lines.map((line, i) => (
@@ -117,7 +117,7 @@ function VoiceGridViz() {
           className="flex flex-col items-center gap-1.5"
         >
           <div
-            className={`relative h-11 w-11 rounded-full flex items-center justify-center text-xs font-semibold transition-all ${
+            className={`relative h-11 w-11 rounded-full flex items-center justify-center text-label-md font-semibold transition-all ${
               v.active
                 ? "bg-accent/20 text-accent border-2 border-accent/60 shadow-[0_0_12px_rgba(232,168,56,0.3)]"
                 : "bg-contrast/[0.06] text-contrast/30 border border-contrast/[0.08]"
@@ -129,7 +129,7 @@ function VoiceGridViz() {
             {v.initials}
           </div>
           <span
-            className={`text-[10px] ${
+            className={`text-caption-md ${
               v.active ? "text-accent font-medium" : "text-contrast/30"
             }`}
           >
@@ -160,7 +160,7 @@ function DawTimelineViz({ tracks, badges }: { tracks: DawTrack[]; badges: string
       <div className="space-y-2 rounded-xl border border-contrast/[0.08] bg-surface-1/80 p-4">
         {tracks.map((track, i) => (
           <div key={track.label} className="flex items-center gap-2">
-            <span className="text-[10px] text-contrast/40 font-mono w-12 shrink-0 text-right">
+            <span className="text-caption-md text-contrast/40 font-mono w-12 shrink-0 text-right">
               {track.label}
             </span>
             <div className="relative flex-1 h-6 rounded bg-contrast/[0.03]">
@@ -195,7 +195,7 @@ function DawTimelineViz({ tracks, badges }: { tracks: DawTrack[]; badges: string
             initial={{ opacity: 0, y: 6 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 6 }}
             transition={{ duration: 0.3, delay: 0.8 + i * 0.08 }}
-            className="inline-flex items-center rounded-full bg-contrast/[0.04] border border-contrast/[0.08] px-2.5 py-1 text-[10px] text-contrast/50 font-mono"
+            className="inline-flex items-center rounded-full bg-contrast/[0.04] border border-contrast/[0.08] px-2.5 py-1 text-caption-md text-contrast/50 font-mono"
           >
             {badge}
           </motion.span>
@@ -259,7 +259,7 @@ function WaveformViz({ durationLabel }: { durationLabel: string }) {
             />
           </svg>
         </div>
-        <span className="text-sm text-contrast/50 font-mono">{durationLabel}</span>
+        <span className="text-body-md text-contrast/50 font-mono">{durationLabel}</span>
       </motion.div>
     </div>
   );
@@ -296,13 +296,13 @@ function PipelineStep({
       transition={{ duration: 0.5, delay: 0.1 }}
       className="space-y-2"
     >
-      <span className="text-xs font-mono text-accent uppercase tracking-[0.25em] font-medium">
+      <span className="text-label-md font-mono text-accent uppercase tracking-[0.25em] font-medium">
         {stepLabel} {phase.num}
       </span>
-      <h3 className="text-xl md:text-2xl font-logo tracking-wide text-contrast">
+      <h3 className="text-heading-md md:text-heading-lg font-logo tracking-tight text-contrast">
         {phase.title}
       </h3>
-      <p className="text-sm text-contrast/60 leading-relaxed max-w-xs">
+      <p className="text-body-md text-contrast/60 leading-relaxed max-w-xs">
         {phase.subtitle}
       </p>
     </motion.div>
@@ -379,13 +379,13 @@ function PipelineStepMobile({
           transition={{ duration: 0.5, delay: 0.1 }}
           className="space-y-1.5"
         >
-          <span className="text-[10px] font-mono text-accent uppercase tracking-[0.25em] font-medium">
+          <span className="text-caption-md font-mono text-accent uppercase tracking-[0.25em] font-medium">
             {stepLabel} {phase.num}
           </span>
-          <h3 className="text-lg font-logo tracking-wide text-contrast">
+          <h3 className="text-heading-sm font-logo tracking-tight text-contrast">
             {phase.title}
           </h3>
-          <p className="text-sm text-contrast/60 leading-relaxed">
+          <p className="text-body-md text-contrast/60 leading-relaxed">
             {phase.subtitle}
           </p>
         </motion.div>
@@ -447,7 +447,7 @@ export function PipelineReveal() {
         transition={{ duration: 0.5 }}
         className="text-center mb-20"
       >
-        <h2 className="text-3xl md:text-5xl font-logo tracking-wide text-contrast">
+        <h2 className="text-heading-xl md:text-5xl font-logo tracking-tight text-contrast">
           {t("sectionTitle")}
         </h2>
       </motion.div>

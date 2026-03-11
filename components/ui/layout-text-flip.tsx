@@ -23,11 +23,11 @@ export function LayoutTextFlip({
       <AnimatePresence mode="popLayout">
         <motion.span
           key={currentIndex}
-          initial={{ y: -40, filter: "blur(10px)" }}
-          animate={{ y: 0, filter: "blur(0px)" }}
-          exit={{ y: 50, filter: "blur(10px)", opacity: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-block whitespace-nowrap bg-gradient-to-b from-accent-bright to-accent bg-clip-text text-transparent"
+          initial={{ y: -40, filter: "blur(8px)", opacity: 0 }}
+          animate={{ y: 0, filter: "blur(0px)", opacity: 1 }}
+          exit={{ y: 40, filter: "blur(8px)", opacity: 0 }}
+          transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="inline-block whitespace-nowrap text-accent"
         >
           {words[currentIndex]}
         </motion.span>

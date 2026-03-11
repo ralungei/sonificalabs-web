@@ -180,7 +180,7 @@ export default function JobPage() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
                 onClick={handleCancel}
-                className="mt-10 text-xs font-body uppercase tracking-wider text-contrast/40 hover:text-fail transition-colors duration-300"
+                className="mt-10 text-label-md font-body uppercase tracking-wider text-contrast/40 hover:text-fail transition-colors duration-300"
               >
                 {t("cancel")}
               </motion.button>
@@ -218,7 +218,7 @@ export default function JobPage() {
               >
                 <button
                   onClick={() => router.push("/")}
-                  className="px-5 py-2.5 rounded-xl bg-white text-surface-0 text-sm font-body font-semibold hover:bg-white/90 transition-all active:scale-[0.98]"
+                  className="px-5 py-2.5 rounded-xl bg-white text-surface-0 text-body-md font-body font-semibold hover:bg-white/90 transition-all active:scale-[0.98]"
                 >
                   {t("createAnother")}
                 </button>
@@ -250,10 +250,10 @@ export default function JobPage() {
 
                 {/* Text */}
                 <div className="flex flex-col items-center gap-2 text-center">
-                  <h2 className="text-lg font-body font-semibold text-text-primary">
+                  <h2 className="text-heading-sm font-body font-semibold text-text-primary">
                     {t("somethingWentWrong")}
                   </h2>
-                  <p className="text-sm text-text-secondary font-body leading-relaxed">
+                  <p className="text-body-md text-text-secondary font-body leading-relaxed">
                     {errorMsg || t("errorDescription")}
                   </p>
                 </div>
@@ -261,7 +261,7 @@ export default function JobPage() {
                 {/* Retry button */}
                 <button
                   onClick={() => router.push("/")}
-                  className="mt-2 flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-surface-2 border border-contrast/[0.08] text-text-secondary hover:text-text-primary text-xs font-body uppercase tracking-wider transition-all hover:bg-surface-3 active:scale-[0.98]"
+                  className="mt-2 flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-surface-2 border border-contrast/[0.08] text-text-secondary hover:text-text-primary text-label-md font-body uppercase tracking-wider transition-all hover:bg-surface-3 active:scale-[0.98]"
                 >
                   <Icon icon="solar:restart-bold" className="h-3.5 w-3.5" />
                   {t("tryAgain")}
@@ -285,7 +285,7 @@ export default function JobPage() {
           >
             {/* Header bar */}
             <div className="flex items-center justify-between px-5 h-12 border-b border-contrast/[0.06] flex-shrink-0">
-              <span className="text-xs font-body uppercase tracking-wider text-contrast/40">Timeline</span>
+              <span className="text-label-md font-body uppercase tracking-wider text-contrast/40">Timeline</span>
               <button
                 onClick={() => setEditorOpen(false)}
                 className="flex items-center justify-center w-8 h-8 rounded-lg text-contrast/50 hover:text-contrast hover:bg-contrast/[0.06] transition-all"

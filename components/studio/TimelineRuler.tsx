@@ -31,7 +31,7 @@ export function TimelineRuler({
             style={{ left: m.ms * pxPerMs }}
           >
             <div className="w-px h-2.5 bg-contrast/25" />
-            <span className="text-[10px] font-mono text-contrast/50 mt-0.5 select-none">
+            <span className="text-caption-md font-mono text-contrast/50 mt-0.5 select-none">
               {m.label}
             </span>
           </div>

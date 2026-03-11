@@ -748,25 +748,25 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
         {/* Footer */}
         <div className="flex items-center justify-between px-4 py-2.5 bg-surface-0/40 border-t border-contrast/[0.04]">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-body uppercase tracking-wider text-contrast/50">
+            <span className="text-label-md font-body uppercase tracking-wider text-contrast/50">
               Zoom
             </span>
             <button
               onClick={zoomOut}
-              className="h-6 w-6 rounded-md border border-contrast/[0.06] bg-surface-2 text-text-secondary hover:text-text-primary text-xs flex items-center justify-center transition-colors"
+              className="h-6 w-6 rounded-md border border-contrast/[0.06] bg-surface-2 text-text-secondary hover:text-text-primary text-label-md flex items-center justify-center transition-colors"
             >
               −
             </button>
             <button
               onClick={zoomIn}
-              className="h-6 w-6 rounded-md border border-contrast/[0.06] bg-surface-2 text-text-secondary hover:text-text-primary text-xs flex items-center justify-center transition-colors"
+              className="h-6 w-6 rounded-md border border-contrast/[0.06] bg-surface-2 text-text-secondary hover:text-text-primary text-label-md flex items-center justify-center transition-colors"
             >
               +
             </button>
             <button
               onClick={zoomFit}
               title="Ajustar al ancho"
-              className="h-6 w-6 rounded-md border border-contrast/[0.06] bg-surface-2 text-text-secondary hover:text-text-primary text-xs flex items-center justify-center transition-colors"
+              className="h-6 w-6 rounded-md border border-contrast/[0.06] bg-surface-2 text-text-secondary hover:text-text-primary text-label-md flex items-center justify-center transition-colors"
             >
               <svg
                 className="h-3 w-3"
@@ -783,14 +783,14 @@ export function Studio({ tracks: initialTracks, jobId, audioUrl, onRemixDone, ca
               </svg>
             </button>
           </div>
-          <span className="text-xs font-body text-contrast/60 select-none hidden sm:block">
+          <span className="text-label-md font-body text-contrast/60 select-none hidden sm:block">
             Espacio para reproducir · Arrastra para mover pistas
           </span>
         </div>
       </div>
 
       {/* Pre-master note */}
-      <p className="mt-3 text-xs font-body text-contrast/50 text-center leading-relaxed">
+      <p className="mt-3 text-label-md font-body text-contrast/50 text-center leading-relaxed">
         Vista previa sin masterizar. Los volúmenes y la mezcla final pueden sonar diferente al audio masterizado.
       </p>
 

@@ -173,7 +173,7 @@ export function TimelineEditor({ tracks: initialTracks, jobId, onRemixDone }: Pr
               onClick={handleRemix}
               disabled={isRemixing}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-mono uppercase tracking-wider transition-all duration-300",
+                "flex items-center gap-2 px-4 py-2 rounded-lg text-label-md font-mono uppercase tracking-wider transition-all duration-300",
                 isRemixing
                   ? "bg-accent/20 text-accent/60 cursor-wait"
                   : "bg-accent text-surface-0 hover:shadow-[0_0_20px_rgba(232,168,56,0.2)]",
@@ -198,7 +198,7 @@ export function TimelineEditor({ tracks: initialTracks, jobId, onRemixDone }: Pr
               <motion.span
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="text-[10px] font-mono uppercase tracking-wider text-accent/60"
+                className="text-caption-md font-mono uppercase tracking-wider text-accent/60"
               >
                 cambios sin mezclar
               </motion.span>
@@ -206,16 +206,16 @@ export function TimelineEditor({ tracks: initialTracks, jobId, onRemixDone }: Pr
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-text-muted mr-1">Zoom</span>
+            <span className="text-caption-md font-mono uppercase tracking-wider text-text-muted mr-1">Zoom</span>
             <button
               onClick={zoomOut}
-              className="h-7 w-7 rounded-md border border-border-subtle bg-surface-2 text-text-secondary hover:text-text-primary hover:border-accent/30 transition-colors text-sm flex items-center justify-center"
+              className="h-7 w-7 rounded-md border border-border-subtle bg-surface-2 text-text-secondary hover:text-text-primary hover:border-accent/30 transition-colors text-body-md flex items-center justify-center"
             >
               -
             </button>
             <button
               onClick={zoomIn}
-              className="h-7 w-7 rounded-md border border-border-subtle bg-surface-2 text-text-secondary hover:text-text-primary hover:border-accent/30 transition-colors text-sm flex items-center justify-center"
+              className="h-7 w-7 rounded-md border border-border-subtle bg-surface-2 text-text-secondary hover:text-text-primary hover:border-accent/30 transition-colors text-body-md flex items-center justify-center"
             >
               +
             </button>
@@ -234,7 +234,7 @@ export function TimelineEditor({ tracks: initialTracks, jobId, onRemixDone }: Pr
                   style={{ left: m.ms * pxPerMs }}
                 >
                   <div className="w-px h-2.5 bg-text-muted/30" />
-                  <span className="text-[9px] font-mono text-text-muted/50 mt-0.5 select-none">
+                  <span className="text-caption-sm font-mono text-text-muted/50 mt-0.5 select-none">
                     {m.label}
                   </span>
                 </div>
@@ -253,16 +253,16 @@ export function TimelineEditor({ tracks: initialTracks, jobId, onRemixDone }: Pr
                       <div className="sticky left-0 z-[var(--z-sticky)] w-36 shrink-0 flex flex-col justify-center gap-1.5 px-3 py-2 bg-surface-1/90 backdrop-blur-sm border-r border-border-subtle">
                         <div className="flex items-center gap-2">
                           <span className={cn(
-                            "inline-flex h-5 w-5 items-center justify-center rounded text-[9px] font-mono font-bold",
+                            "inline-flex h-5 w-5 items-center justify-center rounded text-caption-sm font-mono font-bold",
                             colors.bg, colors.text,
                           )}>
                             {TYPE_ICONS[track.type]}
                           </span>
-                          <span className={cn("text-[10px] font-mono uppercase tracking-wider", colors.text)}>
+                          <span className={cn("text-caption-md font-mono uppercase tracking-wider", colors.text)}>
                             {TYPE_LABELS[track.type]}
                           </span>
                         </div>
-                        <span className="text-[11px] text-text-secondary truncate" title={track.label}>
+                        <span className="text-label-sm text-text-secondary truncate" title={track.label}>
                           {track.label}
                         </span>
                         {/* Volume slider */}
@@ -280,7 +280,7 @@ export function TimelineEditor({ tracks: initialTracks, jobId, onRemixDone }: Pr
                             className="w-full h-1 accent-current appearance-none rounded-full bg-surface-3 cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-current"
                             style={{ color: colors.wave }}
                           />
-                          <span className="text-[9px] font-mono text-text-muted w-7 text-right tabular-nums">
+                          <span className="text-caption-sm font-mono text-text-muted w-7 text-right tabular-nums">
                             {Math.round(track.volume * 100)}
                           </span>
                         </div>
@@ -313,7 +313,7 @@ export function TimelineEditor({ tracks: initialTracks, jobId, onRemixDone }: Pr
 
                           {/* Label overlay */}
                           <div className="absolute inset-0 flex items-end px-2 pb-1.5 pointer-events-none">
-                            <span className={cn("text-[9px] font-mono uppercase tracking-wider opacity-60", colors.text)}>
+                            <span className={cn("text-caption-sm font-mono uppercase tracking-wider opacity-60", colors.text)}>
                               {formatMs(track.start_ms)}
                             </span>
                           </div>

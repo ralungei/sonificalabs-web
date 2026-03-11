@@ -131,7 +131,7 @@ export function TransportBar({
       </button>
 
       {/* Time */}
-      <div className="flex items-baseline gap-1 font-mono text-sm tabular-nums tracking-wide min-w-[110px]">
+      <div className="flex items-baseline gap-1 font-mono text-body-md tabular-nums tracking-wide min-w-[110px]">
         <span ref={timeRef} className="text-text-primary">
           0:00.0
         </span>
@@ -143,7 +143,7 @@ export function TransportBar({
 
       {/* Loading */}
       {!isLoaded && (
-        <span className="text-xs font-body text-contrast/50 animate-pulse shrink-0">
+        <span className="text-label-md font-body text-contrast/50 animate-pulse shrink-0">
           Cargando pistas...
         </span>
       )}
@@ -153,7 +153,7 @@ export function TransportBar({
         onClick={onMasterize}
         disabled={isRemixing || !isLoaded}
         className={cn(
-          "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-body font-semibold uppercase tracking-wider transition-all duration-200 shrink-0",
+          "flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-label-md font-body font-semibold uppercase tracking-wider transition-all duration-200 shrink-0",
           isRemixing || !isLoaded
             ? "bg-surface-2 text-contrast/20 border border-transparent cursor-not-allowed"
             : "bg-accent/15 text-accent border border-accent/20 hover:bg-accent/25",

@@ -92,7 +92,7 @@ export default function AccountPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <h1 className="text-2xl font-brand text-contrast mb-8">{t("title")}</h1>
+          <h1 className="text-display-sm md:text-display-md font-brand text-contrast mb-8">{t("title")}</h1>
 
           {/* Profile card */}
           <div className="rounded-2xl border border-contrast/[0.08] bg-surface-1/60 backdrop-blur-sm p-6 mb-6">
@@ -105,29 +105,29 @@ export default function AccountPage() {
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <div className="h-14 w-14 rounded-full bg-accent/20 flex items-center justify-center text-xl text-accent font-semibold">
+                <div className="h-14 w-14 rounded-full bg-accent/20 flex items-center justify-center text-heading-md text-accent font-semibold">
                   {session.user?.name?.[0]?.toUpperCase() || "?"}
                 </div>
               )}
               <div>
                 <p className="text-contrast font-medium">{session.user?.name}</p>
-                <p className="text-sm text-text-secondary">{session.user?.email}</p>
+                <p className="text-body-md text-text-secondary">{session.user?.email}</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-2 gap-4 text-body-md">
               <div>
-                <p className="text-text-muted text-xs mb-1">{t("plan")}</p>
+                <p className="text-text-muted text-label-md mb-1">{t("plan")}</p>
                 <p className="text-contrast font-medium">
                   {PLAN_LABELS[account?.plan ?? "free"] ?? account?.plan ?? "Free"}
                 </p>
               </div>
               <div>
-                <p className="text-text-muted text-xs mb-1">{t("creditsUsed")}</p>
+                <p className="text-text-muted text-label-md mb-1">{t("creditsUsed")}</p>
                 <p className="text-contrast font-medium">{account?.creditsUsed ?? 0} / {account?.creditsLimit ?? 0}</p>
               </div>
               <div className="col-span-2">
-                <p className="text-text-muted text-xs mb-1">{t("memberSince")}</p>
+                <p className="text-text-muted text-label-md mb-1">{t("memberSince")}</p>
                 <p className="text-contrast font-medium">
                   {account?.createdAt
                     ? new Date(account.createdAt).toLocaleDateString(locale, {
@@ -149,7 +149,7 @@ export default function AccountPage() {
               : null;
             return (
               <div className="rounded-2xl border border-amber-500/30 bg-amber-500/[0.06] p-5 mb-6">
-                <p className="text-sm text-amber-400">
+                <p className="text-body-md text-amber-400">
                   {dateStr
                     ? t("pendingDowngrade", { plan: planLabel, date: dateStr })
                     : t("pendingDowngradeNoDate", { plan: planLabel })}
@@ -161,7 +161,7 @@ export default function AccountPage() {
           {/* Subscription management */}
           {account && account.plan !== "free" && (
             <div className="rounded-2xl border border-contrast/[0.08] bg-surface-1/60 backdrop-blur-sm p-6 mb-6">
-              <h2 className="text-sm font-semibold text-text-primary mb-4">{t("subscription")}</h2>
+              <h2 className="text-body-md font-semibold text-text-primary mb-4">{t("subscription")}</h2>
               <button
                 onClick={async () => {
                   setManagingSubscription(true);
@@ -182,11 +182,11 @@ export default function AccountPage() {
                   }
                 }}
                 disabled={managingSubscription}
-                className="px-4 py-2 rounded-lg text-xs font-semibold bg-contrast/[0.06] text-text-primary border border-contrast/[0.1] hover:bg-contrast/[0.1] transition-colors cursor-pointer disabled:opacity-50"
+                className="px-4 py-2 rounded-lg text-label-md font-semibold bg-contrast/[0.06] text-text-primary border border-contrast/[0.1] hover:bg-contrast/[0.1] transition-colors cursor-pointer disabled:opacity-50"
               >
                 {managingSubscription ? t("managingSubscription") : t("manageSubscription")}
               </button>
-              <p className="text-[11px] text-text-muted mt-2">
+              <p className="text-label-sm text-text-muted mt-2">
                 {t("cancelSubscription")}
               </p>
             </div>
@@ -194,13 +194,13 @@ export default function AccountPage() {
 
           {/* Danger zone */}
           <div className="rounded-2xl border border-red-500/20 bg-red-500/[0.04] p-6">
-            <h2 className="text-sm font-semibold text-red-400 mb-2">{t("dangerZone")}</h2>
-            <p className="text-xs text-text-secondary mb-4">
+            <h2 className="text-body-md font-semibold text-red-400 mb-2">{t("dangerZone")}</h2>
+            <p className="text-label-md text-text-secondary mb-4">
               {t("dangerDescription")}
             </p>
             <button
               onClick={() => setShowDeleteDialog(true)}
-              className="px-4 py-2 rounded-lg text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-lg text-label-md font-semibold bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors cursor-pointer"
             >
               {t("deleteAccount")}
             </button>
@@ -218,7 +218,7 @@ export default function AccountPage() {
               <h3 className="text-contrast font-semibold mb-2">
                 {t("confirmDeletion")}
               </h3>
-              <p className="text-xs text-text-secondary mb-4">
+              <p className="text-label-md text-text-secondary mb-4">
                 {t.rich("typeDeleteConfirm", {
                   word: (chunks) => <span className="text-red-400 font-mono font-semibold">{t("deleteWord")}</span>,
                 })}
@@ -228,11 +228,11 @@ export default function AccountPage() {
                 value={confirmText}
                 onChange={(e) => setConfirmText(e.target.value)}
                 placeholder={t("typePlaceholder")}
-                className="w-full px-3 py-2 rounded-lg bg-surface-0 border border-contrast/[0.08] text-contrast text-sm placeholder:text-text-muted focus:outline-none focus:border-red-500/50 mb-4"
+                className="w-full px-3 py-2 rounded-lg bg-surface-0 border border-contrast/[0.08] text-contrast text-body-md placeholder:text-text-muted focus:outline-none focus:border-red-500/50 mb-4"
                 autoFocus
               />
               {error && (
-                <p className="text-xs text-red-400 mb-3">{error}</p>
+                <p className="text-label-md text-red-400 mb-3">{error}</p>
               )}
               <div className="flex gap-3 justify-end">
                 <button
@@ -241,14 +241,14 @@ export default function AccountPage() {
                     setConfirmText("");
                     setError(null);
                   }}
-                  className="px-4 py-2 rounded-lg text-xs text-text-secondary hover:text-contrast transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-lg text-label-md text-text-secondary hover:text-contrast transition-colors cursor-pointer"
                 >
                   {t("cancel")}
                 </button>
                 <button
                   onClick={handleDelete}
                   disabled={confirmText !== t("deleteWord") || deleting}
-                  className="px-4 py-2 rounded-lg text-xs font-semibold bg-red-500 text-white hover:bg-red-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  className="px-4 py-2 rounded-lg text-label-md font-semibold bg-red-500 text-white hover:bg-red-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {deleting ? t("deleting") : t("deleteAccount")}
                 </button>

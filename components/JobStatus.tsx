@@ -82,7 +82,7 @@ export function JobStatus({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.25 }}
-            className="text-lg font-body font-semibold uppercase tracking-[0.25em] text-contrast"
+            className="text-heading-sm font-body font-semibold uppercase tracking-[0.25em] text-contrast"
           >
             {phaseLabel}
           </motion.h2>
@@ -95,7 +95,7 @@ export function JobStatus({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.2 }}
-            className="text-sm text-contrast/80 text-center"
+            className="text-body-md text-contrast/80 text-center"
           >
             {displayText}
           </motion.p>

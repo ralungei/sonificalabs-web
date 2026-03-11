@@ -9,9 +9,9 @@ export function BackgroundBeams({
   colors,
   waveWidth,
   backgroundFill,
-  blur = 10,
+  blur = 0,
   speed = "slow",
-  waveOpacity = 0.5,
+  waveOpacity = 0.3,
 }: {
   className?: string;
   colors?: string[];
@@ -35,14 +35,14 @@ export function BackgroundBeams({
 
   const waveColors = colors ?? [
     ACCENT.base,
-    "#d47a2a",
-    "#c06020",
-    "#e8c868",
-    "#a86828",
+    ACCENT.dim,
+    "#1A8A78",
+    ACCENT.bright,
+    "#2D5A3D",
   ];
 
-  const fill = backgroundFill ?? "#060608";
-  const lineWidth = waveWidth ?? 50;
+  const fill = backgroundFill ?? "#FFFFFF";
+  const lineWidth = waveWidth ?? 2;
 
   const drawWave = useCallback(
     (n: number) => {

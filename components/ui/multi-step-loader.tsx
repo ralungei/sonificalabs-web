@@ -68,7 +68,7 @@ export function MultiStepLoader({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
             className={cn(
-              "flex items-center gap-3 text-sm",
+              "flex items-center gap-3 text-body-md",
               isComplete && "text-emerald-400",
               isCurrent && "text-yellow-400",
               !isComplete && !isCurrent && "text-zinc-600",

@@ -302,6 +302,102 @@
     "ctaLine": "Tu primera producción va por mi cuenta.",
     "ctaButton": "Producir mi primer audio"
   },
+  "footer": {
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "copyright": "© 2026 SonificaLabs"
+  },
+  "privacy": {
+    "title": "Política de privacidad",
+    "lastUpdated": "Última actualización: 11 de marzo de 2026",
+    "controller": "Responsable del tratamiento",
+    "controllerText": "SonificaLabs es un proyecto de Ras Alungei. Puedes contactarnos en info@sonificalabs.com para cualquier consulta relacionada con tus datos personales.",
+    "dataCollected": "Datos que recogemos",
+    "dataCollectedText": "Cuando usas SonificaLabs, recogemos los siguientes datos:",
+    "dataItems": [
+      "Nombre y correo electrónico (a través de Google OAuth al iniciar sesión)",
+      "Datos de uso: producciones realizadas, créditos consumidos y plan activo",
+      "Archivos de audio generados por el servicio",
+      "Datos de pago procesados por Stripe (no almacenamos números de tarjeta)"
+    ],
+    "purpose": "Para qué usamos tus datos",
+    "purposeItems": [
+      "Proporcionarte el servicio de producción de audio (base legal: ejecución de contrato)",
+      "Gestionar pagos y suscripciones a través de Stripe (base legal: ejecución de contrato)",
+      "Cumplir obligaciones fiscales y legales (base legal: obligación legal)",
+      "Prevenir fraude y abuso del servicio (base legal: interés legítimo)"
+    ],
+    "thirdParties": "Terceros con acceso a tus datos",
+    "thirdPartiesText": "Compartimos datos con los siguientes servicios, necesarios para el funcionamiento de la plataforma:",
+    "thirdPartyItems": [
+      "Google (autenticación OAuth)",
+      "Stripe (procesamiento de pagos — ver su política de privacidad en stripe.com/privacy)",
+      "Anthropic / Claude (generación de guiones con IA — recibe el texto de tus prompts)",
+      "ElevenLabs (síntesis de voz — recibe los textos de las voces generadas)",
+      "Cloudflare (alojamiento, almacenamiento de archivos y base de datos)"
+    ],
+    "thirdPartiesTransfer": "Estos servicios pueden estar ubicados fuera del EEE (Estados Unidos). Las transferencias se amparan en el EU-US Data Privacy Framework y/o Cláusulas Contractuales Tipo.",
+    "retention": "Conservación de datos",
+    "retentionItems": [
+      "Datos de cuenta: mientras tu cuenta esté activa. Tras su eliminación, se borran en un plazo de 30 días.",
+      "Archivos de audio: se conservan mientras tu cuenta esté activa.",
+      "Datos de facturación: 5 años tras la transacción (obligación fiscal española)."
+    ],
+    "rights": "Tus derechos",
+    "rightsText": "Como usuario en la UE, tienes derecho a acceder, rectificar, suprimir, limitar y portar tus datos personales, así como a oponerte a su tratamiento. Para ejercer estos derechos, escríbenos a info@sonificalabs.com. También puedes presentar una reclamación ante la Agencia Española de Protección de Datos (aepd.es).",
+    "cookies": "Cookies",
+    "cookiesText": "SonificaLabs solo usa una cookie de sesión estrictamente necesaria para mantener tu sesión iniciada. No usamos cookies de analítica, publicidad ni seguimiento.",
+    "minors": "Menores",
+    "minorsText": "El servicio está dirigido a mayores de 14 años. No recogemos datos de menores de esa edad de forma intencionada.",
+    "changes": "Cambios en esta política",
+    "changesText": "Si modificamos esta política, publicaremos la versión actualizada en esta página. Para cambios significativos, te notificaremos por correo electrónico."
+  },
+  "terms": {
+    "title": "Términos de uso",
+    "lastUpdated": "Última actualización: 11 de marzo de 2026",
+    "legalNotice": "Aviso legal",
+    "legalNoticeText": "SonificaLabs es un proyecto de Ras Alungei con domicilio en España. Contacto: info@sonificalabs.com.",
+    "service": "El servicio",
+    "serviceText": "SonificaLabs es una plataforma de producción de audio con inteligencia artificial. El usuario introduce un texto descriptivo y el sistema genera automáticamente un audio con voces, música, efectos de sonido y mezcla.",
+    "account": "Cuenta y acceso",
+    "accountItems": [
+      "Para usar el servicio necesitas crear una cuenta mediante Google OAuth.",
+      "Eres responsable de la actividad de tu cuenta.",
+      "Nos reservamos el derecho de suspender o eliminar cuentas que infrinjan estos términos."
+    ],
+    "pricing": "Precios y pagos",
+    "pricingItems": [
+      "Los precios se muestran en euros y no incluyen IVA salvo que se indique lo contrario.",
+      "Los pagos se procesan a través de Stripe. SonificaLabs no almacena datos de tarjeta.",
+      "Las suscripciones se renuevan automáticamente cada mes. Los créditos no usados no se acumulan entre ciclos.",
+      "Puedes cancelar tu suscripción en cualquier momento desde tu cuenta. Mantendrás el acceso hasta el final del periodo facturado.",
+      "No se realizan reembolsos por periodos parciales, salvo lo exigido por la legislación aplicable."
+    ],
+    "withdrawal": "Derecho de desistimiento",
+    "withdrawalText": "Al iniciar una producción de audio, aceptas que el servicio comience inmediatamente y renuncias al derecho de desistimiento de 14 días para esa producción concreta, conforme al artículo 103 del Real Decreto Legislativo 1/2007.",
+    "ip": "Propiedad intelectual",
+    "ipItems": [
+      "La plataforma, su código, diseño y marca son propiedad de SonificaLabs.",
+      "Tus prompts son tuyos.",
+      "Sobre el audio generado: te concedemos una licencia de uso amplia (incluido uso comercial en planes de pago). SonificaLabs no reclama derechos sobre tus producciones."
+    ],
+    "ai": "Contenido generado por IA",
+    "aiText": "El audio se genera mediante inteligencia artificial (Anthropic Claude para guiones, ElevenLabs para voces). El resultado no está garantizado en cuanto a precisión, originalidad o idoneidad. Eres responsable de revisar el contenido antes de publicarlo.",
+    "acceptable": "Uso aceptable",
+    "acceptableItems": [
+      "No generar contenido ilegal, difamatorio o que incite al odio.",
+      "No intentar extraer, revender o redistribuir el servicio.",
+      "No abusar del sistema de créditos ni crear cuentas múltiples para obtener créditos gratuitos."
+    ],
+    "availability": "Disponibilidad",
+    "availabilityText": "SonificaLabs se ofrece tal cual ('as is'). No garantizamos disponibilidad ininterrumpida. Podemos modificar o discontinuar funcionalidades con aviso razonable.",
+    "liability": "Limitación de responsabilidad",
+    "liabilityText": "SonificaLabs no será responsable de daños indirectos, incidentales o consecuentes derivados del uso del servicio. Nuestra responsabilidad máxima se limita al importe pagado por el usuario en los últimos 12 meses. Esta limitación no aplica en casos de dolo o negligencia grave.",
+    "law": "Legislación y jurisdicción",
+    "lawText": "Estos términos se rigen por la legislación española. Para cualquier disputa, serán competentes los juzgados y tribunales del domicilio del usuario si es consumidor, o los de España en caso contrario.",
+    "changes": "Modificaciones",
+    "changesText": "Podemos actualizar estos términos. Publicaremos los cambios en esta página y, para cambios relevantes, te avisaremos por correo. El uso continuado del servicio tras la notificación implica la aceptación de los nuevos términos."
+  },
   "localeSwitcher": {
     "es": "ES",
     "en": "EN"
