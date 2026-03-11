@@ -585,7 +585,7 @@ export default function Home() {
       <Navbar />
 
       {/* ── Hero with circle demos on sides ─────────────────── */}
-      <section className="relative z-10 w-full min-h-screen flex items-start justify-center px-4 pt-16 sm:pt-[18vh]">
+      <section className="relative z-10 w-full min-h-screen flex items-start justify-center px-4 pt-28 sm:pt-[18vh]">
         <div className="w-full max-w-7xl flex items-center justify-center gap-14 xl:gap-20">
 
           {/* Left column — alternating offsets */}
@@ -634,7 +634,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.5 }}
-              className="block mt-3 text-sm sm:text-base text-contrast/35 font-body tracking-normal max-w-md"
+              className="block -mt-2 text-sm sm:text-base text-contrast/35 font-body tracking-normal max-w-md"
             >
               {t("heroSub")}
             </motion.span>
