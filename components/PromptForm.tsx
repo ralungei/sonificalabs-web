@@ -122,6 +122,8 @@ function DebugDropdown({
                 <option value="claude-opus-4-6">Opus 4.6</option>
                 <option value="grok-3">Grok 3</option>
                 <option value="grok-4-1-fast-reasoning">Grok 4.1 Fast</option>
+                <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro</option>
+                <option value="gemini-3.1-flash-lite-preview">Gemini 3.1 Flash Lite</option>
               </select>
             </div>
             <div>
