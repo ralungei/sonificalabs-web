@@ -575,11 +575,14 @@ export default function Home() {
 
   return (
     <main className="relative flex flex-col items-center overflow-hidden">
-      <div className="absolute top-[32vh] left-0 z-0 w-full pointer-events-none">
-        <img
+      <div className="absolute top-[32vh] left-0 z-0 w-full pointer-events-none overflow-hidden">
+        <motion.img
           alt=""
           className="w-full h-auto"
           src="/waves-bg.jpg"
+          initial={{ scale: 1.05 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
         />
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent" />
       </div>
