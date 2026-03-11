@@ -415,11 +415,12 @@ export function PromptForm({
           <textarea
             ref={textareaRef}
             value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
+            onChange={(e) => setPrompt(e.target.value.slice(0, 3500))}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             onKeyDown={handleKeyDown}
             autoFocus
+            maxLength={3500}
             rows={2}
             className="w-full bg-transparent px-5 pt-4 pb-3 text-text-primary placeholder-transparent outline-none text-base font-body resize-none"
             disabled={isLoading}
@@ -446,6 +447,12 @@ export function PromptForm({
           {!prompt && isFocused && (
             <span className="pointer-events-none absolute top-4 left-5 text-base text-contrast/40">
               {t("describePlaceholder")}
+            </span>
+          )}
+
+          {prompt.length > 2800 && (
+            <span className={`absolute bottom-1 right-3 text-[10px] font-mono ${prompt.length >= 3500 ? "text-red-400" : "text-contrast/30"}`}>
+              {prompt.length}/3500
             </span>
           )}
         </div>
