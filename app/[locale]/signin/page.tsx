@@ -35,12 +35,12 @@ function SignInContent() {
         <div className="rounded-2xl border border-contrast/[0.08] bg-surface-1/80 backdrop-blur-xl p-8 shadow-2xl">
           {/* Logo */}
           <div className="flex flex-col items-center mb-8">
-            <div className="flex items-center gap-2.5 mb-3">
+            <Link href="/" className="flex items-center gap-2.5 mb-3">
               <LogoIcon className="h-8 w-auto text-contrast" />
               <span className="text-heading-md font-body tracking-normal">
                 <span className="text-contrast font-bold">sonifica</span><span className="text-contrast font-light">labs</span>
               </span>
-            </div>
+            </Link>
             <p className="text-body-md text-text-secondary text-center">
               {t("subtitle")}
             </p>
@@ -73,7 +73,7 @@ function SignInContent() {
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => signIn("google", { callbackUrl })}
-            className="w-full flex items-center justify-center gap-3 rounded-xl bg-white px-4 py-3 text-body-md font-medium text-zinc-800 transition-all duration-200 hover:bg-zinc-100 hover:shadow-lg cursor-pointer"
+            className="w-full flex items-center justify-center gap-3 rounded-xl bg-white border border-contrast/[0.08] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] px-4 py-3 text-body-md font-medium text-zinc-800 transition-all duration-200 hover:bg-zinc-100 hover:shadow-lg cursor-pointer"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -99,21 +99,12 @@ function SignInContent() {
           {/* Terms */}
           <p className="mt-6 text-caption-md text-text-muted text-center leading-relaxed">
             {t.rich("termsNotice", {
-              terms: (chunks) => <span className="text-text-secondary">{chunks}</span>,
-              privacy: (chunks) => <span className="text-text-secondary">{chunks}</span>,
+              terms: (chunks) => <Link href="/terms" className="text-text-secondary underline hover:text-text-primary transition-colors">{chunks}</Link>,
+              privacy: (chunks) => <Link href="/privacy" className="text-text-secondary underline hover:text-text-primary transition-colors">{chunks}</Link>,
             })}
           </p>
         </div>
 
-        {/* Back link */}
-        <div className="mt-6 text-center">
-          <Link
-            href="/"
-            className="text-label-md text-text-secondary hover:text-text-primary transition-colors"
-          >
-            {t("backToHome")}
-          </Link>
-        </div>
       </motion.div>
     </div>
   );
