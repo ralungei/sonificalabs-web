@@ -160,7 +160,7 @@ export function Navbar() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 4, scale: 0.97 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute right-0 top-full mt-1.5 w-20 rounded-xl border border-contrast/[0.08] bg-surface-2/95 backdrop-blur-xl shadow-xl py-1 z-[var(--z-dropdown)]"
+                  className="absolute right-0 top-full mt-1.5 w-20 rounded-xl border border-contrast/[0.08] bg-white/95 backdrop-blur-xl shadow-xl py-1 z-[var(--z-dropdown)]"
                 >
                   {locales.map((l) => (
                     <button
@@ -212,7 +212,7 @@ export function Navbar() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 4, scale: 0.97 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-full mt-2 w-52 rounded-xl border border-contrast/[0.08] bg-surface-2/95 backdrop-blur-xl shadow-xl py-1 z-[var(--z-dropdown)]"
+                    className="absolute right-0 top-full mt-2 w-52 rounded-xl border border-contrast/[0.08] bg-white/95 backdrop-blur-xl shadow-xl py-1 z-[var(--z-dropdown)]"
                   >
                     <div className="px-3 py-2.5 border-b border-contrast/[0.06]">
                       <p className="text-label-md text-text-secondary truncate">{session.user.email}</p>
