@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -80,6 +81,7 @@ export default function TermsPage() {
           <p className="text-body-md text-contrast/60 leading-relaxed">{t("changesText")}</p>
         </Section>
       </article>
+      <Footer />
     </main>
   );
 }

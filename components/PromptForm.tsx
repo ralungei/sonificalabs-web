@@ -397,7 +397,7 @@ export function PromptForm({
       <div
         className={cn(
           "relative rounded-2xl border transition-all duration-500",
-          "bg-surface-1/85 backdrop-blur-md",
+          "bg-surface-1/75 backdrop-blur-md",
           "border-border-subtle shadow-[0_1px_2px_rgba(0,0,0,0.04),0_2px_8px_rgba(0,0,0,0.06)]",
         )}
       >
@@ -496,7 +496,7 @@ export function PromptForm({
               session
                 ? <span className="hidden sm:block h-4 w-16 rounded bg-contrast/[0.06] animate-pulse" />
                 : <span className="text-[11px] text-contrast/50 whitespace-nowrap hidden sm:flex items-center gap-1.5">
-                    {t("credits", { count: 20 })}
+                    <span className="font-bold">20 {t("creditsUnit")}</span>
                   </span>
             ) : remaining > 0 ? (
               <span className="text-[11px] text-contrast/50 whitespace-nowrap hidden sm:flex items-center gap-1.5">
@@ -505,7 +505,7 @@ export function PromptForm({
                     {plan}
                   </span>
                 )}
-                {t("credits", { count: remaining })}
+                <span className="font-bold">{remaining} {t("creditsUnit")}</span>
               </span>
             ) : (
               <button

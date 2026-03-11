@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Link } from "@/i18n/navigation";
 import { GalaxyButton } from "@/components/GalaxyButton";
+import { Footer } from "@/components/Footer";
 
 /* ── Separator 1 — Filmstrip (editing/video since kid) ────────── */
 
@@ -185,9 +186,9 @@ export default function AboutPage() {
       </section>
 
       {/* ── CTA ───────────────────────────────────────────────── */}
-      <section className="pb-40 px-6 text-center">
+      <section className="pb-20 px-6 text-center">
         <Reveal>
-          <p className="text-contrast/30 text-heading-sm mb-10">{t("ctaLine")}</p>
+          <p className="text-contrast/30 text-heading-sm mb-5">{t("ctaLine")}</p>
           <Link href="/">
             <GalaxyButton>
               {t("ctaButton")}
@@ -195,6 +196,8 @@ export default function AboutPage() {
           </Link>
         </Reveal>
       </section>
+
+      <Footer />
     </main>
   );
 }

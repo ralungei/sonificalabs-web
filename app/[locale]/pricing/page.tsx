@@ -8,7 +8,7 @@ import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 import { apiFetch } from "@/lib/api";
 import { useApiToken } from "@/components/Providers";
-import { LogoIcon } from "@/components/Logo";
+import { Footer } from "@/components/Footer";
 
 /* ── Check icon ────────────────────────────────────────────────── */
 
@@ -490,15 +490,7 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-contrast/[0.06] py-8 text-center">
-        <div className="flex flex-col items-center gap-2">
-          <div className="flex items-center gap-2">
-            <LogoIcon className="h-6 w-auto text-contrast" />
-            <span className="text-heading-sm font-body tracking-normal"><span className="text-contrast font-bold">sonifica</span><span className="text-contrast font-light">labs</span><sup className="text-label-md text-contrast/50 ml-0.5">™</sup></span>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
     </motion.main>
   );

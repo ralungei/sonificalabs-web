@@ -7,7 +7,7 @@
     "manageSubscription": "Manage subscription",
     "signOut": "Sign out",
     "signIn": "Sign in",
-    "admin": "Admin",
+    "admin": "Console",
     "about": "Who we are"
   },
   "home": {
@@ -53,6 +53,7 @@
     "describePlaceholder": "Describe your audio...",
     "remove": "Remove",
     "credits": "{count} credits",
+    "creditsUnit": "credits",
     "upgradePlan": "Upgrade plan",
     "rateLimitWait": "Wait {seconds}s to try again",
     "errorProducing": "Error producing",

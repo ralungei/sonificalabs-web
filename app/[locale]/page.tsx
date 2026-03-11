@@ -10,8 +10,8 @@ import { FlipWords } from "@/components/ui/flip-words";
 
 import { apiFetch } from "@/lib/api";
 import { useApiToken } from "@/components/Providers";
-import { LogoIcon } from "@/components/Logo";
 import { GalaxyButton } from "@/components/GalaxyButton";
+import { Footer } from "@/components/Footer";
 
 /* ── Use-case icons ───────────────────────────────────────────── */
 
@@ -499,7 +499,6 @@ function FadeIn({
 export default function Home() {
   const t = useTranslations("home");
   const tAbout = useTranslations("about");
-  const tFooter = useTranslations("footer");
   const locale = useLocale();
   const router = useRouter();
   const apiToken = useApiToken();
@@ -575,21 +574,18 @@ export default function Home() {
 
   return (
     <main className="relative flex flex-col items-center overflow-hidden">
-      <div className="absolute top-[32vh] left-0 z-0 w-full pointer-events-none overflow-hidden">
+      <div className="absolute top-0 sm:top-[32vh] left-0 z-0 w-full pointer-events-none overflow-hidden">
         <motion.img
           alt=""
-          className="w-full h-auto"
+          className="w-full h-auto min-h-[70vh] object-cover object-top sm:min-h-0 sm:object-fill"
           src="/waves-bg.jpg"
-          initial={{ scale: 1.05 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
         />
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent" />
       </div>
       <Navbar />
 
       {/* ── Hero with circle demos on sides ─────────────────── */}
-      <section className="relative z-10 w-full min-h-screen flex items-start justify-center px-4 pt-[18vh]">
+      <section className="relative z-10 w-full min-h-screen flex items-start justify-center px-4 pt-16 sm:pt-[18vh]">
         <div className="w-full max-w-7xl flex items-center justify-center gap-14 xl:gap-20">
 
           {/* Left column — alternating offsets */}
@@ -661,12 +657,14 @@ export default function Home() {
             transition={{ delay: 0.8 }}
             className="lg:hidden mt-10 w-full"
           >
-            <p className="text-[10px] font-mono text-contrast/60 uppercase tracking-[0.2em] text-center mb-4">
+            <div className="flex justify-center mb-4">
+            <span className="text-[10px] font-mono text-contrast/90 uppercase tracking-[0.2em] px-3 py-1 rounded-full bg-white/70 backdrop-blur-md border border-contrast/10">
               {t("listenExamples")}
-            </p>
+            </span>
+            </div>
             <div className="flex items-center justify-center gap-5 flex-wrap">
               {DEMOS.map((demo, i) => (
-                <DemoCircle key={demo.id} demo={demo} delay={1.5 + i * 0.1} size={80} />
+                <DemoCircle key={demo.id} demo={demo} delay={1.5 + i * 0.1} size={96} />
               ))}
             </div>
           </motion.div>
@@ -693,7 +691,7 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 cursor-pointer p-2 hover:text-accent transition-colors"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 cursor-pointer p-2 hover:text-accent transition-colors hidden lg:block"
         >
           <motion.svg
             animate={{ y: [0, 8, 0] }}
@@ -773,24 +771,7 @@ export default function Home() {
         </FadeIn>
       </section>
 
-      {/* ── Footer ──────────────────────────────────────────── */}
-      <footer className="relative z-10 w-full border-t border-contrast/[0.06] py-8 text-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="flex items-center gap-2">
-            <LogoIcon className="h-6 w-auto text-contrast" />
-            <span className="text-lg font-body tracking-normal">
-              <span className="text-contrast font-bold">sonifica</span><span className="text-contrast font-light">labs</span><sup className="text-xs text-contrast/50 ml-0.5">™</sup>
-            </span>
-          </div>
-          <div className="flex items-center gap-1.5 text-xs text-contrast/35">
-            <span>{t("footer")}</span>
-            <span>·</span>
-            <Link href="/privacy" className="hover:text-contrast/60 transition-colors">{tFooter("privacy")}</Link>
-            <span>·</span>
-            <Link href="/terms" className="hover:text-contrast/60 transition-colors">{tFooter("terms")}</Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </main>
   );
 }
