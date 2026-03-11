@@ -6,7 +6,7 @@ import { useRouter, Link } from "@/i18n/navigation";
 import { Navbar } from "@/components/Navbar";
 import { PromptForm } from "@/components/PromptForm";
 import { PipelineReveal } from "@/components/PipelineReveal";
-import { TextScramble } from "@/components/ui/text-scramble";
+import { FlipWords } from "@/components/ui/flip-words";
 
 import { apiFetch } from "@/lib/api";
 import { useApiToken } from "@/components/Providers";
@@ -628,9 +628,9 @@ export default function Home() {
               className="text-[3.2rem] sm:text-[4.2rem] md:text-[5.5rem] font-black leading-[0.95] -mt-2 font-body"
               style={{ letterSpacing: "-0.04em" }}
             >
-              <TextScramble
+              <FlipWords
                 words={(t("flipWords") as string).split(",")}
-                duration={4000}
+                duration={2000}
                 className="galaxy-text-gradient"
               />
             </motion.span>

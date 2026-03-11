@@ -1,150 +1,54 @@
 "use client";
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import { useTranslations } from "next-intl";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Link } from "@/i18n/navigation";
 import { GalaxyButton } from "@/components/GalaxyButton";
 
-/* ── Sound Wave — oscilloscope line that draws itself ──────────── */
+/* ── Separator 1 — Filmstrip (editing/video since kid) ────────── */
 
-function SoundWave() {
+function FilmstripIcon() {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-
-  // Generate a natural-looking audio waveform path
-  const { path, length } = useMemo(() => {
-    const W = 400;
-    const H = 60;
-    const mid = H / 2;
-    const points: string[] = [`M 0 ${mid}`];
-    const segments = 80;
-
-    for (let i = 1; i <= segments; i++) {
-      const x = (i / segments) * W;
-      const t = i / segments;
-      // Envelope: silence → burst → silence, like a real audio clip
-      const env =
-        Math.sin(t * Math.PI) *
-        (0.4 + 0.6 * Math.sin(t * Math.PI * 3.2)) *
-        (1 - 0.3 * Math.cos(t * Math.PI * 7));
-      // Pseudo-random oscillation
-      const noise = Math.sin(i * 13.7) * 0.5 + Math.sin(i * 7.3) * 0.3 + Math.sin(i * 23.1) * 0.2;
-      const y = mid + noise * env * (mid - 4);
-      points.push(`L ${x.toFixed(1)} ${y.toFixed(1)}`);
-    }
-
-    const d = points.join(" ");
-    // Approximate path length
-    const approxLen = W * 1.4;
-    return { path: d, length: approxLen };
-  }, []);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
 
   return (
-    <div ref={ref} className="relative w-full flex justify-center py-4" aria-hidden>
-      <svg
-        viewBox="0 0 400 60"
-        className="w-full max-w-lg h-16"
-        fill="none"
-        preserveAspectRatio="none"
+    <div ref={ref} className="flex justify-center" aria-hidden>
+      <motion.svg
+        viewBox="0 0 16 16"
+        className="w-24 h-24 text-contrast/50"
+        fill="currentColor"
+        initial={{ opacity: 0, y: 8 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, ease: "easeOut" }}
       >
-        {/* Ghost trace — faint background line */}
-        <motion.path
-          d={path}
-          stroke="var(--color-accent)"
-          strokeWidth="1"
-          strokeOpacity={0.08}
-          fill="none"
-          initial={{ pathLength: 0 }}
-          animate={inView ? { pathLength: 1 } : { pathLength: 0 }}
-          transition={{ duration: 1.8, ease: "easeOut" }}
-        />
-        {/* Main signal line */}
-        <motion.path
-          d={path}
-          stroke="var(--color-accent)"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={
-            inView
-              ? { pathLength: 1, opacity: [0, 0.6, 0.5] }
-              : { pathLength: 0, opacity: 0 }
-          }
-          transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
-        />
-        {/* Bright leading edge glow */}
-        <motion.path
-          d={path}
-          stroke="var(--color-accent-bright)"
-          strokeWidth="3"
-          strokeLinecap="round"
-          fill="none"
-          style={{ filter: "blur(3px)" }}
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={
-            inView
-              ? { pathLength: 1, opacity: [0, 0.3, 0] }
-              : { pathLength: 0, opacity: 0 }
-          }
-          transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
-        />
-      </svg>
+        <path fillRule="evenodd" d="M11.5 3.5h.5A1.5 1.5 0 0 1 13.5 5v.5h-2zm0 3.5v2h2V7zM15 7v4a3 3 0 0 1-3 3H4a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3zm-1.5 3.5h-2v2h.5a1.5 1.5 0 0 0 1.5-1.5zm-3.5-7H6v9h4zm-5.5 9v-2h-2v.5A1.5 1.5 0 0 0 4 12.5zm0-5.5v2h-2V7zm0-1.5h-2V5A1.5 1.5 0 0 1 4 3.5h.5z" clipRule="evenodd" />
+      </motion.svg>
     </div>
   );
 }
 
-/* ── Speaker Rings — concentric pulses from center ─────────────── */
+/* ── Separator 2 — Lightbulb (the idea moment) ───────────────── */
 
-function SpeakerRings() {
+function LightbulbIcon() {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-  const RING_COUNT = 4;
+  const inView = useInView(ref, { once: true, margin: "-40px" });
 
   return (
-    <div ref={ref} className="relative flex items-center justify-center h-24" aria-hidden>
-      {/* Center dot */}
-      <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={inView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
-        transition={{ duration: 0.4, delay: 0.1, type: "spring", bounce: 0.5 }}
-        className="absolute w-2.5 h-2.5 rounded-full bg-accent/50"
-      />
-      {/* Expanding rings */}
-      {Array.from({ length: RING_COUNT }).map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full border border-accent/[var(--ring-opacity)]"
-          style={{
-            "--ring-opacity": `${0.3 - i * 0.06}`,
-            width: `${24 + i * 28}px`,
-            height: `${24 + i * 28}px`,
-          } as React.CSSProperties}
-          initial={{ scale: 0, opacity: 0 }}
-          animate={
-            inView
-              ? { scale: [0, 1.1, 1], opacity: [0, 1, 0.8 - i * 0.15] }
-              : { scale: 0, opacity: 0 }
-          }
-          transition={{
-            duration: 0.8,
-            delay: 0.2 + i * 0.15,
-            ease: [0.25, 0.46, 0.45, 0.94],
-          }}
-        />
-      ))}
-      {/* Soft glow behind */}
-      <motion.div
-        className="absolute w-28 h-28 rounded-full"
-        style={{
-          background: "radial-gradient(circle, var(--color-accent) 0%, transparent 70%)",
-        }}
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={inView ? { opacity: 0.06, scale: 1 } : { opacity: 0, scale: 0.5 }}
-        transition={{ duration: 1.2, delay: 0.3 }}
-      />
+    <div ref={ref} className="flex justify-center" aria-hidden>
+      <motion.svg
+        viewBox="0 0 16 16"
+        className="w-24 h-24 text-accent/60"
+        fill="currentColor"
+        initial={{ opacity: 0, y: 8 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <g>
+          <path fillRule="evenodd" d="M6.26 15.109a4 4 0 0 0 3.48 0l.13-.063a2 2 0 0 0 1.13-1.8v-.468c0-1.352.776-2.557 1.54-3.673a5.5 5.5 0 1 0-9.08 0C4.224 10.221 5 11.426 5 12.779v.467a2 2 0 0 0 1.13 1.801zm2.828-1.35l.13-.064a.5.5 0 0 0 .282-.45v-.467q0-.255.025-.5a5.33 5.33 0 0 1-3.05 0q.024.245.025.5v.467a.5.5 0 0 0 .282.45l.13.063a2.5 2.5 0 0 0 2.176 0m-4.39-5.501c.394.576.891 1.302 1.263 2.148a3.79 3.79 0 0 0 4.078 0c.372-.846.869-1.572 1.264-2.148a4 4 0 1 0-6.605 0" clipRule="evenodd" />
+          <path d="M8 3.5A.75.75 0 0 0 8 5a1 1 0 0 1 1 1a.75.75 0 0 0 1.5 0A2.5 2.5 0 0 0 8 3.5" />
+        </g>
+      </motion.svg>
     </div>
   );
 }
@@ -240,14 +144,14 @@ export default function AboutPage() {
 
       {/* ── Bio sections — each paragraph gets its own block ── */}
       <section className="relative px-6 py-28 md:py-40">
-        <div className="max-w-2xl mx-auto space-y-24 md:space-y-32">
+        <div className="max-w-2xl mx-auto space-y-10 md:space-y-12">
           <Reveal>
             <p className="text-heading-md md:text-heading-lg font-body leading-relaxed text-contrast/70">
               {t("rasBio1")}
             </p>
           </Reveal>
 
-          <SoundWave />
+          <FilmstripIcon />
 
           <Reveal delay={0.05}>
             <p className="text-heading-md md:text-heading-lg font-body leading-relaxed text-contrast/55">
@@ -255,7 +159,7 @@ export default function AboutPage() {
             </p>
           </Reveal>
 
-          <SpeakerRings />
+          <LightbulbIcon />
 
           <Reveal delay={0.05}>
             <p className="text-heading-md md:text-heading-lg font-body leading-relaxed text-contrast/70">
