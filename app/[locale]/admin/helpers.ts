@@ -143,6 +143,24 @@ export function formatMs(ms: number): string {
   return `${(ms / 1000).toFixed(1)}s`;
 }
 
+export function parsePromptMeta(prompt: string) {
+  const durMatch = prompt.match(/\[Duraci[oó]n:\s*([^\]]+)\]/i);
+  const tipoMatch = prompt.match(/\[Tipo:\s*([^\]]+)\]/i);
+  const persMatch = prompt.match(/\[Personajes:\s*(\d+)\]/i);
+  return {
+    requestedDuration: durMatch ? durMatch[1].trim() : null,
+    requestedType: tipoMatch ? tipoMatch[1].trim() : null,
+    requestedPersonajes: persMatch ? parseInt(persMatch[1], 10) : null,
+    cleanPrompt: prompt.replace(/\[[^\]]+\]\s*/g, "").trim(),
+  };
+}
+
+export function parseDurationToMs(dur: string): number {
+  return dur.includes("min")
+    ? parseInt(dur, 10) * 60000
+    : parseInt(dur, 10) * 1000;
+}
+
 export function shortModel(model: string | null): string {
   if (!model) return NONE;
   return model.replace("gemini-3.1-", "g3.").replace("-preview", "").replace("claude-", "c.").replace("sonnet-", "s");
