@@ -119,9 +119,7 @@ export interface LabTestRun {
   prompt: string;
   results: LabResult[];
   createdAt: string;
-  // Blind A/B
-  blindOrder?: number[];
-  blindWinner?: number | null;
+
 }
 
 export type FindingType = "bug" | "improvement" | "prompt-change" | "observation";
@@ -137,7 +135,7 @@ export interface LabFinding {
   resolved: boolean;
 }
 
-export type LabTab = "pipeline" | "tests" | "results" | "blind" | "findings";
+export type LabTab = "pipeline" | "tests" | "results" | "findings";
 
 export interface TestScenario {
   id: string;

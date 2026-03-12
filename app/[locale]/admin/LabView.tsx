@@ -5,14 +5,14 @@ import { apiFetch, apiUrl } from "@/lib/api";
 import type { LabResult, LabTestRun, LabFinding, FindingType, LabTab, EscaletaTrack, TimingDecision } from "./types";
 import {
   LAB_MODELS, LAB_CATEGORIES, TEST_SCENARIOS, FINDING_STYLES,
-  MODEL_DOT_COLORS, TRACK_COLORS, NONE,
+  TRACK_COLORS, NONE,
 } from "./constants";
 import {
   loadLabRuns, saveLabRuns, loadFindings, saveFindings,
   analyzeResult, productionTimeMs, formatProdTime, qaScoreClass,
-  timeAgo, formatDuration, formatMs,
+  timeAgo, formatDuration, formatMs, parsePromptMeta, parseDurationToMs,
 } from "./helpers";
-import { StatusChip, EmptyState, FindingCard, StarRating, ComplexityBadge } from "./shared-components";
+import { StatusChip, EmptyState, FindingCard, ComplexityBadge } from "./shared-components";
 import { PipelineView } from "./PipelineView";
 
 export function LabView({ apiToken }: { apiToken: string | null }) {
@@ -20,8 +20,9 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
   const [runs, setRuns] = useState<LabTestRun[]>([]);
   const [findings, setFindings] = useState<LabFinding[]>([]);
   const [expandedRun, setExpandedRun] = useState<string | null>(null);
-  const [expandedResult, setExpandedResult] = useState<string | null>(null);
+
   const [runningScenarios, setRunningScenarios] = useState<Set<string>>(new Set());
+  const activeStreams = useRef<Map<string, EventSource>>(new Map());
 
   // Finding form
   const [showFindingForm, setShowFindingForm] = useState(false);
@@ -87,9 +88,13 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
     return new Promise<void>((resolve) => {
       const sseUrl = apiUrl(`/p/${jobId}/stream`, apiToken);
       const es = new EventSource(sseUrl);
+      const streamKey = `${runId}-${resultIndex}`;
+      activeStreams.current.set(streamKey, es);
+
+      const cleanup = () => { es.close(); activeStreams.current.delete(streamKey); };
 
       const timeout = setTimeout(() => {
-        es.close();
+        cleanup();
         onUpdate({ status: "error", error: "Timeout (5 min)", finishedAt: new Date().toISOString() });
         resolve();
       }, 300_000);
@@ -104,13 +109,23 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
           if (d.timing) intermediate.timing = d.timing;
 
           if (d.status === "done") {
-            es.close();
+            cleanup();
             clearTimeout(timeout);
-            const url = d.audioUrl ? (d.audioUrl.startsWith("http") ? d.audioUrl : apiUrl(d.audioUrl, apiToken)) : null;
-            onUpdate({ status: "done", audioUrl: url, durationMs: d.durationMs ?? null, error: null, finishedAt: new Date().toISOString(), tracks: d.tracks ?? null, ...intermediate });
+            // Always store the API-relative path so audio works when reloading from localStorage
+            let storedUrl: string | null = null;
+            if (d.audioUrl) {
+              if (d.audioUrl.startsWith("http")) {
+                // Extract jobId from R2 URL or full URL, rebuild as API path
+                const match = d.audioUrl.match(/([a-zA-Z0-9_-]{12})\/mix\.mp3/);
+                storedUrl = match ? `/audio/${match[1]}/mix.mp3` : d.audioUrl;
+              } else {
+                storedUrl = d.audioUrl;
+              }
+            }
+            onUpdate({ status: "done", audioUrl: storedUrl, durationMs: d.durationMs ?? null, error: null, finishedAt: new Date().toISOString(), tracks: d.tracks ?? null, ...intermediate });
             resolve();
           } else if (d.status === "error") {
-            es.close();
+            cleanup();
             clearTimeout(timeout);
             onUpdate({ status: "error", error: d.error || "Error desconocido", finishedAt: new Date().toISOString(), ...intermediate });
             resolve();
@@ -121,7 +136,7 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
       };
 
       es.onerror = () => {
-        es.close();
+        cleanup();
         clearTimeout(timeout);
         onUpdate({ status: "error", error: "Conexion perdida", finishedAt: new Date().toISOString() });
         resolve();
@@ -179,6 +194,25 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
     setRunningScenarios((prev) => { const n = new Set(prev); n.delete(scenario.id); return n; });
   }, [apiToken, runningScenarios, produceJob]);
 
+  const cancelResult = useCallback((runId: string, ri: number, jobId?: string) => {
+    const streamKey = `${runId}-${ri}`;
+    const es = activeStreams.current.get(streamKey);
+    if (es) { es.close(); activeStreams.current.delete(streamKey); }
+    if (jobId && apiToken) {
+      apiFetch(`/cancel/${jobId}`, { method: "POST" }, apiToken).catch(() => {});
+    }
+    setRuns((prev) => {
+      const updated = prev.map((r) => {
+        if (r.id !== runId) return r;
+        const nr = [...r.results];
+        nr[ri] = { ...nr[ri], status: "error", error: "Cancelado", finishedAt: new Date().toISOString() };
+        return { ...r, results: nr };
+      });
+      saveLabRuns(updated);
+      return updated;
+    });
+  }, [apiToken]);
+
   const saveDebounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const updateResult = (runId: string, ri: number, updates: Partial<LabResult>, debounce = false) => {
     setRuns((prev) => {
@@ -203,38 +237,13 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
     if (runningAll || !apiToken) return;
     setRunningAll(true);
     setLabTab("results");
-    for (const scenario of TEST_SCENARIOS) {
-      if (!runningScenarios.has(scenario.id)) {
-        await runScenario(scenario);
-      }
-    }
+    await Promise.allSettled(
+      TEST_SCENARIOS.filter(s => !runningScenarios.has(s.id)).map(s => runScenario(s))
+    );
     setRunningAll(false);
   }, [runningAll, apiToken, runScenario, runningScenarios]);
 
-  // Blind A/B: set random order for a run
-  const startBlindCompare = (runId: string) => {
-    setRuns((prev) => {
-      const updated = prev.map((r) => {
-        if (r.id !== runId) return r;
-        const order = Math.random() > 0.5 ? [0, 1] : [1, 0];
-        return { ...r, blindOrder: order, blindWinner: null };
-      });
-      saveLabRuns(updated);
-      return updated;
-    });
-  };
 
-  const pickBlindWinner = (runId: string, blindIndex: number) => {
-    setRuns((prev) => {
-      const updated = prev.map((r) => {
-        if (r.id !== runId || !r.blindOrder) return r;
-        const realIndex = r.blindOrder[blindIndex];
-        return { ...r, blindWinner: realIndex };
-      });
-      saveLabRuns(updated);
-      return updated;
-    });
-  };
 
   const addFinding = () => {
     if (!findingTitle.trim()) return;
@@ -270,7 +279,6 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
           { key: "pipeline" as LabTab, label: "Pipeline", icon: "M3 3h18v18H3z" },
           { key: "tests" as LabTab, label: "Escenarios", icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" },
           { key: "results" as LabTab, label: `Resultados (${runs.length})`, icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6m6 0h6m-6 0V9a2 2 0 012-2h2a2 2 0 012 2v10m6 0v-4a2 2 0 00-2-2h-2a2 2 0 00-2 2v4" },
-          { key: "blind" as LabTab, label: "Ciego A/B", icon: "M15 12a3 3 0 11-6 0 3 3 0 016 0z M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7z" },
           { key: "findings" as LabTab, label: `Hallazgos${openFindings > 0 ? ` (${openFindings})` : ""}`, icon: "M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
         ]).map((t) => (
           <button key={t.key} onClick={() => setLabTab(t.key)}
@@ -286,8 +294,8 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
       </nav>
 
       {/* Content area */}
-      <div className="flex-1 bg-neutral-50 p-8 overflow-y-auto">
-        <div className="max-w-[1100px]">
+      <div className="flex-1 min-w-0 bg-neutral-50 p-8 overflow-y-auto">
+        <div className="max-w-[1100px] min-w-0">
 
       {/* Pipeline tab */}
       {labTab === "pipeline" && <PipelineView apiToken={apiToken} />}
@@ -372,32 +380,59 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
           {runs.length === 0 ? (
             <EmptyState text="Ejecuta un escenario desde la pestana Tests" />
           ) : (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {runs.map((run) => {
                 const isExpanded = expandedRun === run.id;
                 const allDone = run.results.every((r) => r.status === "done" || r.status === "error");
                 const doneCount = run.results.filter((r) => r.status === "done").length;
-                const avgRating = run.results.filter((r) => r.rating).length > 0
-                  ? (run.results.reduce((s, r) => s + (r.rating ?? 0), 0) / run.results.filter((r) => r.rating).length).toFixed(1) : null;
 
                 return (
-                  <div key={run.id} className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
+                  <div key={run.id} className={`rounded-xl border border-neutral-200 bg-white overflow-hidden ${isExpanded ? "md:col-span-2" : ""}`}>
                     {/* Run header */}
                     <button onClick={() => setExpandedRun(isExpanded ? null : run.id)}
-                      className="w-full px-5 py-3.5 flex items-center gap-4 hover:bg-neutral-50 transition-colors text-left">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-0.5">
-                          <p className="text-[13px] font-medium text-text-primary">{run.scenario}</p>
-                          {!allDone && <span className="h-3 w-3 border-[1.5px] border-accent/30 border-t-accent rounded-full animate-spin shrink-0" />}
-                        </div>
-                        <p className="text-xs text-neutral-500 truncate">{run.prompt}</p>
+                      className="w-full px-4 py-3 flex items-center gap-3 hover:bg-neutral-50 transition-colors text-left">
+                      {/* IDs */}
+                      <div className="flex flex-col gap-0.5 shrink-0">
+                        {run.results.map((r, ri) => (
+                          <span key={ri} className="text-[10px] font-mono text-neutral-400">{r.id ? r.id.slice(0, 8) : "..."}</span>
+                        ))}
                       </div>
-                      <div className="flex items-center gap-4 shrink-0">
-                        {avgRating && <span className="text-sm text-amber-400 font-semibold">{avgRating} ★</span>}
-                        <span className="text-xs text-neutral-500 font-mono">{doneCount}/{run.results.length}</span>
-                        <span className="text-xs text-neutral-500">{timeAgo(run.createdAt)}</span>
+                      {/* Scenario + prompt */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] font-medium text-text-primary truncate">{run.scenario}</p>
+                        <p className="text-[11px] text-neutral-400 truncate">{run.prompt}</p>
+                      </div>
+                      {/* Dots + time + meta */}
+                      <div className="flex items-center gap-3 shrink-0">
+                        <div className="flex flex-col gap-1">
+                          {run.results.map((r, ri) => {
+                            const hasE = !!r.escaleta;
+                            const hasT = !!r.timing;
+                            const ok = r.status === "done";
+                            const err = r.status === "error";
+                            const dots = [hasE, hasE && (hasT || ok), hasT, ok];
+                            return (
+                              <div key={ri} className="flex items-center gap-1.5 justify-end">
+                                {r.startedAt && r.finishedAt ? (
+                                  <span className={`text-[10px] font-mono ${err ? "text-red-400" : "text-emerald-600"}`}>
+                                    {formatProdTime(new Date(r.finishedAt).getTime() - new Date(r.startedAt).getTime())}
+                                  </span>
+                                ) : (r.status === "queued" || r.status === "working") ? (
+                                  <span className="h-2.5 w-2.5 border border-accent/30 border-t-accent rounded-full animate-spin" />
+                                ) : null}
+                                <div className="flex items-center gap-0.5">
+                                  {dots.map((done, di) => (
+                                    <span key={di} className={`w-1.5 h-1.5 rounded-full ${
+                                      err && !done ? "bg-red-300" : done ? "bg-emerald-400" : "bg-neutral-200"
+                                    }`} />
+                                  ))}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
                         <svg width="14" height="14" viewBox="0 0 16 16" fill="none"
-                          className={`text-neutral-500 transition-transform ${isExpanded ? "rotate-180" : ""}`}>
+                          className={`text-neutral-400 transition-transform ${isExpanded ? "rotate-180" : ""}`}>
                           <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       </div>
@@ -405,74 +440,119 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
 
                     {/* Expanded */}
                     {isExpanded && (
-                      <div className="border-t border-neutral-200 p-5 space-y-5">
-                        {/* Side-by-side comparison */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="border-t border-neutral-200 p-5 space-y-5 min-w-0">
+                        {/* Results — full width per result, side-by-side only for A/B */}
+                        {(() => {
+                          const { requestedDuration, requestedType, requestedPersonajes, cleanPrompt } = parsePromptMeta(run.prompt);
+                          return (
+                        <div className={`grid grid-cols-1 ${run.results.length > 1 ? "md:grid-cols-2" : ""} gap-4`}>
                           {run.results.map((result, ri) => {
-                            const dotColor = MODEL_DOT_COLORS[ri] || MODEL_DOT_COLORS[0];
-                            const resultKey = `${run.id}-${ri}`;
-                            const isDetailExpanded = expandedResult === resultKey;
-                            const tint = ri === 0 ? "border-teal-200 bg-teal-50/50" : "border-violet-200 bg-violet-50/50";
+
+                            const actualDurationMs = result.durationMs ?? (result.tracks
+                              ? result.tracks.reduce((max, t) => Math.max(max, t.start_ms + t.duration_ms), 0)
+                              : null);
+                            let durationMet: boolean | null = null;
+                            if (requestedDuration && actualDurationMs) {
+                              durationMet = actualDurationMs >= parseDurationToMs(requestedDuration) * 0.8;
+                            }
 
                             return (
-                              <div key={ri} className={`rounded-xl border overflow-hidden ${tint}`}>
+                              <div key={ri} className="min-w-0">
                                 {/* Result header */}
-                                <div className="px-4 py-3 flex items-center justify-between border-b border-neutral-200">
+                                <div className="py-2 flex items-center justify-between">
                                   <span className="inline-flex items-center gap-1.5 text-sm font-mono text-neutral-600">
-                                    <span className={`w-2 h-2 rounded-full ${dotColor}`} />{result.model}
+                                    {result.model}
+                                    {result.id && <span className="text-[10px] text-neutral-400 ml-1">{result.id}</span>}
                                   </span>
-                                  <StatusChip status={result.status} />
+                                  <div className="flex items-center gap-2">
+                                    {(result.status === "queued" || result.status === "working") && (
+                                      <button
+                                        onClick={() => cancelResult(run.id, ri, result.id || undefined)}
+                                        className="text-[10px] text-red-400 hover:text-red-600 font-mono uppercase tracking-wider"
+                                      >
+                                        Cancelar
+                                      </button>
+                                    )}
+                                    <StatusChip status={result.status} />
+                                  </div>
                                 </div>
-
-                                <div className="p-4 space-y-3">
-                                  {/* Loading state with skeletons */}
-                                  {(result.status === "queued" || result.status === "working") && (
-                                    <div className="space-y-3">
-                                      <div className="flex items-center gap-3 py-2">
-                                        <div className="h-4 w-4 border-[1.5px] border-accent/30 border-t-accent rounded-full animate-spin shrink-0" />
-                                        <p className="text-sm text-neutral-500 animate-pulse">{result.progress || "Esperando..."}</p>
-                                      </div>
-                                      {/* Show escaleta as soon as it arrives */}
-                                      {result.escaleta ? (
-                                        <div className="rounded-lg border border-teal-200 bg-teal-50/50 p-3">
-                                          <p className="text-xs uppercase tracking-wider font-semibold text-teal-600 mb-2">Escaleta</p>
-                                          <div className="space-y-1">
-                                            {(result.escaleta as { tracks: EscaletaTrack[] }).tracks.map((t, ti) => (
-                                              <div key={ti} className="flex gap-2 text-xs">
-                                                <span className="text-teal-500 font-semibold uppercase w-12 shrink-0">{t.type}</span>
-                                                <span className="text-neutral-600 truncate">{t.text || t.file}</span>
-                                              </div>
-                                            ))}
-                                          </div>
-                                        </div>
-                                      ) : (
-                                        <div className="rounded-lg border border-neutral-100 bg-neutral-50 p-3 space-y-2">
-                                          <div className="h-3 w-20 bg-neutral-200 rounded animate-pulse" />
-                                          <div className="space-y-1.5">
-                                            <div className="h-3 w-full bg-neutral-100 rounded animate-pulse" />
-                                            <div className="h-3 w-4/5 bg-neutral-100 rounded animate-pulse" />
-                                            <div className="h-3 w-3/5 bg-neutral-100 rounded animate-pulse" />
-                                          </div>
-                                        </div>
-                                      )}
-                                      {/* Show timing as soon as it arrives */}
-                                      {result.timing && (
-                                        <div className="rounded-lg border border-violet-200 bg-violet-50/50 p-3">
-                                          <p className="text-xs uppercase tracking-wider font-semibold text-violet-600 mb-2">Timing</p>
-                                          <div className="space-y-1">
-                                            {(result.timing as TimingDecision[]).map((td, ti) => (
-                                              <div key={ti} className="text-xs text-neutral-600 font-mono">
-                                                Track {td.track_index}: {td.start_ms}ms
-                                              </div>
-                                            ))}
-                                          </div>
-                                        </div>
-                                      )}
+                                {/* Pipeline progress dots */}
+                                {(() => {
+                                  const hasEscaleta = !!result.escaleta;
+                                  const hasTiming = !!result.timing;
+                                  const isDone = result.status === "done";
+                                  const isError = result.status === "error";
+                                  const steps = [
+                                    { label: "Escaleta", done: hasEscaleta },
+                                    { label: "TTS", done: hasEscaleta && (hasTiming || isDone) },
+                                    { label: "Timing", done: hasTiming },
+                                    { label: "Mix", done: isDone },
+                                  ];
+                                  return (
+                                    <div className="flex items-center gap-3 pb-2">
+                                      {steps.map((s, si) => (
+                                        <span key={si} className="inline-flex items-center gap-1">
+                                          <span className={`w-1.5 h-1.5 rounded-full ${
+                                            isError && !s.done ? "bg-red-300" :
+                                            s.done ? "bg-emerald-400" : "bg-neutral-200"
+                                          }`} />
+                                          <span className={`text-[10px] font-mono ${
+                                            isError && !s.done ? "text-red-400" :
+                                            s.done ? "text-emerald-600" : "text-neutral-300"
+                                          }`}>{s.label}</span>
+                                        </span>
+                                      ))}
                                     </div>
-                                  )}
+                                  );
+                                })()}
 
-                                  {/* Error — prominent with full detail */}
-                                  {result.status === "error" && (
+                                {/* Loading state */}
+                                {(result.status === "queued" || result.status === "working") && (
+                                  <div className="space-y-3 pt-2">
+                                    <div className="flex items-center gap-3 py-2">
+                                      <div className="h-4 w-4 border-[1.5px] border-accent/30 border-t-accent rounded-full animate-spin shrink-0" />
+                                      <p className="text-sm text-neutral-500 animate-pulse">{result.progress || "Esperando..."}</p>
+                                    </div>
+                                    {result.escaleta ? (
+                                      <div className="rounded-lg border border-teal-200 bg-teal-50/50 p-3">
+                                        <p className="text-xs uppercase tracking-wider font-semibold text-teal-600 mb-2">Escaleta</p>
+                                        <div className="space-y-1">
+                                          {(result.escaleta as { tracks: EscaletaTrack[] }).tracks.map((t, ti) => (
+                                            <div key={ti} className="flex gap-2 text-xs">
+                                              <span className="text-teal-500 font-semibold uppercase w-12 shrink-0">{t.type}</span>
+                                              <span className="text-neutral-600 truncate">{t.text || t.file}</span>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <div className="rounded-lg border border-neutral-100 bg-neutral-50 p-3 space-y-2">
+                                        <div className="h-3 w-20 bg-neutral-200 rounded animate-pulse" />
+                                        <div className="space-y-1.5">
+                                          <div className="h-3 w-full bg-neutral-100 rounded animate-pulse" />
+                                          <div className="h-3 w-4/5 bg-neutral-100 rounded animate-pulse" />
+                                          <div className="h-3 w-3/5 bg-neutral-100 rounded animate-pulse" />
+                                        </div>
+                                      </div>
+                                    )}
+                                    {result.timing && (
+                                      <div className="rounded-lg border border-violet-200 bg-violet-50/50 p-3">
+                                        <p className="text-xs uppercase tracking-wider font-semibold text-violet-600 mb-2">Timing</p>
+                                        <div className="space-y-1">
+                                          {(result.timing as TimingDecision[]).map((td, ti) => (
+                                            <div key={ti} className="text-xs text-neutral-600 font-mono">
+                                              Track {td.track_index}: {td.start_ms}ms
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+
+                                {/* Error state */}
+                                {result.status === "error" && (
+                                  <div className="space-y-3 pt-2">
                                     <div className="rounded-lg border border-red-300 bg-red-50 p-4">
                                       <div className="flex items-center gap-2 mb-2">
                                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-red-500 shrink-0">
@@ -488,141 +568,131 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
                                         </p>
                                       )}
                                     </div>
-                                  )}
-
-                                  {/* Show escaleta even on error if it arrived before failure */}
-                                  {result.status === "error" && result.escaleta && (
-                                    <div className="rounded-lg border border-neutral-200 bg-neutral-50 p-3">
-                                      <p className="text-xs text-neutral-400 uppercase tracking-wider font-medium mb-2">Escaleta (parcial, antes del error)</p>
-                                      <div className="space-y-1.5">
-                                        {result.escaleta.tracks.map((track, ti) => {
-                                          const tc = TRACK_COLORS[track.type] || TRACK_COLORS.sfx;
-                                          return (
-                                            <div key={ti} className="flex items-start gap-2">
-                                              <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase ${tc.bg} ${tc.text}`}>
-                                                {track.type}
-                                              </span>
-                                              <p className="text-xs text-neutral-500 leading-snug flex-1 truncate">
-                                                {track.type === "voice" ? `"${track.text}"` : track.file || NONE}
-                                              </p>
-                                            </div>
-                                          );
-                                        })}
-                                      </div>
-                                    </div>
-                                  )}
-
-                                  {/* Auto-score + production time */}
-                                  {result.status === "done" && (() => {
-                                    const analysis = result.escaleta ? analyzeResult(run.prompt, result) : null;
-                                    const prodTime = productionTimeMs(result);
-                                    return (
-                                      <div className="flex items-center gap-3 flex-wrap">
-                                        {analysis && (
-                                          <div className="group relative">
-                                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold ${
-                                              qaScoreClass(analysis.score)
-                                            }`}>
-                                              QA {analysis.score}%
-                                            </span>
-                                            {/* Tooltip with checks */}
-                                            <div className="absolute bottom-full left-0 mb-1 hidden group-hover:block z-50 w-56">
-                                              <div className="bg-neutral-900 text-white rounded-lg p-3 shadow-xl text-xs space-y-1">
-                                                {analysis.checks.map((c, ci) => (
-                                                  <div key={ci} className="flex items-center gap-2">
-                                                    <span className={c.pass ? "text-emerald-400" : "text-red-400"}>{c.pass ? "\u2713" : "\u2717"}</span>
-                                                    <span className="flex-1">{c.label}</span>
-                                                    <span className="text-neutral-400 text-xs">{c.detail}</span>
-                                                  </div>
-                                                ))}
+                                    {result.escaleta && (
+                                      <div className="rounded-lg border border-neutral-200 bg-neutral-50 p-3">
+                                        <p className="text-xs text-neutral-400 uppercase tracking-wider font-medium mb-2">Escaleta (parcial)</p>
+                                        <div className="space-y-1.5">
+                                          {result.escaleta.tracks.map((track, ti) => {
+                                            const tc = TRACK_COLORS[track.type] || TRACK_COLORS.sfx;
+                                            return (
+                                              <div key={ti} className="flex items-start gap-2">
+                                                <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase ${tc.bg} ${tc.text}`}>{track.type}</span>
+                                                <p className="text-xs text-neutral-500 leading-snug flex-1 truncate">{track.type === "voice" ? `"${track.text}"` : track.file || NONE}</p>
                                               </div>
-                                            </div>
-                                          </div>
-                                        )}
-                                        {prodTime != null && (
-                                          <span className="text-xs text-neutral-500 font-mono">
-                                            Produccion: {formatProdTime(prodTime)}
-                                          </span>
-                                        )}
-                                        {result.durationMs != null && result.durationMs > 0 && (
-                                          <span className="text-xs text-neutral-500 font-mono">
-                                            Audio: {formatDuration(result.durationMs)}
-                                          </span>
-                                        )}
-                                      </div>
-                                    );
-                                  })()}
-
-                                  {/* Audio */}
-                                  {result.audioUrl && (
-                                    <audio controls className="w-full h-8" src={result.audioUrl} preload="metadata" />
-                                  )}
-
-                                  {/* Escaleta summary (always visible when available) */}
-                                  {result.escaleta && (
-                                    <div className="rounded-lg bg-neutral-50 border border-neutral-100 p-3">
-                                      <p className="text-xs text-neutral-400 uppercase tracking-wider font-medium mb-2">Escaleta ({result.escaleta.tracks.length} tracks)</p>
-                                      <div className="space-y-1.5">
-                                        {result.escaleta.tracks.map((track, ti) => {
-                                          const tc = TRACK_COLORS[track.type] || TRACK_COLORS.sfx;
-                                          return (
-                                            <div key={ti} className="flex items-start gap-2">
-                                              <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase ${tc.bg} ${tc.text}`}>
-                                                {track.type}
-                                              </span>
-                                              <p className="text-xs text-neutral-500 leading-snug flex-1 truncate">
-                                                {track.type === "voice" ? `"${track.text}"` : track.file || NONE}
-                                              </p>
-                                            </div>
-                                          );
-                                        })}
-                                      </div>
-                                    </div>
-                                  )}
-
-                                  {/* Detail toggle */}
-                                  {result.status === "done" && (result.timing || result.tracks) && (
-                                    <button onClick={() => setExpandedResult(isDetailExpanded ? null : resultKey)}
-                                      className="text-xs text-accent hover:underline">
-                                      {isDetailExpanded ? "Ocultar detalle" : "Ver timing, tracks, datos completos"}
-                                    </button>
-                                  )}
-
-                                  {/* Expanded detail: timing + tracks */}
-                                  {isDetailExpanded && (
-                                    <div className="space-y-3 pt-2">
-                                      {/* Timing */}
-                                      {result.timing && result.timing.length > 0 && (
-                                        <div className="rounded-lg bg-neutral-50 border border-neutral-100 p-3">
-                                          <p className="text-xs text-neutral-400 uppercase tracking-wider font-medium mb-2">Timing</p>
-                                          <div className="space-y-1">
-                                            {result.timing.map((t, ti) => (
-                                              <div key={ti} className="flex items-center gap-3 text-xs font-mono text-neutral-500">
-                                                <span className="text-neutral-400 w-6 text-right">#{t.track_index}</span>
-                                                <span>{formatMs(t.start_ms)}</span>
-                                                {t.fade_in_ms ? <span className="text-neutral-500">fade-in {t.fade_in_ms}ms</span> : null}
-                                                {t.fade_out_ms ? <span className="text-neutral-500">fade-out {t.fade_out_ms}ms</span> : null}
-                                              </div>
-                                            ))}
-                                          </div>
+                                            );
+                                          })}
                                         </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+
+                                {/* Done state — two-column layout */}
+                                {result.status === "done" && (
+                                  <div className="grid grid-cols-1 lg:grid-cols-[35%_1fr] gap-6 pt-2">
+                                    {/* LEFT: Request summary */}
+                                    <div className="space-y-3">
+                                      <p className="text-xs text-neutral-400 uppercase tracking-wider font-medium">Solicitud</p>
+                                      <p className="text-sm text-text-primary leading-relaxed">{cleanPrompt}</p>
+
+                                      <div className="space-y-1.5">
+                                        {requestedType && (
+                                          <div className="flex items-center justify-between">
+                                            <span className="text-xs text-neutral-400">Tipo</span>
+                                            <span className="text-xs font-medium text-text-primary">{requestedType}</span>
+                                          </div>
+                                        )}
+                                        {requestedDuration && (
+                                          <div className="flex items-center justify-between">
+                                            <span className="text-xs text-neutral-400">Duracion pedida</span>
+                                            <span className="text-xs font-medium text-text-primary">{requestedDuration}</span>
+                                          </div>
+                                        )}
+                                        {actualDurationMs != null && actualDurationMs > 0 && (
+                                          <div className="flex items-center justify-between">
+                                            <span className="text-xs text-neutral-400">Duracion real</span>
+                                            <span className="text-xs font-medium text-text-primary">{formatDuration(actualDurationMs)}</span>
+                                          </div>
+                                        )}
+                                        {durationMet !== null && (
+                                          <div className="flex items-center justify-between">
+                                            <span className="text-xs text-neutral-400">Cumplida</span>
+                                            <span className={`text-xs font-bold ${durationMet ? "text-emerald-600" : "text-red-500"}`}>
+                                              {durationMet ? "Si" : "No"}
+                                            </span>
+                                          </div>
+                                        )}
+                                        {requestedPersonajes != null && (
+                                          <div className="flex items-center justify-between">
+                                            <span className="text-xs text-neutral-400">Personajes</span>
+                                            <span className="text-xs font-medium text-text-primary">{requestedPersonajes}</span>
+                                          </div>
+                                        )}
+                                      </div>
+
+                                    </div>
+
+                                    {/* RIGHT: Results + details */}
+                                    <div className="space-y-3 min-w-0 overflow-hidden">
+                                      {/* QA score + times */}
+                                      {(() => {
+                                        const analysis = result.escaleta ? analyzeResult(run.prompt, result) : null;
+                                        const prodTime = productionTimeMs(result);
+                                        return (
+                                          <div className="flex items-center gap-3 flex-wrap">
+                                            {analysis && (
+                                              <div className="group relative">
+                                                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold ${qaScoreClass(analysis.score)}`}>
+                                                  QA {analysis.score}%
+                                                </span>
+                                                <div className="absolute bottom-full left-0 mb-1 hidden group-hover:block z-50 w-56">
+                                                  <div className="bg-neutral-900 text-white rounded-lg p-3 shadow-xl text-xs space-y-1">
+                                                    {analysis.checks.map((c, ci) => (
+                                                      <div key={ci} className="flex items-center gap-2">
+                                                        <span className={c.pass ? "text-emerald-400" : "text-red-400"}>{c.pass ? "\u2713" : "\u2717"}</span>
+                                                        <span className="flex-1">{c.label}</span>
+                                                        <span className="text-neutral-400 text-xs">{c.detail}</span>
+                                                      </div>
+                                                    ))}
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            )}
+                                            {prodTime != null && (
+                                              <span className="text-xs text-neutral-500 font-mono">Tiempo total: {formatProdTime(prodTime)}</span>
+                                            )}
+                                          </div>
+                                        );
+                                      })()}
+
+                                      {/* Audio — always use API path with fresh token */}
+                                      {result.audioUrl && (
+                                        <audio controls className="w-full h-8" src={apiUrl(result.audioUrl, apiToken)} preload="metadata" />
                                       )}
 
-                                      {/* Tracks */}
+                                      {/* Tracks — merged escaleta + mix data */}
                                       {result.tracks && result.tracks.length > 0 && (
-                                        <div className="rounded-lg bg-neutral-50 border border-neutral-100 p-3">
-                                          <p className="text-xs text-neutral-400 uppercase tracking-wider font-medium mb-2">Tracks del mix ({result.tracks.length})</p>
-                                          <div className="space-y-1">
+                                        <div className="rounded-lg bg-neutral-50 border border-neutral-100 p-3 overflow-hidden">
+                                          <p className="text-xs text-neutral-400 uppercase tracking-wider font-medium mb-2">Tracks ({result.tracks.length})</p>
+                                          <div className="space-y-2">
                                             {result.tracks.map((t, ti) => {
                                               const tc = TRACK_COLORS[t.type] || TRACK_COLORS.sfx;
+                                              const escTrack = result.escaleta?.tracks[ti];
                                               return (
-                                                <div key={ti} className="flex items-center gap-2 text-xs">
-                                                  <span className={`w-1.5 h-1.5 rounded-full ${tc.dot}`} />
-                                                  <span className="text-text-primary font-medium truncate flex-1">{t.label}</span>
-                                                  <span className="text-neutral-500 font-mono text-xs">{formatMs(t.start_ms)}</span>
-                                                  <span className="text-neutral-500 font-mono text-xs">{formatDuration(t.duration_ms)}</span>
-                                                  <span className="text-neutral-500 font-mono text-xs">vol:{t.volume}</span>
-                                                  {t.lufs != null && <span className="text-neutral-500 font-mono text-xs">{t.lufs.toFixed(1)} LUFS</span>}
+                                                <div key={ti} className="min-w-0">
+                                                  <div className="flex items-center gap-2 text-xs">
+                                                    <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase shrink-0 ${tc.bg} ${tc.text}`}>{t.type}</span>
+                                                    <span className="text-text-primary font-medium truncate">{t.label}</span>
+                                                    <span className="text-neutral-400 font-mono shrink-0">@{formatMs(t.start_ms)}</span>
+                                                    <span className="text-neutral-400 font-mono shrink-0">dur {formatDuration(t.duration_ms)}</span>
+                                                    <span className="text-neutral-400 font-mono shrink-0">vol {t.volume}</span>
+                                                    {t.lufs != null && <span className="text-neutral-400 font-mono shrink-0">{t.lufs.toFixed(1)} LUFS</span>}
+                                                  </div>
+                                                  {escTrack && (
+                                                    <p className="text-[11px] text-neutral-400 mt-0.5 ml-7 truncate">
+                                                      {escTrack.type === "voice" ? `"${escTrack.text}"` : escTrack.file || ""}
+                                                    </p>
+                                                  )}
                                                 </div>
                                               );
                                             })}
@@ -630,28 +700,14 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
                                         </div>
                                       )}
                                     </div>
-                                  )}
-
-                                  {/* Rating + Notes */}
-                                  {result.status === "done" && (
-                                    <div className="space-y-2 pt-3 border-t border-neutral-200">
-                                      <div className="flex items-center justify-between">
-                                        <span className="text-xs text-neutral-400 uppercase tracking-wider font-medium">Rating</span>
-                                        <StarRating value={result.rating} onChange={(v) => updateResult(run.id, ri, { rating: v })} />
-                                      </div>
-                                      <textarea value={result.notes}
-                                        onChange={(e) => updateResult(run.id, ri, { notes: e.target.value }, true)}
-                                        placeholder="Notas sobre calidad, gaps, errores..."
-                                        rows={2}
-                                        className="w-full rounded-lg border border-neutral-200 bg-white px-2.5 py-1.5 text-xs text-text-primary placeholder:text-neutral-400 focus:outline-none focus:border-accent/50 transition-all resize-none"
-                                      />
-                                    </div>
-                                  )}
-                                </div>
+                                  </div>
+                                )}
                               </div>
                             );
                           })}
                         </div>
+                          );
+                        })()}
 
                         {/* Quick add finding from this run */}
                         {allDone && (
@@ -677,111 +733,6 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
           )}
         </>
       )}
-
-      {/* Blind A/B tab */}
-      {labTab === "blind" && (() => {
-        const completedRuns = runs.filter((r) => r.results.length === 2 && r.results.every((res) => res.status === "done" && res.audioUrl));
-        return (
-          <>
-            <p className="text-sm text-neutral-500 mb-6 leading-relaxed">
-              Escucha las dos versiones sin saber que modelo las genero. Elige la mejor. Al elegir se revela el modelo.
-            </p>
-            {completedRuns.length === 0 ? (
-              <EmptyState text="Ejecuta escenarios primero para poder comparar" />
-            ) : (
-              <div className="space-y-4">
-                {completedRuns.map((run) => {
-                  const order = run.blindOrder || [0, 1];
-                  const hasBlind = run.blindOrder != null;
-                  const revealed = run.blindWinner != null;
-
-                  return (
-                    <div key={run.id} className="rounded-xl border border-neutral-200 bg-white p-5">
-                      {/* Header */}
-                      <div className="flex items-center justify-between mb-4">
-                        <div>
-                          <p className="text-[13px] font-medium text-text-primary">{run.scenario}</p>
-                          <p className="text-xs text-neutral-500 truncate mt-0.5">{run.prompt}</p>
-                        </div>
-                        {!hasBlind && (
-                          <button onClick={() => startBlindCompare(run.id)}
-                            className="px-3 py-1.5 rounded-lg bg-neutral-100 text-neutral-600 text-xs font-semibold hover:bg-accent hover:text-white transition-all">
-                            Comparar a ciegas
-                          </button>
-                        )}
-                        {revealed && (
-                          <span className="text-xs text-emerald-600 font-semibold">
-                            Ganador: {run.results[run.blindWinner!].model}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Blind comparison */}
-                      {hasBlind && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {[0, 1].map((blindIdx) => {
-                            const realIdx = order[blindIdx];
-                            const result = run.results[realIdx];
-                            const isWinner = revealed && run.blindWinner === realIdx;
-                            const isLoser = revealed && run.blindWinner !== realIdx;
-
-                            return (
-                              <div key={blindIdx} className={`rounded-xl border p-4 transition-all ${
-                                isWinner ? "border-emerald-300 bg-emerald-50" :
-                                isLoser ? "border-neutral-200 opacity-50" :
-                                "border-neutral-200 bg-white"
-                              }`}>
-                                <div className="flex items-center justify-between mb-3">
-                                  <span className="text-[14px] font-bold text-text-primary">
-                                    {String.fromCharCode(65 + blindIdx)}
-                                  </span>
-                                  {revealed && (
-                                    <span className="text-xs font-mono text-neutral-500">
-                                      {result.model}
-                                    </span>
-                                  )}
-                                  {isWinner && (
-                                    <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded uppercase">Ganador</span>
-                                  )}
-                                </div>
-
-                                {result.audioUrl && (
-                                  <audio controls className="w-full h-8 mb-3" src={result.audioUrl} preload="metadata" />
-                                )}
-
-                                {!revealed && (
-                                  <button onClick={() => pickBlindWinner(run.id, blindIdx)}
-                                    className="w-full py-2 rounded-lg border-2 border-dashed border-neutral-300 text-sm font-semibold text-neutral-400 hover:border-accent hover:text-accent transition-all">
-                                    Elegir {String.fromCharCode(65 + blindIdx)}
-                                  </button>
-                                )}
-
-                                {/* Show QA score after reveal */}
-                                {revealed && result.escaleta && (() => {
-                                  const analysis = analyzeResult(run.prompt, result);
-                                  const prodTime = productionTimeMs(result);
-                                  return (
-                                    <div className="mt-2 flex items-center gap-2">
-                                      <span className={`text-xs font-bold px-2 py-0.5 rounded-md ${qaScoreClass(analysis.score)}`}>QA {analysis.score}%</span>
-                                      {prodTime != null && (
-                                        <span className="text-xs text-neutral-500 font-mono">{formatProdTime(prodTime)}</span>
-                                      )}
-                                    </div>
-                                  );
-                                })()}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </>
-        );
-      })()}
 
       {/* Findings tab */}
       {labTab === "findings" && (

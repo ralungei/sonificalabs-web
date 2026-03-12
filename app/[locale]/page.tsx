@@ -579,6 +579,9 @@ export default function Home() {
           alt=""
           className="w-full h-auto min-h-[70vh] object-cover object-top sm:min-h-0 sm:object-fill"
           src="/waves-bg.jpg"
+          initial={{ scale: 1.06 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 3, ease: [0.25, 0.46, 0.45, 0.94] }}
         />
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent" />
       </div>

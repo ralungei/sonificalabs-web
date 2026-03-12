@@ -206,7 +206,7 @@ export default function JobPage() {
                 canDownload={canDownload}
                 inline
                 prompt={prompt}
-                onOpenEditor={tracks && tracks.length > 0 ? () => setEditorOpen(true) : undefined}
+                // onOpenEditor={tracks && tracks.length > 0 ? () => setEditorOpen(true) : undefined}
               />
 
               {/* Create another */}
