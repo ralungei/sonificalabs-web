@@ -379,7 +379,7 @@ function DemoCircle({
       </div>
 
       {/* Label just below the circle */}
-      <span className="text-[10px] font-semibold tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/70 backdrop-blur-md border border-contrast/10 text-contrast/90">
+      <span className="text-[10px] font-semibold tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/90 backdrop-blur-md border border-contrast/10 text-contrast/90">
         {demo.title}
       </span>
     </motion.div>
@@ -690,7 +690,7 @@ export default function Home() {
         {/* Scroll indicator */}
         <motion.button
           type="button"
-          onClick={() => document.getElementById("como-funciona")?.scrollIntoView({ behavior: "smooth" })}
+          onClick={() => document.getElementById("hecho-para-crear")?.scrollIntoView({ behavior: "smooth" })}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
@@ -711,7 +711,7 @@ export default function Home() {
       </section>
 
       {/* ── Use cases ─────────────────────────────────────── */}
-      <section className="w-full max-w-6xl px-6 pt-24 pb-16 mx-auto">
+      <section id="hecho-para-crear" className="w-full max-w-6xl px-6 pt-24 pb-16 mx-auto">
         <FadeIn>
           <h2 className="text-display-sm md:text-display-md font-logo tracking-tight text-center text-contrast mb-3">
             {tAbout("forWhoTitle")}

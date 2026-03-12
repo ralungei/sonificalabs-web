@@ -150,32 +150,77 @@ function DebugDropdown({
   );
 }
 
-function ToolbarDropdown({
-  label,
-  icon,
+function OptionPills({
   options,
   value,
   onChange,
   onLockedClick,
-  removeLabel = "Quitar",
 }: {
-  label: string;
-  icon: React.ReactNode;
   options: DropdownOption[];
   value: string;
   onChange: (v: string) => void;
   onLockedClick?: () => void;
-  removeLabel?: string;
+}) {
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          type="button"
+          onClick={() => {
+            if (opt.locked) { onLockedClick?.(); return; }
+            onChange(opt.value === value ? "" : opt.value);
+          }}
+          className={cn(
+            "px-2.5 py-1 rounded-lg text-xs transition-all",
+            opt.locked
+              ? "opacity-50 cursor-pointer hover:opacity-70 border border-contrast/[0.08] text-text-secondary"
+              : opt.value === value
+                ? "bg-accent/15 text-accent border border-accent/25 font-medium"
+                : "text-text-primary hover:bg-contrast/[0.06] border border-contrast/[0.08]",
+          )}
+        >
+          <span className="flex items-center gap-1.5">
+            {opt.value}
+            {opt.locked && opt.lockBadge && (
+              <span className={cn(
+                "text-[9px] px-1 rounded-full font-semibold leading-tight",
+                opt.lockBadge === "Studio"
+                  ? "bg-violet-500/20 text-violet-400"
+                  : "bg-accent/20 text-accent",
+              )}>
+                {opt.lockBadge}
+              </span>
+            )}
+          </span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ParametersPopover({
+  tipo, setTipo, duracion, setDuracion, personajes, setPersonajes,
+  tipos, durationOptions, personajesOptions,
+  onLockedClick, labels,
+}: {
+  tipo: string; setTipo: (v: string) => void;
+  duracion: string; setDuracion: (v: string) => void;
+  personajes: string; setPersonajes: (v: string) => void;
+  tipos: string[];
+  durationOptions: DropdownOption[];
+  personajesOptions: DropdownOption[];
+  onLockedClick: () => void;
+  labels: { type: string; duration: string; characters: string; parameters: string };
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const activeCount = [tipo, duracion, personajes].filter(Boolean).length;
 
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -187,29 +232,23 @@ function ToolbarDropdown({
         type="button"
         onClick={() => setOpen(!open)}
         className={cn(
-          "flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs transition-colors",
-          value
+          "flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs transition-colors",
+          activeCount > 0
             ? "bg-accent/15 text-accent border border-accent/25"
             : "text-contrast/70 hover:text-contrast hover:bg-contrast/[0.06] border border-transparent",
         )}
       >
-        {icon}
-        {value || label}
-        <svg
-          className={cn(
-            "w-3 h-3 transition-transform",
-            open && "rotate-180",
-          )}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2.5}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-          />
+        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+        </svg>
+        {labels.parameters}
+        {activeCount > 0 && (
+          <span className="flex items-center justify-center h-4 w-4 rounded-full bg-accent text-white text-[9px] font-bold leading-none">
+            {activeCount}
+          </span>
+        )}
+        <svg className={cn("w-3 h-3 transition-transform", open && "rotate-180")} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
         </svg>
       </button>
 
@@ -220,54 +259,23 @@ function ToolbarDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.97 }}
             transition={{ duration: 0.15 }}
-            className="absolute bottom-full mb-1.5 left-0 min-w-[120px] rounded-xl border border-contrast/[0.08] bg-white/95 backdrop-blur-xl shadow-xl py-1 z-[var(--z-dropdown)]"
+            className="absolute bottom-full mb-1.5 left-0 min-w-[240px] max-w-[320px] rounded-xl border border-contrast/[0.08] bg-white shadow-xl p-3 z-[var(--z-dropdown)] space-y-3"
           >
-            {value && (
-              <button
-                type="button"
-                onClick={() => {
-                  onChange("");
-                  setOpen(false);
-                }}
-                className="w-full text-left px-3 py-1.5 text-xs text-text-muted hover:bg-contrast/[0.06] transition-colors"
-              >
-                {removeLabel}
-              </button>
-            )}
-            {options.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => {
-                  if (opt.locked) {
-                    if (onLockedClick) onLockedClick();
-                    return;
-                  }
-                  onChange(opt.value);
-                  setOpen(false);
-                }}
-                className={cn(
-                  "w-full text-left px-3 py-1.5 text-xs transition-colors flex items-center justify-between gap-2",
-                  opt.locked
-                    ? "opacity-60 cursor-pointer hover:opacity-80"
-                    : opt.value === value
-                      ? "text-accent bg-accent/10"
-                      : "text-text-primary hover:bg-contrast/[0.06]",
-                )}
-              >
-                <span>{opt.value}</span>
-                {opt.locked && opt.lockBadge && (
-                  <span className={cn(
-                    "text-[9px] px-1.5 rounded-full font-semibold",
-                    opt.lockBadge === "Studio"
-                      ? "bg-violet-500/20 text-violet-400"
-                      : "bg-accent/20 text-accent",
-                  )}>
-                    {opt.lockBadge}
-                  </span>
-                )}
-              </button>
-            ))}
+            {/* Tipo */}
+            <div>
+              <label className="block text-[10px] text-text-muted font-body uppercase tracking-wider mb-1.5">{labels.type}</label>
+              <OptionPills options={tipos.map(t => ({ value: t }))} value={tipo} onChange={setTipo} />
+            </div>
+            {/* Duracion */}
+            <div>
+              <label className="block text-[10px] text-text-muted font-body uppercase tracking-wider mb-1.5">{labels.duration}</label>
+              <OptionPills options={durationOptions} value={duracion} onChange={setDuracion} onLockedClick={onLockedClick} />
+            </div>
+            {/* Personajes */}
+            <div>
+              <label className="block text-[10px] text-text-muted font-body uppercase tracking-wider mb-1.5">{labels.characters}</label>
+              <OptionPills options={personajesOptions} value={personajes} onChange={setPersonajes} onLockedClick={onLockedClick} />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -459,33 +467,17 @@ export function PromptForm({
 
         {/* Bottom toolbar */}
         <div className="flex flex-wrap items-center justify-between border-t border-contrast/[0.06] px-3 py-2 gap-2">
-          {/* Left — dropdowns */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <ToolbarDropdown
-              label={t("type")}
-              icon={<svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>}
-              options={TIPOS.map(tipo => ({ value: tipo }))}
-              value={tipo}
-              onChange={setTipo}
-              removeLabel={t("remove")}
-            />
-            <ToolbarDropdown
-              label={t("duration")}
-              icon={<svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
-              options={durationOptions}
-              value={duracion}
-              onChange={setDuracion}
-              removeLabel={t("remove")}
+          {/* Left — parameters + debug */}
+          <div className="flex items-center gap-1.5">
+            <ParametersPopover
+              tipo={tipo} setTipo={setTipo}
+              duracion={duracion} setDuracion={setDuracion}
+              personajes={personajes} setPersonajes={setPersonajes}
+              tipos={TIPOS}
+              durationOptions={durationOptions}
+              personajesOptions={personajesOptions}
               onLockedClick={() => router.push("/pricing")}
-            />
-            <ToolbarDropdown
-              label={t("characters")}
-              icon={<svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>}
-              options={personajesOptions}
-              value={personajes}
-              onChange={setPersonajes}
-              removeLabel={t("remove")}
-              onLockedClick={() => router.push("/pricing")}
+              labels={{ type: t("type"), duration: t("duration"), characters: t("characters"), parameters: t("parameters") }}
             />
             {isAdmin && <DebugDropdown adminClaude={adminClaude} setAdminClaude={setAdminClaude} adminTts={adminTts} setAdminTts={setAdminTts} labels={{ debugClaudeModel: t("debugClaudeModel"), debugTtsModel: t("debugTtsModel"), debugPlanDefault: t("debugPlanDefault") }} />}
           </div>

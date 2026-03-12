@@ -47,6 +47,7 @@
       "Children's story about a dragon afraid of fire"
     ],
     "tipos": "Podcast,Ad,Intro,Newscast,Radio drama,Meditation,Trailer,Sketch,Other",
+    "parameters": "Customize",
     "type": "Type",
     "duration": "Duration",
     "characters": "Characters",

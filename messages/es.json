@@ -47,6 +47,7 @@
       "Audiocuento infantil sobre un dragon que tenia miedo al fuego"
     ],
     "tipos": "Podcast,Spot,Intro,Informativo,Radionovela,Meditacion,Trailer,Sketch,Otro",
+    "parameters": "Personalizar",
     "type": "Tipo",
     "duration": "Duración",
     "characters": "Personajes",
