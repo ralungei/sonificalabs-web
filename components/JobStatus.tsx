@@ -50,7 +50,7 @@ export function JobStatus({
   const phaseLabel = isQueued ? t("inQueue") : PHASES[currentPhase]?.label ?? "";
 
   return (
-    <div className="w-full max-w-sm mx-auto flex flex-col items-center gap-8 bg-black/40 backdrop-blur-sm rounded-2xl px-10 py-10">
+    <div className="w-full max-w-sm mx-auto flex flex-col items-center gap-8 px-10 py-10">
       {/* Waveform — 5 bars, smooth travelling wave */}
       <div className="flex items-center justify-center gap-[6px] h-14">
         {BARS.map((peak, i) => (

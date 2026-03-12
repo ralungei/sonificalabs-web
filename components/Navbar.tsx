@@ -116,6 +116,15 @@ export function Navbar() {
       >
         {t("about")}
       </Link>
+      {quota?.isAdmin && (
+        <Link
+          href="/admin"
+          onClick={() => setMobileOpen(false)}
+          className="text-body-md text-accent hover:text-accent-bright transition-colors leading-none"
+        >
+          {t("admin")}
+        </Link>
+      )}
     </>
   );
 
@@ -354,7 +363,16 @@ export function Navbar() {
                   <Icon icon="solar:users-group-rounded-linear" className="h-5 w-5 text-contrast/40" />
                   {t("about")}
                 </Link>
-
+                {quota?.isAdmin && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 px-3 py-3 rounded-xl text-body-md font-body text-accent hover:text-accent-bright hover:bg-accent/[0.06] transition-colors"
+                  >
+                    <Icon icon="solar:monitor-linear" className="h-5 w-5 text-accent/60" />
+                    {t("admin")}
+                  </Link>
+                )}
               </div>
 
               {/* Language + User section at bottom */}
