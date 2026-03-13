@@ -7,8 +7,8 @@
     "manageSubscription": "Gestionar suscripción",
     "signOut": "Cerrar sesión",
     "signIn": "Iniciar sesión",
-    "admin": "Console",
-    "about": "Quiénes somos"
+    "about": "Quiénes somos",
+    "examples": "Ejemplos"
   },
   "home": {
     "heroLine": "Produce tu siguiente",
@@ -24,13 +24,25 @@
     "capabilities": "Podcasts,Spots publicitarios,Intros,Radionovelas,Documentales,Escenas cinemáticas,Informativos,Audiocuentos,Tráilers,Sketches,Meditaciones,Doblajes",
     "demos": {
       "pizzeria": "Spot Radio",
-      "epica": "Intro Épica",
       "meditacion": "Meditación",
       "informativo": "Informativo",
       "thriller": "Thriller",
       "documental": "Documental",
       "audiocuento": "Audiocuento",
       "trailer": "Trailer"
+    }
+  },
+  "examples": {
+    "title": "Ejemplos",
+    "subtitle": "Escucha lo que puedes crear con SonificaLabs",
+    "categories": {
+      "all": "Todos",
+      "tv": "TV / Radio",
+      "fiction": "Ficción",
+      "commercial": "Publicidad",
+      "podcast": "Podcast",
+      "creators": "Creadores",
+      "wellness": "Bienestar"
     }
   },
   "promptForm": {

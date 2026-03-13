@@ -21,7 +21,6 @@ interface QuotaData {
   plan: string;
   remaining: number;
   creditsLimit: number;
-  isAdmin?: boolean;
 }
 
 export function Navbar() {
@@ -103,6 +102,13 @@ export function Navbar() {
         {t("howItWorks")}
       </a>
       <Link
+        href="/examples"
+        onClick={() => setMobileOpen(false)}
+        className="text-body-md text-text-secondary hover:text-text-primary transition-colors leading-none"
+      >
+        {t("examples")}
+      </Link>
+      <Link
         href="/pricing"
         onClick={() => setMobileOpen(false)}
         className="text-body-md text-text-secondary hover:text-text-primary transition-colors leading-none"
@@ -116,15 +122,6 @@ export function Navbar() {
       >
         {t("about")}
       </Link>
-      {quota?.isAdmin && (
-        <Link
-          href="/admin"
-          onClick={() => setMobileOpen(false)}
-          className="text-body-md text-accent hover:text-accent-bright transition-colors leading-none"
-        >
-          {t("admin")}
-        </Link>
-      )}
     </>
   );
 
@@ -254,17 +251,6 @@ export function Navbar() {
                       </svg>
                       {t("pricing")}
                     </Link>
-                    {quota?.isAdmin && (
-                      <Link
-                        href="/admin"
-                        className="flex items-center gap-2 w-full text-left px-3 py-2 text-label-md text-text-secondary hover:text-text-primary hover:bg-contrast/[0.06] transition-colors"
-                      >
-                        <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5" />
-                        </svg>
-                        {t("admin")}
-                      </Link>
-                    )}
                     <button
                       onClick={() => signOut()}
                       className="flex items-center gap-2 w-full text-left px-3 py-2 text-label-md text-text-secondary hover:text-text-primary hover:bg-contrast/[0.06] transition-colors"
@@ -348,6 +334,14 @@ export function Navbar() {
                   {t("howItWorks")}
                 </a>
                 <Link
+                  href="/examples"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 rounded-xl text-body-md font-body text-text-secondary hover:text-text-primary hover:bg-contrast/[0.06] transition-colors"
+                >
+                  <Icon icon="solar:play-circle-linear" className="h-5 w-5 text-contrast/40" />
+                  {t("examples")}
+                </Link>
+                <Link
                   href="/pricing"
                   onClick={() => setMobileOpen(false)}
                   className="flex items-center gap-3 px-3 py-3 rounded-xl text-body-md font-body text-text-secondary hover:text-text-primary hover:bg-contrast/[0.06] transition-colors"
@@ -363,16 +357,6 @@ export function Navbar() {
                   <Icon icon="solar:users-group-rounded-linear" className="h-5 w-5 text-contrast/40" />
                   {t("about")}
                 </Link>
-                {quota?.isAdmin && (
-                  <Link
-                    href="/admin"
-                    onClick={() => setMobileOpen(false)}
-                    className="flex items-center gap-3 px-3 py-3 rounded-xl text-body-md font-body text-accent hover:text-accent-bright hover:bg-accent/[0.06] transition-colors"
-                  >
-                    <Icon icon="solar:monitor-linear" className="h-5 w-5 text-accent/60" />
-                    {t("admin")}
-                  </Link>
-                )}
               </div>
 
               {/* Language + User section at bottom */}
