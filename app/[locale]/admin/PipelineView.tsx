@@ -218,9 +218,47 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
 
       <Arrow label="Job creado (nanoid 12)" />
 
-      {/* 3. Pass 1: Escaleta */}
-      <Node color="teal" icon="3" title="Pass 1 — Escaleta (IA generativa)">
-        <p className="font-medium text-teal-700">Genera el guion estructurado con tracks de audio.</p>
+      {/* 3. Pass 0: Planning + Search */}
+      <Node color="emerald" icon="3" title="Pass 0 — Planificacion (IA + busqueda semantica)">
+        <p className="font-medium text-emerald-700">Gemini analiza el prompt y busca los sonidos que necesita en la libreria.</p>
+        <div className="space-y-1.5 mt-1">
+          <div className="flex items-start gap-2">
+            <span className="text-xs font-bold text-neutral-400 shrink-0 w-14">Modelo</span>
+            <span><Tag color="emerald">gemini-2.5-flash</Tag></span>
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="text-xs font-bold text-neutral-400 shrink-0 w-14">Tool</span>
+            <div>
+              <p><Tag color="emerald">search_sounds(query, category?, top_k?)</Tag></p>
+              <p className="text-neutral-400 mt-0.5">Busqueda semantica via embeddings multimodales (Gemini Embedding 2, 768d). Gemini llama la tool multiples veces con queries especificas.</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="text-xs font-bold text-neutral-400 shrink-0 w-14">Entrada</span>
+            <span>Prompt del usuario + catalogo de voces + tool de busqueda</span>
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="text-xs font-bold text-neutral-400 shrink-0 w-14">Salida</span>
+            <span>Plan de produccion en texto natural con archivos seleccionados, voces, estructura narrativa y notas de direccion</span>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-1.5 mt-2">
+          <Tag color="emerald">generatePlan()</Tag>
+          <Tag color="emerald">searchLibrary()</Tag>
+          <Tag color="neutral">ai.ts</Tag>
+          <Tag color="neutral">library.ts</Tag>
+        </div>
+        <div className="mt-2 rounded border border-emerald-200 bg-emerald-50/50 px-2 py-1.5">
+          <p className="text-xs font-semibold text-emerald-600 mb-0.5">Embeddings:</p>
+          <p className="text-sm">189 sonidos indexados con audio + texto (ruta, tags, mood, energy). Vectores en R2 <Tag>library/embeddings.json</Tag>. Similitud coseno en memoria, sin vector DB.</p>
+        </div>
+      </Node>
+
+      <Arrow label="Plan + sonidos encontrados" />
+
+      {/* 4. Pass 1: Escaleta */}
+      <Node color="teal" icon="4" title="Pass 1 — Escaleta (IA generativa)">
+        <p className="font-medium text-teal-700">Genera el guion estructurado con tracks de audio basandose en el plan.</p>
         <div className="space-y-1.5 mt-1">
           <div className="flex items-start gap-2">
             <span className="text-xs font-bold text-neutral-400 shrink-0 w-14">Modelo</span>
@@ -228,12 +266,12 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
           </div>
           <div className="flex items-start gap-2">
             <span className="text-xs font-bold text-neutral-400 shrink-0 w-14">Entrada</span>
-            <span>Prompt del usuario + system prompt construido dinamicamente</span>
+            <span>Prompt del usuario + plan de Pass 0 + sonidos encontrados</span>
           </div>
           <div className="flex items-start gap-2">
             <span className="text-xs font-bold text-neutral-400 shrink-0 w-14">System</span>
             <div>
-              <p>Contiene: catalogo de voces (23+), indice de libreria de sonidos (paths, duraciones, tags, mood, energy), limites del plan, instrucciones creativas de sound design</p>
+              <p>Contiene: catalogo de voces (23+), solo los sonidos pre-seleccionados por el planificador (no los 189), plan de produccion, limites del plan, instrucciones creativas</p>
               <p className="text-neutral-400 mt-0.5">Para <Tag color="amber">eleven_v3</Tag>: incluye audio tags (<Tag>[whispers]</Tag> <Tag>[excited]</Tag> <Tag>[tense]</Tag> etc.)</p>
             </div>
           </div>
@@ -257,7 +295,7 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
       <ParallelSplit>
         {/* Left: voice tracks */}
         <div>
-          <Node color="amber" icon="4a" title="Voice tracks — ElevenLabs TTS">
+          <Node color="amber" icon="5a" title="Voice tracks — ElevenLabs TTS">
             <p className="font-medium text-amber-700">Sintetiza cada track de voz en paralelo (batch de 4).</p>
             <div className="space-y-1.5 mt-1">
               <div className="flex items-start gap-2">
@@ -290,7 +328,7 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
 
         {/* Right: library tracks */}
         <div>
-          <Node color="sky" icon="4b" title="Library tracks — R2 / Filesystem">
+          <Node color="sky" icon="5b" title="Library tracks — R2 / Filesystem">
             <p className="font-medium text-sky-700">Resuelve musica, SFX, ambience, stingers.</p>
             <div className="space-y-1.5 mt-1">
               <div className="flex items-start gap-2">
@@ -323,15 +361,15 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
 
       <Arrow />
 
-      {/* 5. LUFS check */}
-      <Node color="neutral" icon="5" title="Check LUFS disparity">
+      {/* 6. LUFS check */}
+      <Node color="neutral" icon="6" title="Check LUFS disparity">
         <p>Compara loudness (LUFS) entre voice tracks. Si alguno difiere {">"}4dB de la mediana, se logea un warning para debug.</p>
       </Node>
 
       <Arrow />
 
-      {/* 6. Pass 2: Timing */}
-      <Node color="violet" icon="6" title="Pass 2 — Timing (IA generativa)">
+      {/* 7. Pass 2: Timing */}
+      <Node color="violet" icon="7" title="Pass 2 — Timing (IA generativa)">
         <p className="font-medium text-violet-700">La IA asigna posiciones temporales exactas a cada track.</p>
         <div className="space-y-1.5 mt-1">
           <div className="flex items-start gap-2">
@@ -361,8 +399,8 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
 
       <Arrow />
 
-      {/* 7. Safety net */}
-      <Node color="neutral" icon="7" title="Safety net: overlaps y crossfades">
+      {/* 8. Safety net */}
+      <Node color="neutral" icon="8" title="Safety net: overlaps y crossfades">
         <p>Corrige solapamientos de voces que el timing de IA pueda haber introducido.</p>
         <div className="space-y-1 mt-1">
           <p><Tag>VOICE_GAP_MS = 400</Tag> espacio minimo entre voces</p>
@@ -373,8 +411,8 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
 
       <Arrow />
 
-      {/* 8. FFmpeg mix */}
-      <Node color="rose" icon="8" title="Mix — FFmpeg filter graph">
+      {/* 9. FFmpeg mix */}
+      <Node color="rose" icon="9" title="Mix — FFmpeg filter graph">
         <p className="font-medium text-rose-700">Construye un filter graph complejo y mezcla todo en un MP3.</p>
 
         <div className="rounded-lg border border-neutral-200 bg-neutral-50/60 p-3 mt-2 space-y-2.5">
@@ -398,7 +436,7 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
 
           <div className="border-t border-neutral-200 pt-2">
             <p className="text-xs font-bold text-neutral-400 mb-1">DUCKING (tracks de fondo cuando hay voz):</p>
-            <p className="text-sm"><Tag>duck_on_voice=true</Tag> reduce a 0.45x | <Tag>false</Tag> reduce a 0.70x</p>
+            <p className="text-sm"><Tag>duck_on_voice=true</Tag> o <Tag>stinger</Tag> reduce a 0.45x | otros reduce a 0.70x</p>
             <p className="text-sm text-neutral-400">Attack 0.3s, Release 0.5s, calculado con timings de voz</p>
           </div>
 
@@ -427,8 +465,8 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
 
       <Arrow />
 
-      {/* 9. Upload & persist */}
-      <Node color="emerald" icon="9" title="Upload y persistencia">
+      {/* 10. Upload & persist */}
+      <Node color="sky" icon="10" title="Upload y persistencia">
         <div className="space-y-1.5">
           <p><Tag color="sky">R2</Tag> Upload <code className="text-xs">&#123;jobId&#125;/mix.mp3</code></p>
           <p><Tag color="neutral">D1</Tag> Log produccion: email, prompt, escaleta, timing, tracks, duracion, creditos, modelo, prompts enviados</p>
@@ -439,8 +477,8 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
 
       <Arrow />
 
-      {/* 10. SSE delivery */}
-      <Node color="neutral" icon="10" title="Entrega al cliente (SSE)">
+      {/* 11. SSE delivery */}
+      <Node color="neutral" icon="11" title="Entrega al cliente (SSE)">
         <p>El cliente recibe actualizaciones en tiempo real via Server-Sent Events.</p>
         <div className="space-y-1 mt-1">
           <p><Tag>GET /p/:id/stream</Tag> EventSource unidireccional</p>
@@ -454,6 +492,7 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
         <p className="text-xs uppercase tracking-wider font-semibold text-neutral-400 mb-3">Servicios externos</p>
         <div className="flex flex-wrap gap-3 text-sm">
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-teal-500" /> Gemini (IA generativa)</span>
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500" /> Gemini Embedding 2 (busqueda semantica)</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500" /> ElevenLabs (TTS)</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-sky-500" /> Cloudflare R2 (storage)</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-rose-500" /> FFmpeg (local)</span>
