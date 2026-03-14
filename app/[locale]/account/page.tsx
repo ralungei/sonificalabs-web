@@ -42,6 +42,12 @@ export default function AccountPage() {
   const [managingSubscription, setManagingSubscription] = useState(false);
 
   useEffect(() => {
+    const reset = () => setManagingSubscription(false);
+    window.addEventListener("pageshow", reset);
+    return () => window.removeEventListener("pageshow", reset);
+  }, []);
+
+  useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/signin");
     }
@@ -233,7 +239,7 @@ export default function AccountPage() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="w-full max-w-sm rounded-2xl border border-contrast/[0.08] bg-surface-2 p-6 shadow-2xl"
+              className="w-full max-w-sm rounded-2xl border border-contrast/[0.08] bg-white p-6 shadow-2xl"
             >
               <h3 className="text-contrast font-semibold mb-2">
                 {t("confirmDeletion")}
