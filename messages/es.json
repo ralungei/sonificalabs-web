@@ -301,9 +301,11 @@
     "cancel": "Cancelar",
     "deleteError": "No se pudo eliminar la cuenta. Inténtalo de nuevo.",
     "subscription": "Suscripción",
+    "upgradePlan": "Mejorar plan",
     "manageSubscription": "Gestionar suscripción",
     "managingSubscription": "Redirigiendo...",
-    "cancelSubscription": "Puedes cancelar o cambiar tu plan en cualquier momento desde el portal de Stripe.",
+    "renewalDate": "Fecha de renovación",
+    "cancelSubscription": "Cancelar suscripción",
     "pendingDowngrade": "Tu plan cambiará a {plan} el {date}.",
     "pendingDowngradeNoDate": "Tu plan cambiará a {plan} al final del periodo actual."
   },

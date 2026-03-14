@@ -159,36 +159,56 @@ export default function AccountPage() {
           })()}
 
           {/* Subscription management */}
-          {account && account.plan !== "free" && (
+          {account && (
             <div className="rounded-2xl border border-contrast/[0.08] bg-surface-1/60 backdrop-blur-sm p-6 mb-6">
               <h2 className="text-body-md font-semibold text-text-primary mb-4">{t("subscription")}</h2>
-              <button
-                onClick={async () => {
-                  setManagingSubscription(true);
-                  try {
-                    const res = await apiFetch("/stripe/portal", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ locale }),
-                    }, apiToken);
-                    const data = await res.json();
-                    if (data.url) {
-                      window.location.href = data.url;
-                    } else {
-                      setManagingSubscription(false);
-                    }
-                  } catch {
-                    setManagingSubscription(false);
-                  }
-                }}
-                disabled={managingSubscription}
-                className="px-4 py-2 rounded-lg text-label-md font-semibold bg-contrast/[0.06] text-text-primary border border-contrast/[0.1] hover:bg-contrast/[0.1] transition-colors cursor-pointer disabled:opacity-50"
-              >
-                {managingSubscription ? t("managingSubscription") : t("manageSubscription")}
-              </button>
-              <p className="text-label-sm text-text-muted mt-2">
-                {t("cancelSubscription")}
-              </p>
+              {account.plan === "free" ? (
+                <button
+                  onClick={() => router.push("/pricing")}
+                  className="px-4 py-2 rounded-lg text-label-md font-semibold bg-accent/10 text-accent border border-accent/20 hover:bg-accent/20 transition-colors cursor-pointer"
+                >
+                  {t("upgradePlan")}
+                </button>
+              ) : (
+                <div className="flex flex-col gap-4">
+                  {account.currentPeriodEnd && (
+                    <div>
+                      <p className="text-text-muted text-label-md mb-1">{t("renewalDate")}</p>
+                      <p className="text-contrast font-medium">
+                        {new Date(account.currentPeriodEnd).toLocaleDateString(locale, {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </p>
+                    </div>
+                  )}
+                  <button
+                    onClick={async () => {
+                      setManagingSubscription(true);
+                      try {
+                        const res = await apiFetch("/stripe/portal", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ locale }),
+                        }, apiToken);
+                        const data = await res.json();
+                        if (data.url) {
+                          window.location.href = data.url;
+                        } else {
+                          setManagingSubscription(false);
+                        }
+                      } catch {
+                        setManagingSubscription(false);
+                      }
+                    }}
+                    disabled={managingSubscription}
+                    className="self-start px-4 py-2 rounded-lg text-label-md font-semibold bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    {managingSubscription ? t("managingSubscription") : t("cancelSubscription")}
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
