@@ -249,6 +249,7 @@ function MasterPanel({
   inline,
   prompt,
   onOpenEditor,
+  firstVoiceText,
 }: {
   masterUrl: string;
   jobId: string;
@@ -257,25 +258,25 @@ function MasterPanel({
   inline: boolean;
   prompt?: string;
   onOpenEditor?: () => void;
+  firstVoiceText?: string;
 }) {
   const t = useTranslations("masterDialog");
   const masterRef = useRef<HTMLAudioElement | null>(null);
   const [masterPlaying, setMasterPlaying] = useState(false);
+  const [shareLoading, setShareLoading] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const toggleMasterPlay = useCallback(() => {
-    if (masterPlaying && masterRef.current) {
-      masterRef.current.pause();
+    const el = masterRef.current;
+    if (!el) return;
+    if (masterPlaying) {
+      el.pause();
       setMasterPlaying(false);
-      return;
+    } else {
+      el.play();
+      setMasterPlaying(true);
     }
-    if (!masterRef.current) {
-      masterRef.current = new Audio();
-      masterRef.current.onended = () => setMasterPlaying(false);
-    }
-    masterRef.current.src = masterUrl;
-    masterRef.current.play();
-    setMasterPlaying(true);
-  }, [masterUrl, masterPlaying]);
+  }, [masterPlaying]);
 
   const downloadMaster = useCallback(async () => {
     try {
@@ -292,12 +293,107 @@ function MasterPanel({
     }
   }, [masterUrl, jobId]);
 
-  // Cleanup on unmount
+  const videoUrl = masterUrl.replace(/\/audio\/([^/]+)(?:\/[^?]*)?(\?.*)/, "/video/$1$2");
+
+  const shareVideo = useCallback(async () => {
+    if (shareLoading) return;
+    setShareLoading(true);
+    try {
+      const res = await fetch(videoUrl);
+      if (!res.ok) throw new Error("Video generation failed");
+      const blob = await res.blob();
+      const file = new File([blob], `sonificalabs-${jobId}.mp4`, { type: "video/mp4" });
+
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: "SonificaLabs",
+        });
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = file.name;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (e) {
+      // AbortError = user cancelled share sheet, ignore
+      if (e instanceof Error && e.name === "AbortError") return;
+      window.open(videoUrl, "_blank");
+    } finally {
+      setShareLoading(false);
+    }
+  }, [videoUrl, jobId, shareLoading]);
+
+  // Preload audio metadata to show duration before play
   useEffect(() => {
+    if (!masterRef.current) {
+      masterRef.current = new Audio();
+      masterRef.current.onended = () => setMasterPlaying(false);
+    }
+    masterRef.current.preload = "auto";
+    masterRef.current.src = masterUrl;
     return () => {
       masterRef.current?.pause();
     };
-  }, []);
+  }, [masterUrl]);
+
+  const shareDialog = shareOpen && (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[var(--z-dropdown)] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm"
+        onClick={() => setShareOpen(false)}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 40 }}
+          transition={{ type: "spring", duration: 0.4, bounce: 0.1 }}
+          className="relative w-full max-w-xs mx-4 mb-4 sm:mb-0 bg-surface-1 border border-contrast/[0.08] rounded-2xl p-5 flex flex-col items-center gap-4 shadow-[0_24px_64px_-16px_rgba(0,0,0,0.7)]"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Close */}
+          <button
+            onClick={() => setShareOpen(false)}
+            className="absolute -top-3 -right-3 h-7 w-7 rounded-full bg-white text-black shadow-md flex items-center justify-center hover:bg-white/90 transition-all z-10"
+          >
+            <Icon icon="material-symbols:close-rounded" className="h-4 w-4" />
+          </button>
+
+          {/* Cover preview 9:16 */}
+          <div className="relative w-full rounded-xl overflow-hidden border border-contrast/[0.06]" style={{ aspectRatio: "9/16" }}>
+            <img src="/cover-share.png" alt="" className="w-full h-full object-cover" />
+            {/* Subtitle preview — matches video position */}
+            <div className="absolute top-[18%] left-0 right-0 px-4">
+              <span className="text-white text-[1.75rem] font-body font-bold text-left leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                {firstVoiceText ? (firstVoiceText.length > 80 ? firstVoiceText.substring(0, 80) + "..." : firstVoiceText) : t("subtitlePreview")}
+              </span>
+            </div>
+          </div>
+
+          {/* Description */}
+          <p className="text-caption-md text-text-muted font-body text-center">
+            {t("shareAsVideoDesc")}
+          </p>
+
+          {/* Download button */}
+          <button
+            onClick={shareVideo}
+            disabled={shareLoading}
+            className="w-full flex items-center justify-center gap-2.5 px-5 py-3 rounded-xl bg-white text-black border border-contrast/15 font-body text-label-md font-semibold transition-all hover:bg-white/90 active:scale-[0.98] disabled:opacity-60"
+          >
+            <Icon icon={shareLoading ? "svg-spinners:ring-resize" : "solar:download-minimalistic-bold"} className="h-4 w-4" />
+            {shareLoading ? t("preparingShare") : t("downloadVideo")}
+          </button>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
 
   const content = (
     <>
@@ -371,19 +467,31 @@ function MasterPanel({
         className="w-full flex flex-col gap-3"
       >
         {canDownload ? (
-          <>
+          <div className="w-full flex gap-3">
             <button
               onClick={downloadMaster}
-              className="w-full flex items-center justify-center gap-2.5 px-5 py-3 rounded-xl bg-accent text-surface-0 font-body text-label-md uppercase tracking-wider font-semibold transition-all hover:bg-accent-bright hover:shadow-[0_8px_32px_rgba(232,168,56,0.25)] active:scale-[0.98]"
+              className="flex-1 flex items-center justify-center gap-2.5 px-5 py-3 rounded-xl bg-accent text-surface-0 font-body text-label-md uppercase tracking-wider font-semibold transition-all hover:bg-accent-bright hover:shadow-[0_8px_32px_rgba(232,168,56,0.25)] active:scale-[0.98]"
             >
               <Icon icon="solar:download-minimalistic-bold" className="h-4.5 w-4.5" />
               {t("downloadMp3")}
             </button>
-            <ShareField jobId={jobId} />
-          </>
+            <button
+              onClick={() => setShareOpen(true)}
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white text-black border border-contrast/15 font-body text-label-md font-semibold transition-all hover:bg-white/90 active:scale-[0.98]"
+            >
+              <Icon icon="solar:share-bold" className="h-4 w-4" />
+              {t("share")}
+            </button>
+          </div>
         ) : (
           <>
-            <ShareField jobId={jobId} />
+            <button
+              onClick={() => setShareOpen(true)}
+              className="w-full flex items-center justify-center gap-2.5 px-5 py-3 rounded-xl bg-white text-black border border-contrast/15 font-body text-label-md font-semibold transition-all hover:bg-white/90 active:scale-[0.98]"
+            >
+              <Icon icon="solar:share-bold" className="h-4 w-4" />
+              {t("share")}
+            </button>
             <Link
               href="/pricing"
               className="group w-full flex items-center justify-between px-4 py-3 rounded-xl border border-accent/15 bg-accent/[0.04] hover:bg-accent/[0.08] transition-all"
@@ -408,6 +516,7 @@ function MasterPanel({
   // Inline: wide card — title top, two columns (prompt left, player+actions right)
   if (inline) {
     return (
+    <>
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -448,7 +557,7 @@ function MasterPanel({
           )}
 
           {/* Right column: player + share + buttons */}
-          <div className={cn("flex flex-col gap-4", prompt ? "md:w-3/5" : "w-full")}>
+          <div className={cn("flex flex-col gap-6", prompt ? "md:w-3/5" : "w-full")}>
             {/* Player */}
             <motion.div
               initial={{ opacity: 0, y: 8 }}
@@ -470,8 +579,6 @@ function MasterPanel({
               transition={{ delay: 0.35 }}
               className="flex flex-col gap-3"
             >
-              <ShareField jobId={jobId} />
-
               <div className="flex items-center gap-3">
               {canDownload ? (
                 <>
@@ -481,6 +588,13 @@ function MasterPanel({
                   >
                     <Icon icon="solar:download-minimalistic-bold" className="h-3.5 w-3.5" />
                     {t("downloadMp3")}
+                  </button>
+                  <button
+                    onClick={() => setShareOpen(true)}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-black border border-contrast/15 text-label-md font-body font-semibold transition-all hover:bg-white/90 active:scale-[0.98] whitespace-nowrap shrink-0"
+                  >
+                    <Icon icon="solar:share-bold" className="h-3.5 w-3.5" />
+                    {t("share")}
                   </button>
                   {onOpenEditor && (
                     <button
@@ -510,18 +624,13 @@ function MasterPanel({
                     {t("downloadMp3")}
                     <span className="text-caption-sm text-accent/60 uppercase">{t("pro")}</span>
                   </Link>
-                  <Link
-                    href="/pricing"
-                    className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl border border-contrast/[0.12] text-label-md font-body font-medium transition-all whitespace-nowrap shrink-0 overflow-hidden hover:border-contrast/25"
-                    style={{
-                      background: "linear-gradient(145deg, rgba(120,125,133,0.12) 0%, rgba(160,166,174,0.08) 100%)",
-                      color: "#a0a6ae",
-                    }}
+                  <button
+                    onClick={() => setShareOpen(true)}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-black border border-contrast/15 text-label-md font-body font-semibold transition-all hover:bg-white/90 active:scale-[0.98] whitespace-nowrap shrink-0"
                   >
-                    <Icon icon="solar:tuning-2-bold" className="h-3.5 w-3.5" />
-                    Editor
-                    <span className="text-caption-sm text-contrast/40 uppercase">{t("pro")}</span>
-                  </Link>
+                    <Icon icon="solar:share-bold" className="h-3.5 w-3.5" />
+                    {t("share")}
+                  </button>
                 </>
               )}
               </div>
@@ -529,11 +638,14 @@ function MasterPanel({
           </div>
         </div>
       </motion.div>
+      {shareDialog}
+    </>
     );
   }
 
   // Modal: vertical centered layout
   return (
+    <>
     <motion.div
       initial={{ opacity: 0, scale: 0.92, y: 16 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -544,6 +656,8 @@ function MasterPanel({
     >
       {content}
     </motion.div>
+    {shareDialog}
+    </>
   );
 }
 
@@ -557,6 +671,7 @@ export function MasterDialog({
   inline = false,
   prompt,
   onOpenEditor,
+  firstVoiceText,
 }: {
   show: boolean;
   masterUrl: string | null;
@@ -566,6 +681,7 @@ export function MasterDialog({
   inline?: boolean;
   prompt?: string;
   onOpenEditor?: () => void;
+  firstVoiceText?: string;
 }) {
   const handleClose = useCallback(() => {
     onClose();
@@ -584,6 +700,7 @@ export function MasterDialog({
         inline
         prompt={prompt}
         onOpenEditor={onOpenEditor}
+        firstVoiceText={firstVoiceText}
       />
     );
   }
@@ -605,6 +722,7 @@ export function MasterDialog({
           canDownload={canDownload}
           onClose={handleClose}
           inline={false}
+          firstVoiceText={firstVoiceText}
         />
       </motion.div>
     </AnimatePresence>

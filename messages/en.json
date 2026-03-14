@@ -76,6 +76,7 @@
   },
   "jobStatus": {
     "script": "Script",
+    "voices": "Voices",
     "timing": "Timing",
     "production": "Production",
     "ready": "Ready",
@@ -86,6 +87,17 @@
     "calculatingTiming": "Calculating timing with AI...",
     "synthesizing": "Synthesizing voices and mixing...",
     "inQueue": "In queue"
+  },
+  "voiceConfirmation": {
+    "title": "Review voices",
+    "subtitle": "These are the assigned voices. You can change them before producing.",
+    "confirm": "Confirm and produce",
+    "cancel": "Cancel",
+    "autoConfirm": "Auto-confirming in {seconds}",
+    "women": "Women",
+    "men": "Men",
+    "clips": "{count} clips",
+    "use": "Use"
   },
   "audioPlayer": {
     "download": "Download"
@@ -140,6 +152,7 @@
     "audioReady": "Your audio is ready",
     "cancel": "Cancel",
     "createAnother": "Create another",
+    "newProduction": "New production",
     "somethingWentWrong": "Something went wrong",
     "errorDescription": "An error occurred while generating your audio. Please try again in a few seconds.",
     "tryAgain": "Try again",
@@ -153,11 +166,17 @@
     "audioReady": "Your audio is ready",
     "masterReady": "Master ready",
     "normalizedLufs": "Normalized to -14 LUFS",
-    "downloadMp3": "MP3",
-    "downloadInMp3": "Download MP3",
+    "downloadMp3": "HQ MP3",
+    "downloadInMp3": "HQ MP3",
     "availableInPro": "Available in Pro plan",
     "pro": "Pro",
-    "yourText": "Instruction"
+    "yourText": "Instruction",
+    "share": "Share",
+    "preparingShare": "Preparing...",
+    "shareAsVideo": "Share as video",
+    "shareAsVideoDesc": "MP4 video with cover for social media",
+    "downloadVideo": "Download video",
+    "subtitlePreview": "Subtitles will appear here"
   },
   "trackLane": {
     "deleteTrack": "Delete track"
@@ -293,6 +312,7 @@
     "oauthError": "This email is already registered with another method.",
     "genericError": "Error signing in. Please try again.",
     "continueWith": "Continue with",
+    "signInWithGoogle": "Sign in with Google",
     "termsNotice": "By continuing, you accept the <terms>terms of use</terms> and the <privacy>privacy policy</privacy>.",
     "backToHome": "Back to SonificaLabs"
   },

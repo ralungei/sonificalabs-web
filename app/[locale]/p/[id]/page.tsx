@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { Icon } from "@iconify/react";
 import { JobStatus } from "@/components/JobStatus";
+import { VoiceConfirmation } from "@/components/VoiceConfirmation";
 import { Studio, type TimelineTrack } from "@/components/Studio";
 import { MasterDialog } from "@/components/studio/MasterDialog";
 import { BackgroundBeams } from "@/components/ui/background-beams";
@@ -13,22 +14,25 @@ import { Navbar } from "@/components/Navbar";
 import { apiFetch, apiUrl, API_URL } from "@/lib/api";
 import { useApiToken } from "@/components/Providers";
 
-type JobState = "working" | "done" | "error";
+type JobState = "working" | "confirming" | "done" | "error";
 
 export default function JobPage() {
   const t = useTranslations("jobPage");
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [state, setState] = useState<JobState>("working");
-  const [status, setStatus] = useState("queued");
+  const [status, setStatus] = useState("loading");
   const [progress, setProgress] = useState("");
   const [queuePosition, setQueuePosition] = useState<number | undefined>();
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [tracks, setTracks] = useState<TimelineTrack[] | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [prompt, setPrompt] = useState("");
+  const [escaleta, setEscaleta] = useState<any>(null);
+  const [confirmDeadline, setConfirmDeadline] = useState<number>(0);
   const [userPlan, setUserPlan] = useState<string>("free");
   const [editorOpen, setEditorOpen] = useState(false);
+  const [firstVoiceText, setFirstVoiceText] = useState<string | undefined>();
   const canDownload = userPlan !== "free";
   const cleanupRef = useRef<(() => void) | null>(null);
   const apiToken = useApiToken();
@@ -61,19 +65,27 @@ export default function JobPage() {
       tracks?: TimelineTrack[];
       error?: string;
       prompt?: string;
+      escaleta?: any;
+      confirmDeadline?: number;
     }) => {
       setStatus(data.status);
       setProgress(data.progress || "");
       setQueuePosition(data.queuePosition);
       if (data.prompt) setPrompt(data.prompt);
 
-      if (data.status === "done") {
+      if (data.status === "confirming") {
+        if (data.escaleta) setEscaleta(data.escaleta);
+        if (data.confirmDeadline) setConfirmDeadline(data.confirmDeadline);
+        setState("confirming");
+      } else if (data.status === "done") {
         const raw = data.audioUrl;
         const url = raw
           ? raw.startsWith("http") ? raw : apiUrl(raw, apiToken)
           : null;
         setAudioUrl(url);
         if (data.tracks) {
+          const voice = data.tracks.find((tr: any) => tr.type === "voice" && tr.text);
+          if (voice) setFirstVoiceText((voice as any).text);
           setTracks(data.tracks.map((tr: TimelineTrack) => ({
             ...tr,
             audioUrl: tr.audioUrl?.startsWith("http") ? tr.audioUrl : apiUrl(tr.audioUrl, apiToken),
@@ -83,9 +95,12 @@ export default function JobPage() {
       } else if (data.status === "error") {
         setErrorMsg(data.error || "Something went wrong");
         setState("error");
+      } else if (state === "confirming" && data.status !== "confirming") {
+        // Confirmed or auto-confirmed, back to working
+        setState("working");
       }
     },
-    [apiToken],
+    [apiToken, state],
   );
 
   useEffect(() => {
@@ -187,6 +202,26 @@ export default function JobPage() {
             </motion.div>
           )}
 
+          {/* Confirming state — voice review */}
+          {state === "confirming" && escaleta && (
+            <VoiceConfirmation
+              escaleta={escaleta}
+              confirmDeadline={confirmDeadline}
+              userPlan={userPlan}
+              onConfirm={async (voiceChanges) => {
+                setState("working");
+                setStatus("queued");
+                setProgress("En cola...");
+                await apiFetch(`/p/${id}/confirm`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ voiceChanges }),
+                }, apiToken).catch(() => {});
+              }}
+              onCancel={handleCancel}
+            />
+          )}
+
           {/* Done state — always inline master, editor in fullscreen modal for paid */}
           {state === "done" && audioUrl && (
             <motion.div
@@ -206,21 +241,23 @@ export default function JobPage() {
                 canDownload={canDownload}
                 inline
                 prompt={prompt}
+                firstVoiceText={firstVoiceText}
                 // onOpenEditor={tracks && tracks.length > 0 ? () => setEditorOpen(true) : undefined}
               />
 
-              {/* Create another */}
+              {/* New production */}
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="mt-6"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.4, ease: "easeOut" }}
+                className="mt-4 w-full max-w-3xl"
               >
                 <button
                   onClick={() => router.push("/")}
-                  className="px-5 py-2.5 rounded-xl bg-white text-surface-0 text-body-md font-body font-semibold hover:bg-white/90 transition-all active:scale-[0.98]"
+                  className="flex items-center gap-1.5 text-text-muted text-body-sm font-body font-medium hover:text-text-primary transition-colors"
                 >
-                  {t("createAnother")}
+                  <Icon icon="solar:alt-arrow-left-linear" className="h-4 w-4" />
+                  {t("newProduction")}
                 </button>
               </motion.div>
 

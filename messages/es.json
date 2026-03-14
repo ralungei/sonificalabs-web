@@ -76,6 +76,7 @@
   },
   "jobStatus": {
     "script": "Guion",
+    "voices": "Voces",
     "timing": "Timing",
     "production": "Producción",
     "ready": "Listo",
@@ -86,6 +87,17 @@
     "calculatingTiming": "Calculando timing con IA...",
     "synthesizing": "Sintetizando voces y mezclando...",
     "inQueue": "En cola"
+  },
+  "voiceConfirmation": {
+    "title": "Revisa las voces",
+    "subtitle": "Estas son las voces asignadas. Puedes cambiarlas antes de producir.",
+    "confirm": "Confirmar y producir",
+    "cancel": "Cancelar",
+    "autoConfirm": "Auto-confirmación en {seconds}",
+    "women": "Mujeres",
+    "men": "Hombres",
+    "clips": "{count} clips",
+    "use": "Usar"
   },
   "audioPlayer": {
     "download": "Descargar"
@@ -140,6 +152,7 @@
     "audioReady": "Tu audio esta listo",
     "cancel": "Cancelar",
     "createAnother": "Crear otro",
+    "newProduction": "Nueva producción",
     "somethingWentWrong": "Algo ha fallado",
     "errorDescription": "Ha ocurrido un error al generar tu audio. Inténtalo de nuevo en unos segundos.",
     "tryAgain": "Intentar de nuevo",
@@ -153,11 +166,17 @@
     "audioReady": "Tu audio está listo",
     "masterReady": "Master listo",
     "normalizedLufs": "Normalizado a -14 LUFS",
-    "downloadMp3": "MP3",
-    "downloadInMp3": "Descargar en MP3",
+    "downloadMp3": "MP3 Alta Calidad",
+    "downloadInMp3": "MP3 Alta Calidad",
     "availableInPro": "Disponible en el plan Pro",
     "pro": "Pro",
-    "yourText": "Instrucción"
+    "yourText": "Instrucción",
+    "share": "Compartir",
+    "preparingShare": "Preparando...",
+    "shareAsVideo": "Compartir como video",
+    "shareAsVideoDesc": "Video MP4 con carátula para redes sociales",
+    "downloadVideo": "Descargar video",
+    "subtitlePreview": "Los subtítulos aparecerán aquí"
   },
   "trackLane": {
     "deleteTrack": "Eliminar pista"
@@ -289,10 +308,11 @@
     "pendingDowngradeNoDate": "Tu plan cambiará a {plan} al final del periodo actual."
   },
   "signin": {
-    "subtitle": "Inicia sesion para crear audio con IA",
+    "subtitle": "Inicia sesión para crear audio con IA",
     "oauthError": "Este correo ya esta registrado con otro metodo.",
-    "genericError": "Error al iniciar sesion. Intentalo de nuevo.",
+    "genericError": "Error al iniciar sesión. Inténtalo de nuevo.",
     "continueWith": "Continuar con",
+    "signInWithGoogle": "Iniciar sesión con Google",
     "termsNotice": "Al continuar, aceptas los <terms>terminos de uso</terms> y la <privacy>politica de privacidad</privacy>.",
     "backToHome": "Volver a SonificaLabs"
   },
