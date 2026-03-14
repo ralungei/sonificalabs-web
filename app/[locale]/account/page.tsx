@@ -245,9 +245,7 @@ export default function AccountPage() {
                 {t("confirmDeletion")}
               </h3>
               <p className="text-label-md text-text-secondary mb-4">
-                {t.rich("typeDeleteConfirm", {
-                  word: (chunks) => <span className="text-red-400 font-mono font-semibold">{t("deleteWord")}</span>,
-                })}
+                {t("typeDeleteConfirm", { word: "" })} <span className="text-red-400 font-mono font-semibold">{t("deleteWord")}</span>
               </p>
               <input
                 type="text"

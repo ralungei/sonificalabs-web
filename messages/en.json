@@ -294,7 +294,7 @@
     "dangerDescription": "Deleting your account will permanently erase all your data, productions and audio files. This action cannot be undone.",
     "deleteAccount": "Delete account",
     "confirmDeletion": "Confirm deletion",
-    "typeDeleteConfirm": "Type {word} to confirm the permanent deletion of your account and all your data.",
+    "typeDeleteConfirm": "Type to confirm the permanent deletion of your account and all your data:",
     "deleteWord": "DELETE",
     "typePlaceholder": "Type DELETE",
     "deleting": "Deleting...",

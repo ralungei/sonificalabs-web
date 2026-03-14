@@ -294,7 +294,7 @@
     "dangerDescription": "Al eliminar tu cuenta se borrarán permanentemente todos tus datos, producciones y archivos de audio. Esta acción no se puede deshacer.",
     "deleteAccount": "Eliminar cuenta",
     "confirmDeletion": "Confirmar eliminación",
-    "typeDeleteConfirm": "Escribe {word} para confirmar la eliminación permanente de tu cuenta y todos tus datos.",
+    "typeDeleteConfirm": "Escribe para confirmar la eliminación permanente de tu cuenta y todos tus datos:",
     "deleteWord": "ELIMINAR",
     "typePlaceholder": "Escribe ELIMINAR",
     "deleting": "Eliminando...",
