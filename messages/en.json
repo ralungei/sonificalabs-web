@@ -29,7 +29,23 @@
       "thriller": "Thriller",
       "documental": "Documentary",
       "audiocuento": "Audiobook",
-      "trailer": "Trailer"
+      "trailer": "Trailer",
+      "pasoPublicidad": "Ad break",
+      "avanceProgramacion": "TV promo",
+      "esperaTelefonica": "Hold music",
+      "introYoutube": "YouTube intro",
+      "outroSuscribete": "YouTube outro",
+      "locucionAeropuerto": "Airport",
+      "introReels": "Reels Intro",
+      "introDocuYoutube": "Docu YouTube",
+      "despedidaPodcast": "Podcast Outro",
+      "hablandoAMares": "Hablando a Mares",
+      "cabeceraMagazine": "TV Magazine",
+      "cortinillaLateNight": "Late Night",
+      "podcastEspacio": "Space Podcast",
+      "podcastHistoria": "History Podcast",
+      "podcastComida": "Food Podcast",
+      "podcastPsicologia": "Psychology Podcast"
     }
   },
   "examples": {

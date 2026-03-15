@@ -26,6 +26,22 @@ export const DEMO_DATA = [
   { id: "documental", key: "documental", icon: "🌍", filename: "demo-documental.mp3", category: "tv" },
   { id: "audiocuento", key: "audiocuento", icon: "📖", filename: "demo-audiocuento.mp3", category: "wellness" },
   { id: "trailer", key: "trailer", icon: "🎥", filename: "demo-trailer.mp3", category: "fiction" },
+  { id: "paso-publicidad", key: "pasoPublicidad", icon: "📺", filename: "demo-paso-publicidad.mp3", category: "tv" },
+  { id: "avance-programacion", key: "avanceProgramacion", icon: "📡", filename: "demo-avance-programacion.mp3", category: "tv" },
+  { id: "espera-telefonica", key: "esperaTelefonica", icon: "📞", filename: "demo-espera-telefonica.mp3", category: "commercial" },
+  { id: "intro-youtube", key: "introYoutube", icon: "▶️", filename: "demo-intro-youtube.mp3", category: "creators" },
+  { id: "outro-suscribete", key: "outroSuscribete", icon: "🔔", filename: "demo-outro-suscribete.mp3", category: "creators" },
+  { id: "locucion-aeropuerto", key: "locucionAeropuerto", icon: "✈️", filename: "demo-locucion-aeropuerto.mp3", category: "commercial" },
+  { id: "intro-reels", key: "introReels", icon: "🎬", filename: "demo-intro-reels.mp3", category: "creators" },
+  { id: "intro-docu-youtube", key: "introDocuYoutube", icon: "🏛️", filename: "demo-intro-docu-youtube.mp3", category: "creators" },
+  { id: "despedida-podcast", key: "despedidaPodcast", icon: "👋", filename: "demo-despedida-podcast.mp3", category: "podcast" },
+  { id: "hablando-a-mares", key: "hablandoAMares", icon: "🌊", filename: "demo-hablando-a-mares.mp3", category: "podcast" },
+  { id: "cabecera-magazine", key: "cabeceraMagazine", icon: "💅", filename: "demo-cabecera-magazine.mp3", category: "tv" },
+  { id: "cortinilla-late-night", key: "cortinillaLateNight", icon: "🌙", filename: "demo-cortinilla-late-night.mp3", category: "tv" },
+  { id: "podcast-espacio", key: "podcastEspacio", icon: "🚀", filename: "demo-podcast-espacio.mp3", category: "podcast" },
+  { id: "podcast-historia", key: "podcastHistoria", icon: "⏳", filename: "demo-podcast-historia.mp3", category: "podcast" },
+  { id: "podcast-comida", key: "podcastComida", icon: "🌮", filename: "demo-podcast-comida.mp3", category: "podcast" },
+  { id: "podcast-psicologia", key: "podcastPsicologia", icon: "🧠", filename: "demo-podcast-psicologia.mp3", category: "podcast" },
 ];
 
 /* ── Global stop registry ──────────────────────────────────────── */
