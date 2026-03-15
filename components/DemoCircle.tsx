@@ -156,10 +156,10 @@ export function DemoCircle({
 
   useEffect(() => {
     stopFns.add(stop);
-    const unregister = registerHighlight(setHighlighted);
+    const unregister = hasClip ? registerHighlight(setHighlighted) : undefined;
     return () => {
       stopFns.delete(stop);
-      unregister();
+      unregister?.();
       if (glowTimeout.current) clearTimeout(glowTimeout.current);
       if (audioRef.current) {
         audioRef.current.pause();
@@ -325,13 +325,13 @@ export function DemoCircle({
             />
           )}
           {playing ? (
-            <svg className={`h-4 w-4 transition-transform duration-200 group-hover:scale-110 ${hovering || playing ? "text-white" : "text-contrast/70"}`} fill="currentColor" viewBox="0 0 24 24">
+            <svg className={`h-4 w-4 transition-transform duration-200 group-hover:scale-110 ${hasClip && (hovering || playing) ? "text-white" : "text-contrast/70"}`} fill="currentColor" viewBox="0 0 24 24">
               <rect x="6" y="4" width="4" height="16" rx="1" />
               <rect x="14" y="4" width="4" height="16" rx="1" />
             </svg>
           ) : (
             <svg
-              className={`h-4 w-4 group-hover:scale-110 transition-colors duration-300 ${hovering || showHighlight ? "text-white drop-shadow-md" : "text-contrast/70"}`}
+              className={`h-4 w-4 group-hover:scale-110 transition-colors duration-300 ${hasClip && (hovering || showHighlight) ? "text-white drop-shadow-md" : "text-contrast/70"}`}
               fill="currentColor" viewBox="0 0 24 24"
             >
               <path d="M19.266 13.516a1.917 1.917 0 0 0 0-3.032A35.8 35.8 0 0 0 9.35 5.068l-.653-.232c-1.248-.443-2.567.401-2.736 1.69a42.5 42.5 0 0 0 0 10.948c.17 1.289 1.488 2.133 2.736 1.69l.653-.232a35.8 35.8 0 0 0 9.916-5.416"/>
