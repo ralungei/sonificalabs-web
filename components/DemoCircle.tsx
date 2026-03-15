@@ -38,10 +38,7 @@ export const DEMO_DATA = [
   { id: "hablando-a-mares", key: "hablandoAMares", icon: "🌊", filename: "demo-hablando-a-mares.mp3", category: "podcast" },
   { id: "cabecera-magazine", key: "cabeceraMagazine", icon: "💅", filename: "demo-cabecera-magazine.mp3", category: "tv" },
   { id: "cortinilla-late-night", key: "cortinillaLateNight", icon: "🌙", filename: "demo-cortinilla-late-night.mp3", category: "tv" },
-  { id: "podcast-espacio", key: "podcastEspacio", icon: "🚀", filename: "demo-podcast-espacio.mp3", category: "podcast" },
-  { id: "podcast-historia", key: "podcastHistoria", icon: "⏳", filename: "demo-podcast-historia.mp3", category: "podcast" },
-  { id: "podcast-comida", key: "podcastComida", icon: "🌮", filename: "demo-podcast-comida.mp3", category: "podcast" },
-  { id: "podcast-psicologia", key: "podcastPsicologia", icon: "🧠", filename: "demo-podcast-psicologia.mp3", category: "podcast" },
+  { id: "podcast-cosas-raras", key: "podcastCosasRaras", icon: "🧠", filename: "demo-podcast-cosas-raras.mp3", category: "podcast" },
 ];
 
 /* ── Global stop registry ──────────────────────────────────────── */
