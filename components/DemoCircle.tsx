@@ -82,6 +82,17 @@ function stopHighlightLoop() {
   highlightStarted = false;
 }
 
+function pauseHighlightLoop() {
+  if (highlightTimer) { clearInterval(highlightTimer); highlightTimer = null; }
+  if (highlightIdx >= 0 && highlightIdx < highlightSubs.length) highlightSubs[highlightIdx](false);
+  highlightIdx = -1;
+}
+
+function resumeHighlightLoop() {
+  if (!highlightStarted || highlightTimer) return;
+  highlightTimer = setInterval(tick, 2500);
+}
+
 function registerHighlight(cb: HighlightCb) {
   highlightSubs.push(cb);
   if (highlightSubs.length >= 3 && !highlightStarted) startHighlightLoop();
@@ -182,7 +193,7 @@ export function DemoCircle({
   const ensureAudio = () => {
     if (!audioRef.current) {
       const el = new Audio(demo.file);
-      el.onended = () => { setPlaying(false); setProgress(0); setListened(true); };
+      el.onended = () => { setPlaying(false); setProgress(0); setListened(true); resumeHighlightLoop(); };
       el.ontimeupdate = () => {
         if (!el.duration) return;
         setProgress(el.currentTime / el.duration);
@@ -201,9 +212,11 @@ export function DemoCircle({
       audioRef.current.pause();
       setPlaying(false);
       setListened(true);
+      resumeHighlightLoop();
       return;
     }
     stopAllDemos();
+    pauseHighlightLoop();
     const el = ensureAudio();
     el.play();
     setPlaying(true);
@@ -220,6 +233,7 @@ export function DemoCircle({
 
     if (!el.duration) {
       stopAllDemos();
+      pauseHighlightLoop();
       el.play();
       setPlaying(true);
       el.onloadedmetadata = () => {
@@ -230,6 +244,7 @@ export function DemoCircle({
     el.currentTime = ratio * el.duration;
     if (!playing) {
       stopAllDemos();
+      pauseHighlightLoop();
       el.play();
       setPlaying(true);
     }
