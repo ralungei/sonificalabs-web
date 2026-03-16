@@ -317,7 +317,7 @@ export default function Home() {
             </span>
             </div>
             <div className="flex items-center justify-center gap-5 flex-wrap">
-              {DEMOS.map((demo, i) => (
+              {DEMOS.slice(0, 7).map((demo, i) => (
                 <DemoCircle key={demo.id} demo={demo} delay={1.5 + i * 0.1} size={96} />
               ))}
             </div>
