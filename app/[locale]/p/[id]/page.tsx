@@ -40,6 +40,10 @@ export default function JobPage() {
   const apiToken = useApiToken();
 
   useEffect(() => {
+    if (authStatus === "unauthenticated") router.push("/signin");
+  }, [authStatus, router]);
+
+  useEffect(() => {
     if (!editorOpen) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setEditorOpen(false);
@@ -186,43 +190,6 @@ export default function JobPage() {
       <div className="relative z-10 flex flex-col items-center w-full max-w-6xl">
 
         <AnimatePresence mode="wait">
-          {/* Unauthenticated state */}
-          {authStatus === "unauthenticated" && (
-            <motion.div
-              key="unauthenticated"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
-              className="flex flex-col items-center justify-center w-full min-h-[60vh]"
-            >
-              <div className="flex flex-col items-center gap-5 max-w-sm w-full">
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", duration: 0.5, delay: 0.1 }}
-                  className="h-16 w-16 rounded-2xl bg-accent/10 border border-accent/15 flex items-center justify-center"
-                >
-                  <Icon icon="solar:lock-keyhole-bold" className="h-8 w-8 text-accent/80" />
-                </motion.div>
-                <div className="flex flex-col items-center gap-2 text-center">
-                  <h2 className="text-heading-sm font-body font-semibold text-text-primary">
-                    {t("signInRequired")}
-                  </h2>
-                  <p className="text-body-md text-text-secondary font-body leading-relaxed">
-                    {t("signInRequiredDescription")}
-                  </p>
-                </div>
-                <Link
-                  href="/signin"
-                  className="mt-2 flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-surface-2 border border-contrast/[0.08] text-text-secondary hover:text-text-primary text-label-md font-body uppercase tracking-wider transition-all hover:bg-surface-3 active:scale-[0.98]"
-                >
-                  <Icon icon="solar:login-3-bold" className="h-3.5 w-3.5" />
-                  {t("signIn")}
-                </Link>
-              </div>
-            </motion.div>
-          )}
 
           {/* Not found state */}
           {state === "not-found" && authStatus !== "unauthenticated" && (
