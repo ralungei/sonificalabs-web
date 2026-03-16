@@ -15,7 +15,7 @@ function SignInContent() {
   const error = params.get("error");
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <div className="h-dvh flex items-center justify-center relative overflow-hidden">
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -30,9 +30,9 @@ function SignInContent() {
         className="relative z-10 w-full max-w-sm mx-4"
       >
         {/* Card */}
-        <div className="rounded-2xl border border-contrast/[0.08] bg-surface-1/80 backdrop-blur-xl p-8 shadow-2xl">
+        <div className="rounded-2xl border border-contrast/[0.08] bg-surface-1/80 backdrop-blur-xl p-6 md:p-8 shadow-2xl">
           {/* Logo */}
-          <div className="flex flex-col items-center mb-8">
+          <div className="flex flex-col items-center mb-5 md:mb-8">
             <Link href="/" className="flex items-center gap-2.5 mb-3">
               <LogoIcon className="h-8 w-auto text-contrast" />
               <span className="text-heading-md font-body tracking-normal">
