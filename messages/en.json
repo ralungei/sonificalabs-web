@@ -175,7 +175,13 @@
     "errorDescription": "An error occurred while generating your audio. Please try again in a few seconds.",
     "tryAgain": "Try again",
     "openEditor": "Open editor",
-    "close": "Close"
+    "close": "Close",
+    "signInRequired": "Sign in required",
+    "signInRequiredDescription": "Sign in to view this production.",
+    "signIn": "Sign in",
+    "notFound": "Production not found",
+    "notFoundDescription": "This production doesn't exist or you don't have access.",
+    "backToHome": "Back to home"
   },
   "masterDialog": {
     "shareLink": "Share link",

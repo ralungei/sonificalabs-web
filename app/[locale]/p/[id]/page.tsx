@@ -3,7 +3,8 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { useSession } from "next-auth/react";
+import { useRouter, Link } from "@/i18n/navigation";
 import { Icon } from "@iconify/react";
 import { JobStatus } from "@/components/JobStatus";
 import { VoiceConfirmation } from "@/components/VoiceConfirmation";
@@ -14,12 +15,13 @@ import { Navbar } from "@/components/Navbar";
 import { apiFetch, apiUrl, API_URL } from "@/lib/api";
 import { useApiToken } from "@/components/Providers";
 
-type JobState = "working" | "confirming" | "done" | "error";
+type JobState = "working" | "confirming" | "done" | "error" | "not-found";
 
 export default function JobPage() {
   const t = useTranslations("jobPage");
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const { status: authStatus } = useSession();
   const [state, setState] = useState<JobState>("working");
   const [status, setStatus] = useState("loading");
   const [progress, setProgress] = useState("");
@@ -104,7 +106,7 @@ export default function JobPage() {
   );
 
   useEffect(() => {
-    if (!id) return;
+    if (!id || !apiToken) return;
 
     let eventSource: EventSource | null = null;
     let pollTimer: ReturnType<typeof setInterval> | null = null;
@@ -139,6 +141,12 @@ export default function JobPage() {
       const poll = async () => {
         try {
           const res = await apiFetch(`/p/${id}`, {}, apiToken);
+          if (res.status === 404) {
+            setState("not-found");
+            if (pollTimer) clearInterval(pollTimer);
+            pollTimer = null;
+            return;
+          }
           if (!res.ok) return;
           const data = await res.json();
           handleData(data);
@@ -178,8 +186,84 @@ export default function JobPage() {
       <div className="relative z-10 flex flex-col items-center w-full max-w-6xl">
 
         <AnimatePresence mode="wait">
+          {/* Unauthenticated state */}
+          {authStatus === "unauthenticated" && (
+            <motion.div
+              key="unauthenticated"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="flex flex-col items-center justify-center w-full min-h-[60vh]"
+            >
+              <div className="flex flex-col items-center gap-5 max-w-sm w-full">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", duration: 0.5, delay: 0.1 }}
+                  className="h-16 w-16 rounded-2xl bg-accent/10 border border-accent/15 flex items-center justify-center"
+                >
+                  <Icon icon="solar:lock-keyhole-bold" className="h-8 w-8 text-accent/80" />
+                </motion.div>
+                <div className="flex flex-col items-center gap-2 text-center">
+                  <h2 className="text-heading-sm font-body font-semibold text-text-primary">
+                    {t("signInRequired")}
+                  </h2>
+                  <p className="text-body-md text-text-secondary font-body leading-relaxed">
+                    {t("signInRequiredDescription")}
+                  </p>
+                </div>
+                <Link
+                  href="/signin"
+                  className="mt-2 flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-surface-2 border border-contrast/[0.08] text-text-secondary hover:text-text-primary text-label-md font-body uppercase tracking-wider transition-all hover:bg-surface-3 active:scale-[0.98]"
+                >
+                  <Icon icon="solar:login-3-bold" className="h-3.5 w-3.5" />
+                  {t("signIn")}
+                </Link>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Not found state */}
+          {state === "not-found" && authStatus !== "unauthenticated" && (
+            <motion.div
+              key="not-found"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="flex flex-col items-center justify-center w-full min-h-[60vh]"
+            >
+              <div className="flex flex-col items-center gap-5 max-w-sm w-full">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", duration: 0.5, delay: 0.1 }}
+                  className="h-16 w-16 rounded-2xl bg-text-muted/10 border border-text-muted/15 flex items-center justify-center"
+                >
+                  <Icon icon="solar:file-remove-bold" className="h-8 w-8 text-text-muted/80" />
+                </motion.div>
+                <div className="flex flex-col items-center gap-2 text-center">
+                  <h2 className="text-heading-sm font-body font-semibold text-text-primary">
+                    {t("notFound")}
+                  </h2>
+                  <p className="text-body-md text-text-secondary font-body leading-relaxed">
+                    {t("notFoundDescription")}
+                  </p>
+                </div>
+                <button
+                  onClick={() => router.push("/")}
+                  className="mt-2 flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-surface-2 border border-contrast/[0.08] text-text-secondary hover:text-text-primary text-label-md font-body uppercase tracking-wider transition-all hover:bg-surface-3 active:scale-[0.98]"
+                >
+                  <Icon icon="solar:alt-arrow-left-linear" className="h-3.5 w-3.5" />
+                  {t("backToHome")}
+                </button>
+              </div>
+            </motion.div>
+          )}
+
           {/* Working state */}
-          {state === "working" && (
+          {state === "working" && authStatus !== "unauthenticated" && (
             <motion.div
               key="working"
               initial={{ opacity: 0, y: 20 }}
