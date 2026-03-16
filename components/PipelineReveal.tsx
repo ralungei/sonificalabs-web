@@ -331,10 +331,8 @@ function PipelineStep({
           initial={{ scale: 0 }}
           animate={inView ? { scale: 1 } : { scale: 0 }}
           transition={{ duration: 0.4, type: "spring", bounce: 0.5 }}
-          className="relative z-10 h-4 w-4 rounded-full border-2 border-accent bg-surface-0 shrink-0"
-        >
-          <span className="absolute inset-0 rounded-full bg-accent/30 animate-ping" />
-        </motion.div>
+          className="z-10 h-4 w-4 rounded-full bg-accent shrink-0"
+        />
       </div>
 
       {/* Right column */}
@@ -365,10 +363,8 @@ function PipelineStepMobile({
           initial={{ scale: 0 }}
           animate={inView ? { scale: 1 } : { scale: 0 }}
           transition={{ duration: 0.4, type: "spring", bounce: 0.5 }}
-          className="relative z-10 h-3.5 w-3.5 rounded-full border-2 border-accent bg-surface-0 shrink-0 mt-1"
-        >
-          <span className="absolute inset-0 rounded-full bg-accent/30 animate-ping" />
-        </motion.div>
+          className="z-10 h-3.5 w-3.5 rounded-full bg-accent shrink-0 mt-1"
+        />
       </div>
 
       {/* Content */}
