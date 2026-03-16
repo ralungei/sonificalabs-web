@@ -104,38 +104,6 @@ export function JobStatus({
         </AnimatePresence>
       </div>
 
-      {/* Phase dots */}
-      <div className="flex items-center gap-3">
-        {PHASES.map((phase, i) => (
-          <div key={phase.key} className="relative">
-            <motion.div
-              animate={{
-                width: i === currentPhase ? 7 : 5,
-                height: i === currentPhase ? 7 : 5,
-              }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className={cn(
-                "rounded-full",
-                i < currentPhase && "bg-accent/40",
-                i === currentPhase && "bg-accent",
-                i > currentPhase && "bg-contrast/10",
-                isQueued && "bg-contrast/10",
-              )}
-            />
-            {/* Pulse on active dot */}
-            <AnimatePresence>
-              {i === currentPhase && !isQueued && (
-                <motion.div
-                  className="absolute inset-0 rounded-full bg-accent/30"
-                  animate={{ scale: [1, 2.5], opacity: [0.4, 0] }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
-                />
-              )}
-            </AnimatePresence>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }

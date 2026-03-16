@@ -365,21 +365,10 @@ function MasterPanel({
             <Icon icon="material-symbols:close-rounded" className="h-4 w-4" />
           </button>
 
-          {/* Cover preview 9:16 */}
-          <div className="relative w-full rounded-xl overflow-hidden border border-contrast/[0.06]" style={{ aspectRatio: "9/16" }}>
-            <img src="/cover-share.png" alt="" className="w-full h-full object-cover" />
-            {/* Subtitle preview — matches video position */}
-            <div className="absolute top-[18%] left-0 right-0 px-4">
-              <span className="text-white text-[1.75rem] font-body font-bold text-left leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                {firstVoiceText ? (firstVoiceText.length > 80 ? firstVoiceText.substring(0, 80) + "..." : firstVoiceText) : t("subtitlePreview")}
-              </span>
-            </div>
+          {/* Cover preview 1:1 */}
+          <div className="relative w-full rounded-xl overflow-hidden border border-contrast/[0.06]" style={{ aspectRatio: "1/1" }}>
+            <img src="/sonificalabs-logo.svg" alt="" className="w-full h-full object-contain bg-[#0a0a0a] p-12" />
           </div>
-
-          {/* Description */}
-          <p className="text-caption-md text-text-muted font-body text-center">
-            {t("shareAsVideoDesc")}
-          </p>
 
           {/* Download button */}
           <button

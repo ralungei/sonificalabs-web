@@ -3,8 +3,6 @@
 import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { VOICES } from "@/lib/voices";
-
 /* ── Phase 1: Typewriter ──────────────────────────────────────── */
 
 function TypewriterViz({ text }: { text: string }) {
@@ -88,10 +86,11 @@ const FEATURED_NAMES = [
 ];
 const ACTIVE_NAMES = new Set(["Daniel", "Sara", "Eva"]);
 
-const DISPLAY_VOICES = FEATURED_NAMES.map(name => {
-  const v = VOICES.find(d => d.name === name)!;
-  return { initials: v.name.slice(0, 2), name: v.name, active: ACTIVE_NAMES.has(name) };
-});
+const DISPLAY_VOICES = FEATURED_NAMES.map(name => ({
+  initials: name.slice(0, 2),
+  name,
+  active: ACTIVE_NAMES.has(name),
+}));
 
 function VoiceGridViz() {
   const ref = useRef<HTMLDivElement>(null);
