@@ -39,6 +39,11 @@ export const DEMO_DATA = [
   { id: "cabecera-magazine", key: "cabeceraMagazine", icon: "💅", filename: "demo-cabecera-magazine.mp3", category: "tv" },
   { id: "cortinilla-late-night", key: "cortinillaLateNight", icon: "🌙", filename: "demo-cortinilla-late-night.mp3", category: "tv" },
   { id: "podcast-cosas-raras", key: "podcastCosasRaras", icon: "🧠", filename: "demo-podcast-cosas-raras.mp3", category: "podcast" },
+  { id: "audio-elearning", key: "audioElearning", icon: "🎓", filename: "demo-audio-elearning.mp3", category: "creators" },
+  { id: "tour-inmobiliaria", key: "tourInmobiliaria", icon: "🏠", filename: "demo-tour-inmobiliaria.mp3", category: "commercial" },
+  { id: "intro-webinar", key: "introWebinar", icon: "💼", filename: "demo-intro-webinar.mp3", category: "creators" },
+  { id: "contestador", key: "contestador", icon: "📱", filename: "demo-contestador.mp3", category: "commercial" },
+  { id: "guia-turistica", key: "guiaTuristica", icon: "🗿", filename: "demo-guia-turistica.mp3", category: "commercial" },
 ];
 
 /* ── Global stop registry ──────────────────────────────────────── */

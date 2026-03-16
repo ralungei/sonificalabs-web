@@ -202,8 +202,8 @@ export default function Home() {
           return;
         }
         if (res.status === 403) {
-          const data = await res.json();
-          const err = new Error(data.error || "Quota exceeded");
+          const data = await res.json().catch(() => null);
+          const err = new Error(data?.error || "Quota exceeded");
           err.name = "QuotaError";
           throw err;
         }
@@ -213,8 +213,8 @@ export default function Home() {
           err.name = "RateLimitError";
           throw err;
         }
-        const data = await res.json();
-        throw new Error(data.error || "Failed to start production");
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || t("serviceUnavailable"));
       }
 
       const { jobId } = await res.json();

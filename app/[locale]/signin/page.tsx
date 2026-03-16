@@ -15,15 +15,13 @@ function SignInContent() {
   const error = params.get("error");
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-surface-0 relative overflow-hidden">
-      {/* Subtle radial glow */}
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      {/* Background image */}
       <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            `radial-gradient(ellipse 60% 50% at 50% 40%, rgba(${ACCENT.rgb},0.06) 0%, transparent 70%)`,
-        }}
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url(/bg-login-3.jpg)" }}
       />
+      <div className="absolute inset-0 bg-surface-0/0" />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
