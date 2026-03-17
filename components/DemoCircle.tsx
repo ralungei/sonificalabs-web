@@ -129,6 +129,8 @@ export function DemoCircle({
   size?: number;
 }) {
   const hasClip = !!demo.clip;
+  const iconSize = Math.max(16, Math.round(size * 0.18));
+  const ringW = Math.max(8, Math.round(size * 0.12));
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -295,14 +297,14 @@ export function DemoCircle({
           <circle
             cx="32" cy="32" r={CIRCLE_R}
             fill="none" stroke="currentColor"
-            strokeWidth={hovering ? "14" : "12"}
+            strokeWidth={hovering ? String(ringW + 2) : String(ringW)}
             className="text-contrast/[0.08] transition-all duration-200"
           />
           {showProgress && (
             <circle
               cx="32" cy="32" r={CIRCLE_R}
               fill="none" stroke="currentColor"
-              strokeWidth={hovering ? "14" : "12"}
+              strokeWidth={hovering ? String(ringW + 2) : String(ringW)}
               className="text-accent transition-[stroke-dashoffset] duration-100"
               strokeDasharray={CIRCLE_C}
               strokeDashoffset={CIRCLE_C * (1 - progress)}
@@ -312,7 +314,7 @@ export function DemoCircle({
           {hovering && hoverRatio !== null && (
             <circle
               cx="32" cy="32" r={CIRCLE_R}
-              fill="none" stroke="currentColor" strokeWidth="14"
+              fill="none" stroke="currentColor" strokeWidth={String(ringW + 2)}
               className="text-contrast/[0.15]"
               strokeDasharray={CIRCLE_C}
               strokeDashoffset={CIRCLE_C * (1 - hoverRatio)}
@@ -345,13 +347,14 @@ export function DemoCircle({
             />
           )}
           {playing ? (
-            <svg className={`h-4 w-4 transition-transform duration-200 group-hover:scale-110 ${hasClip && (hovering || playing) ? "text-white" : "text-contrast/70"}`} fill="currentColor" viewBox="0 0 24 24">
+            <svg style={{ width: iconSize, height: iconSize }} className={`transition-transform duration-200 group-hover:scale-110 ${hasClip && (hovering || playing) ? "text-white" : "text-contrast/70"}`} fill="currentColor" viewBox="0 0 24 24">
               <rect x="6" y="4" width="4" height="16" rx="1" />
               <rect x="14" y="4" width="4" height="16" rx="1" />
             </svg>
           ) : (
             <svg
-              className={`h-4 w-4 group-hover:scale-110 transition-colors duration-300 ${hasClip && (hovering || showHighlight) ? "text-white drop-shadow-md" : "text-contrast/70"}`}
+              style={{ width: iconSize, height: iconSize }}
+              className={`group-hover:scale-110 transition-colors duration-300 ${hasClip && (hovering || showHighlight) ? "text-white drop-shadow-md" : "text-contrast/70"}`}
               fill="currentColor" viewBox="0 0 24 24"
             >
               <path d="M19.266 13.516a1.917 1.917 0 0 0 0-3.032A35.8 35.8 0 0 0 9.35 5.068l-.653-.232c-1.248-.443-2.567.401-2.736 1.69a42.5 42.5 0 0 0 0 10.948c.17 1.289 1.488 2.133 2.736 1.69l.653-.232a35.8 35.8 0 0 0 9.916-5.416"/>
@@ -360,9 +363,11 @@ export function DemoCircle({
         </motion.button>
       </div>
 
-      <span className="text-[10px] font-semibold tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/90 backdrop-blur-md border border-contrast/10 text-contrast/90">
-        {demo.title}
-      </span>
+      {size <= 128 && (
+        <span className="text-[10px] font-semibold tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-white/90 backdrop-blur-md border border-contrast/10 text-contrast/90">
+          {demo.title}
+        </span>
+      )}
     </motion.div>
   );
 }

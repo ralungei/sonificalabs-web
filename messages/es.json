@@ -95,15 +95,12 @@
   "jobStatus": {
     "script": "Guion",
     "voices": "Voces",
-    "timing": "Timing",
     "production": "Producción",
     "ready": "Listo",
     "queuePosition": "Posición {position} en cola",
     "waitingTurn": "Esperando turno...",
-    "searchingWeb": "Buscando en la web...",
     "generatingScript": "Generando guion con IA...",
-    "calculatingTiming": "Calculando timing con IA...",
-    "synthesizing": "Sintetizando voces y mezclando...",
+    "producing": "Produciendo...",
     "inQueue": "En cola"
   },
   "voiceConfirmation": {
@@ -200,7 +197,8 @@
     "shareAsVideo": "Compartir como video",
     "shareAsVideoDesc": "Video MP4 con carátula para redes sociales",
     "downloadVideo": "Descargar video",
-    "subtitlePreview": "Los subtítulos aparecerán aquí"
+    "subtitlePreview": "Los subtítulos aparecerán aquí",
+    "copyPrompt": "Copiar prompt"
   },
   "trackLane": {
     "deleteTrack": "Eliminar pista"

@@ -95,15 +95,12 @@
   "jobStatus": {
     "script": "Script",
     "voices": "Voices",
-    "timing": "Timing",
     "production": "Production",
     "ready": "Ready",
     "queuePosition": "Position {position} in queue",
     "waitingTurn": "Waiting in line...",
-    "searchingWeb": "Searching the web...",
     "generatingScript": "Generating script with AI...",
-    "calculatingTiming": "Calculating timing with AI...",
-    "synthesizing": "Synthesizing voices and mixing...",
+    "producing": "Producing...",
     "inQueue": "In queue"
   },
   "voiceConfirmation": {
@@ -200,7 +197,8 @@
     "shareAsVideo": "Share as video",
     "shareAsVideoDesc": "MP4 video with cover for social media",
     "downloadVideo": "Download video",
-    "subtitlePreview": "Subtitles will appear here"
+    "subtitlePreview": "Subtitles will appear here",
+    "copyPrompt": "Copy prompt"
   },
   "trackLane": {
     "deleteTrack": "Delete track"

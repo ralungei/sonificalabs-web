@@ -5,11 +5,9 @@ import { BackgroundBeams } from "@/components/ui/background-beams";
 
 const SEQUENCE = [
   { status: "generating", progress: "Generando guion con IA...", hold: 3000 },
-  { status: "searching", progress: "Buscando en la web...", hold: 2500 },
-  { status: "producing", progress: "Generando voz 1 de 3...", hold: 2000 },
-  { status: "producing", progress: "Generando voz 2 de 3...", hold: 2000 },
-  { status: "producing", progress: "Generando voz 3 de 3...", hold: 1500 },
-  { status: "producing", progress: "Mezclando audio final...", hold: 2500 },
+  { status: "producing", progress: "Produciendo...", hold: 2000 },
+  { status: "producing", progress: "Produciendo...", hold: 2000 },
+  { status: "producing", progress: "Produciendo...", hold: 2500 },
 ];
 
 export default function PreviewPage() {

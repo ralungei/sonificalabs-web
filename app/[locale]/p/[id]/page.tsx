@@ -273,7 +273,7 @@ export default function JobPage() {
             />
           )}
 
-          {/* Done state — always inline master, editor in fullscreen modal for paid */}
+          {/* Done state — hero player layout */}
           {state === "done" && audioUrl && (
             <motion.div
               key="done"
@@ -281,9 +281,19 @@ export default function JobPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
-              className="flex flex-col items-center justify-center w-full pb-[10vh]"
+              className="flex flex-col items-center justify-center w-full pb-[10vh] px-6"
               style={{ minHeight: "calc(100dvh - 14vh)" }}
             >
+              {/* Title */}
+              <motion.h2
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-heading-lg font-body font-semibold text-text-primary mb-8"
+              >
+                {t("audioReady")}
+              </motion.h2>
+
               <MasterDialog
                 show
                 masterUrl={audioUrl}
@@ -293,25 +303,7 @@ export default function JobPage() {
                 inline
                 prompt={prompt}
                 firstVoiceText={firstVoiceText}
-                // onOpenEditor={tracks && tracks.length > 0 ? () => setEditorOpen(true) : undefined}
               />
-
-              {/* New production */}
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.4, ease: "easeOut" }}
-                className="mt-4 w-full max-w-3xl"
-              >
-                <button
-                  onClick={() => router.push("/")}
-                  className="flex items-center gap-1.5 text-text-muted text-body-sm font-body font-medium hover:text-text-primary transition-colors"
-                >
-                  <Icon icon="solar:alt-arrow-left-linear" className="h-4 w-4" />
-                  {t("newProduction")}
-                </button>
-              </motion.div>
-
             </motion.div>
           )}
 

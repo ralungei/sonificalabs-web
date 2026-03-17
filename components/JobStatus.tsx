@@ -20,34 +20,27 @@ export function JobStatus({
   const PHASES = [
     { key: "generating", label: t("script") },
     { key: "confirming", label: t("voices") },
-    { key: "timing", label: t("timing") },
     { key: "producing", label: t("production") },
     { key: "done", label: t("ready") },
   ];
 
   const isQueued = status === "queued";
   const isLoading = status === "loading";
-  // "searching" is a sub-state of "generating"
-  const phaseKey = status === "searching" ? "generating" : status;
   const currentPhase = (isQueued || isLoading)
     ? -1
-    : Math.max(0, PHASES.findIndex((p) => p.key === phaseKey));
+    : Math.max(0, PHASES.findIndex((p) => p.key === status));
 
   const displayText = isQueued
     ? queuePosition
       ? t("queuePosition", { position: queuePosition })
       : t("waitingTurn")
-    : status === "searching"
-      ? t("searchingWeb")
-      : status === "generating"
-        ? t("generatingScript")
-        : status === "timing"
-          ? t("calculatingTiming")
-          : status === "producing" && progress
-            ? progress
-            : status === "producing"
-              ? t("synthesizing")
-              : "";
+    : status === "generating"
+      ? t("generatingScript")
+      : status === "producing" && progress
+        ? progress
+        : status === "producing"
+          ? t("producing")
+          : "";
 
   const phaseLabel = (isQueued || isLoading) ? "" : PHASES[currentPhase]?.label ?? "";
 

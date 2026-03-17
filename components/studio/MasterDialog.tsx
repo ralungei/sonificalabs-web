@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
+import { DemoCircle, NEUTRAL_TEXTURE, type Demo } from "@/components/DemoCircle";
 
 /* ── Animated concentric rings ── */
 function GlowRing() {
@@ -438,13 +439,12 @@ function MasterPanel({
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25 }}
-        className="w-full"
+        className="flex justify-center"
       >
-        <MasterPlayer
-          url={masterUrl}
-          playing={masterPlaying}
-          onToggle={toggleMasterPlay}
-          audioRef={masterRef}
+        <DemoCircle
+          demo={{ id: jobId, title: "", icon: "", file: masterUrl, texture: NEUTRAL_TEXTURE }}
+          delay={0}
+          size={160}
         />
       </motion.div>
 
@@ -502,131 +502,106 @@ function MasterPanel({
     </>
   );
 
-  // Inline: wide card — title top, two columns (prompt left, player+actions right)
+  // Inline: hero player layout — circle centered, info below
   if (inline) {
     return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="relative bg-gradient-to-b from-surface-1 to-surface-0 border border-contrast/[0.08] rounded-3xl px-8 py-7 overflow-hidden w-full max-w-3xl mx-auto shadow-[0_16px_48px_-12px_rgba(0,0,0,0.6)]"
-      >
-        {/* Ambient glow */}
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-72 h-52 bg-accent/[0.06] rounded-full blur-3xl pointer-events-none" />
-
-        {/* Title */}
-        <motion.h2
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="text-heading-lg font-body font-semibold text-text-primary mb-5"
+      <div className="flex flex-col items-center gap-6 w-full max-w-md mx-auto">
+        {/* Player circle */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.85 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: "spring", duration: 0.6 }}
         >
-          {t("audioReady")}
-        </motion.h2>
+          <DemoCircle
+            demo={{ id: jobId, title: "", icon: "", file: masterUrl, texture: NEUTRAL_TEXTURE }}
+            delay={0.1}
+            size={192}
+          />
+        </motion.div>
 
-        {/* Two-column layout */}
-        <div className="flex flex-col md:flex-row gap-6">
-          {/* Left column: user prompt */}
-          {prompt && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="md:w-2/5 shrink-0"
+        {/* Prompt text + copy */}
+        {prompt && (
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="flex items-start gap-2 max-w-sm"
+          >
+            <p className="text-body-md text-text-secondary font-body text-center leading-relaxed line-clamp-3 flex-1">
+              {prompt.replace(/\[.*?\]/g, "").trim()}
+            </p>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(prompt.replace(/\[.*?\]/g, "").trim());
+              }}
+              className="shrink-0 mt-0.5 p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-contrast/[0.06] transition-all"
+              title={t("copyPrompt")}
             >
-              <label className="text-label-sm font-body uppercase tracking-wider text-text-muted flex items-center gap-1.5 mb-2">
-                <Icon icon="solar:document-text-linear" className="h-3 w-3" />
-                {t("yourText")}
-              </label>
-              <p className="text-body-sm text-text-secondary leading-relaxed">
-                {prompt.replace(/\[.*?\]/g, "").trim()}
-              </p>
-            </motion.div>
-          )}
+              <Icon icon="solar:copy-linear" className="h-3.5 w-3.5" />
+            </button>
+          </motion.div>
+        )}
 
-          {/* Right column: player + share + buttons */}
-          <div className={cn("flex flex-col gap-6", prompt ? "md:w-3/5" : "w-full")}>
-            {/* Player */}
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25 }}
-            >
-              <MasterPlayer
-                url={masterUrl}
-                playing={masterPlaying}
-                onToggle={toggleMasterPlay}
-                audioRef={masterRef}
-              />
-            </motion.div>
-
-            {/* Share + Download + Editor */}
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 }}
-              className="flex flex-col gap-3"
-            >
-              <div className="flex items-center gap-3">
-              {canDownload ? (
-                <>
-                  <button
-                    onClick={downloadMaster}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-contrast text-surface-0 text-label-md font-body font-semibold uppercase tracking-wider transition-all hover:bg-contrast/90 active:scale-[0.98] whitespace-nowrap shrink-0"
-                  >
-                    <Icon icon="solar:download-minimalistic-bold" className="h-3.5 w-3.5" />
-                    {t("downloadMp3")}
-                  </button>
-                  <button
-                    onClick={() => setShareOpen(true)}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-black border border-contrast/15 text-label-md font-body font-semibold transition-all hover:bg-white/90 active:scale-[0.98] whitespace-nowrap shrink-0"
-                  >
-                    <Icon icon="solar:share-bold" className="h-3.5 w-3.5" />
-                    {t("share")}
-                  </button>
-                  {onOpenEditor && (
-                    <button
-                      onClick={onOpenEditor}
-                      className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-label-md font-body font-semibold uppercase tracking-wider transition-all hover:shadow-[0_6px_28px_rgba(160,170,180,0.25)] active:scale-[0.98] whitespace-nowrap shrink-0 overflow-hidden"
-                      style={{
-                        background: "linear-gradient(145deg, #5a5e65 0%, #787d85 20%, #a0a6ae 45%, #8c929a 65%, #6b7078 85%, #52565d 100%)",
-                        color: "#e8eaee",
-                        textShadow: "0 1px 2px rgba(0,0,0,0.5)",
-                      }}
-                    >
-                      <svg className="absolute inset-0 w-full h-full opacity-[0.15] pointer-events-none mix-blend-overlay" xmlns="http://www.w3.org/2000/svg"><filter id="edGrain"><feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#edGrain)"/></svg>
-                      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-contrast/30 to-transparent pointer-events-none" />
-                      <div className="absolute bottom-0 left-0 right-0 h-px bg-[#3a3d42]/20 pointer-events-none" />
-                      <Icon icon="solar:tuning-2-bold" className="h-3.5 w-3.5 relative z-10" />
-                      <span className="relative z-10">Editor</span>
-                    </button>
-                  )}
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/pricing"
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-accent/20 bg-accent/[0.06] hover:bg-accent/[0.12] text-accent text-label-md font-body font-medium transition-all whitespace-nowrap shrink-0"
-                  >
-                    <Icon icon="solar:download-minimalistic-bold" className="h-3.5 w-3.5" />
-                    {t("downloadMp3")}
-                    <span className="text-caption-sm text-accent/60 uppercase">{t("pro")}</span>
-                  </Link>
-                  <button
-                    onClick={() => setShareOpen(true)}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-black border border-contrast/15 text-label-md font-body font-semibold transition-all hover:bg-white/90 active:scale-[0.98] whitespace-nowrap shrink-0"
-                  >
-                    <Icon icon="solar:share-bold" className="h-3.5 w-3.5" />
-                    {t("share")}
-                  </button>
-                </>
+        {/* Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="flex items-center gap-3"
+        >
+          {canDownload ? (
+            <>
+              <button
+                onClick={downloadMaster}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-contrast text-surface-0 text-label-md font-body font-semibold uppercase tracking-wider transition-all hover:bg-contrast/90 active:scale-[0.98] whitespace-nowrap"
+              >
+                <Icon icon="solar:download-minimalistic-bold" className="h-3.5 w-3.5" />
+                {t("downloadMp3")}
+              </button>
+              <button
+                onClick={() => setShareOpen(true)}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-black border border-contrast/15 text-label-md font-body font-semibold transition-all hover:bg-white/90 active:scale-[0.98] whitespace-nowrap"
+              >
+                <Icon icon="solar:share-bold" className="h-3.5 w-3.5" />
+                {t("share")}
+              </button>
+              {onOpenEditor && (
+                <button
+                  onClick={onOpenEditor}
+                  className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-label-md font-body font-semibold uppercase tracking-wider transition-all active:scale-[0.98] whitespace-nowrap overflow-hidden"
+                  style={{
+                    background: "linear-gradient(145deg, #5a5e65 0%, #787d85 20%, #a0a6ae 45%, #8c929a 65%, #6b7078 85%, #52565d 100%)",
+                    color: "#e8eaee",
+                    textShadow: "0 1px 2px rgba(0,0,0,0.5)",
+                  }}
+                >
+                  <Icon icon="solar:tuning-2-bold" className="h-3.5 w-3.5 relative z-10" />
+                  <span className="relative z-10">Editor</span>
+                </button>
               )}
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </motion.div>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/pricing"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-accent/20 bg-accent/[0.06] hover:bg-accent/[0.12] text-accent text-label-md font-body font-medium transition-all whitespace-nowrap"
+              >
+                <Icon icon="solar:download-minimalistic-bold" className="h-3.5 w-3.5" />
+                {t("downloadMp3")}
+                <span className="text-caption-sm text-accent/60 uppercase">{t("pro")}</span>
+              </Link>
+              <button
+                onClick={() => setShareOpen(true)}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-black border border-contrast/15 text-label-md font-body font-semibold transition-all hover:bg-white/90 active:scale-[0.98] whitespace-nowrap"
+              >
+                <Icon icon="solar:share-bold" className="h-3.5 w-3.5" />
+                {t("share")}
+              </button>
+            </>
+          )}
+        </motion.div>
+      </div>
       {shareDialog}
     </>
     );
