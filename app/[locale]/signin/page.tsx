@@ -19,7 +19,7 @@ function SignInContent() {
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url(/bg-login-3.jpg)" }}
+        style={{ backgroundImage: "url(/waves-bg-black.jpg)" }}
       />
       <div className="absolute inset-0 bg-surface-0/0" />
 
