@@ -368,7 +368,8 @@ function MasterPanel({
 
           {/* Cover preview 1:1 */}
           <div className="relative w-full rounded-xl overflow-hidden border border-contrast/[0.06]" style={{ aspectRatio: "1/1" }}>
-            <img src="/sonificalabs-logo.svg" alt="" className="w-full h-full object-contain bg-[#0a0a0a] p-12" />
+            <img src="/waves-bg-black.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+            <img src="/sonificalabs-logo.svg" alt="" className="relative w-full h-full object-contain p-12 [filter:brightness(0)_invert(1)]" />
           </div>
 
           {/* Download button */}

@@ -37,6 +37,7 @@ export default function JobPage() {
   const [firstVoiceText, setFirstVoiceText] = useState<string | undefined>();
   const canDownload = userPlan !== "free";
   const cleanupRef = useRef<(() => void) | null>(null);
+  const hasConfirmedRef = useRef(false);
   const apiToken = useApiToken();
 
   useEffect(() => {
@@ -79,7 +80,7 @@ export default function JobPage() {
       setQueuePosition(data.queuePosition);
       if (data.prompt) setPrompt(data.prompt);
 
-      if (data.status === "confirming") {
+      if (data.status === "confirming" && !hasConfirmedRef.current) {
         if (data.escaleta) setEscaleta(data.escaleta);
         if (data.confirmDeadline) setConfirmDeadline(data.confirmDeadline);
         setState("confirming");
@@ -260,6 +261,7 @@ export default function JobPage() {
               confirmDeadline={confirmDeadline}
               userPlan={userPlan}
               onConfirm={async (voiceChanges) => {
+                hasConfirmedRef.current = true;
                 setState("working");
                 setStatus("queued");
                 setProgress("En cola...");
