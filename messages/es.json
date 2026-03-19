@@ -81,6 +81,7 @@
     "type": "Tipo",
     "duration": "Duración",
     "characters": "Personajes",
+    "voices": "Elegir voces",
     "describePlaceholder": "Describe tu audio...",
     "remove": "Quitar",
     "credits": "{count} créditos",

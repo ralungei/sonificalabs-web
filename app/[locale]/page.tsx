@@ -177,19 +177,12 @@ export default function Home() {
 
   const handleSubmit = useCallback(
     async (prompt: string) => {
-      // Admin overrides from localStorage (if set)
-      const adminOverrides: Record<string, string> = {};
-      const savedModel = localStorage.getItem("sonificalabs_admin_model");
-      const savedTts = localStorage.getItem("sonificalabs_admin_tts_model");
-      if (savedModel) adminOverrides.model = savedModel;
-      if (savedTts) adminOverrides.ttsModel = savedTts;
-
       let res: Response;
       try {
         res = await apiFetch("/produce", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt, ...adminOverrides }),
+          body: JSON.stringify({ prompt }),
         }, apiToken);
       } catch {
         throw new Error(t("serviceUnavailable"));

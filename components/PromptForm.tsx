@@ -21,7 +21,6 @@ interface QuotaData {
   creditsLimit: number;
   maxDuration: number;
   maxVoices: number;
-  isAdmin?: boolean;
 }
 
 function buildDurationOptions(plan: string): DropdownOption[] {
@@ -58,97 +57,7 @@ function buildPersonajesOptions(plan: string): DropdownOption[] {
   });
 }
 
-function DebugDropdown({
-  adminClaude, setAdminClaude, adminTts, setAdminTts, labels,
-}: {
-  adminClaude: string; setAdminClaude: (v: string) => void;
-  adminTts: string; setAdminTts: (v: string) => void;
-  labels: { debugClaudeModel: string; debugTtsModel: string; debugPlanDefault: string };
-}) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const hasOverride = !!(adminClaude || adminTts);
 
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [open]);
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen(!open)}
-        className={cn(
-          "flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs transition-colors",
-          hasOverride
-            ? "bg-red-400/15 text-red-400 border border-red-400/25"
-            : "text-contrast/70 hover:text-contrast hover:bg-contrast/[0.06] border border-transparent",
-        )}
-      >
-        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 12.75c1.148 0 2.278.08 3.383.237 1.037.146 1.866.966 1.866 2.013 0 3.728-2.35 6.75-5.25 6.75S6.75 18.728 6.75 15c0-1.046.83-1.867 1.866-2.013A24.204 24.204 0 0112 12.75zm0 0c2.883 0 5.647.508 8.207 1.44a23.91 23.91 0 01-1.152-6.135 3.22 3.22 0 00-2.165-2.948A24.84 24.84 0 0012 4.5a24.84 24.84 0 00-4.89.607 3.22 3.22 0 00-2.165 2.948 23.91 23.91 0 01-1.152 6.135c2.56-.932 5.324-1.44 8.207-1.44zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125h-2.25A1.125 1.125 0 019.75 10.125v-1.5z" /></svg>
-        Debug
-        <svg className={cn("w-3 h-3 transition-transform", open && "rotate-180")} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-        </svg>
-      </button>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 4, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 4, scale: 0.97 }}
-            transition={{ duration: 0.15 }}
-            className="absolute bottom-full mb-1.5 left-0 min-w-[220px] rounded-xl border border-contrast/[0.08] bg-white/95 backdrop-blur-xl shadow-xl p-3 z-[var(--z-dropdown)] space-y-3"
-          >
-            <div>
-              <label className="block text-[10px] text-text-muted font-mono uppercase tracking-wider mb-1">{labels.debugClaudeModel}</label>
-              <select
-                value={adminClaude}
-                onChange={(e) => {
-                  setAdminClaude(e.target.value);
-                  if (e.target.value) localStorage.setItem("sonificalabs_admin_model", e.target.value);
-                  else localStorage.removeItem("sonificalabs_admin_model");
-                }}
-                className="w-full text-xs bg-surface-0/60 border border-contrast/[0.08] rounded-lg px-2.5 py-1.5 text-text-primary font-mono cursor-pointer hover:border-contrast/[0.15] transition-colors focus:outline-none"
-              >
-                <option value="">{labels.debugPlanDefault}</option>
-                <option value="claude-haiku-4-5-20251001">Haiku 4.5</option>
-                <option value="claude-sonnet-4-6">Sonnet 4.6</option>
-                <option value="claude-opus-4-6">Opus 4.6</option>
-                <option value="grok-3">Grok 3</option>
-                <option value="grok-4-1-fast-reasoning">Grok 4.1 Fast</option>
-                <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro</option>
-                <option value="gemini-3.1-flash-lite-preview">Gemini 3.1 Flash Lite</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-[10px] text-text-muted font-mono uppercase tracking-wider mb-1">{labels.debugTtsModel}</label>
-              <select
-                value={adminTts}
-                onChange={(e) => {
-                  setAdminTts(e.target.value);
-                  if (e.target.value) localStorage.setItem("sonificalabs_admin_tts_model", e.target.value);
-                  else localStorage.removeItem("sonificalabs_admin_tts_model");
-                }}
-                className="w-full text-xs bg-surface-0/60 border border-contrast/[0.08] rounded-lg px-2.5 py-1.5 text-text-primary font-mono cursor-pointer hover:border-contrast/[0.15] transition-colors focus:outline-none"
-              >
-                <option value="">{labels.debugPlanDefault}</option>
-                <option value="eleven_flash_v2_5">Flash v2.5</option>
-                <option value="eleven_v3">Eleven v3</option>
-                <option value="eleven_turbo_v2_5">Turbo v2.5</option>
-              </select>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
 
 function OptionPills({
   options,
@@ -201,21 +110,23 @@ function OptionPills({
 
 function ParametersPopover({
   tipo, setTipo, duracion, setDuracion, personajes, setPersonajes,
+  chooseVoices, setChooseVoices,
   tipos, durationOptions, personajesOptions,
   onLockedClick, labels,
 }: {
   tipo: string; setTipo: (v: string) => void;
   duracion: string; setDuracion: (v: string) => void;
   personajes: string; setPersonajes: (v: string) => void;
+  chooseVoices: boolean; setChooseVoices: (v: boolean) => void;
   tipos: string[];
   durationOptions: DropdownOption[];
   personajesOptions: DropdownOption[];
   onLockedClick: () => void;
-  labels: { type: string; duration: string; characters: string; parameters: string };
+  labels: { type: string; duration: string; characters: string; parameters: string; voices: string };
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const activeCount = [tipo, duracion, personajes].filter(Boolean).length;
+  const activeCount = [tipo, duracion, personajes].filter(Boolean).length + (chooseVoices ? 1 : 0);
 
   useEffect(() => {
     if (!open) return;
@@ -276,6 +187,20 @@ function ParametersPopover({
               <label className="block text-[10px] text-text-muted font-body uppercase tracking-wider mb-1.5">{labels.characters}</label>
               <OptionPills options={personajesOptions} value={personajes} onChange={setPersonajes} onLockedClick={onLockedClick} />
             </div>
+            {/* Choose voices toggle */}
+            <div className="flex items-center justify-between pt-1 border-t border-contrast/[0.06]">
+              <label className="text-[10px] text-text-muted font-body uppercase tracking-wider">{labels.voices}</label>
+              <button
+                type="button"
+                onClick={() => setChooseVoices(!chooseVoices)}
+                className={cn(
+                  "relative flex items-center w-8 h-[18px] rounded-full px-[2px] transition-colors duration-200",
+                  chooseVoices ? "bg-accent justify-end" : "bg-contrast/15 justify-start",
+                )}
+              >
+                <span className="block h-[14px] w-[14px] rounded-full bg-white shadow-sm" />
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -312,22 +237,13 @@ export function PromptForm({
 
   const plan = quota?.plan ?? "free";
   const remaining = quota?.remaining ?? null;
-  const isAdmin = quota?.isAdmin ?? false;
   const durationOptions = buildDurationOptions(plan);
   const personajesOptions = buildPersonajesOptions(plan);
-
-  // Admin model overrides (localStorage)
-  const [adminClaude, setAdminClaude] = useState("");
-  const [adminTts, setAdminTts] = useState("");
-  useEffect(() => {
-    if (!isAdmin) return;
-    setAdminClaude(localStorage.getItem("sonificalabs_admin_model") || "");
-    setAdminTts(localStorage.getItem("sonificalabs_admin_tts_model") || "");
-  }, [isAdmin]);
 
   const [tipo, setTipo] = useState("");
   const [duracion, setDuracion] = useState("");
   const [personajes, setPersonajes] = useState("");
+  const [chooseVoices, setChooseVoices] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -370,6 +286,7 @@ export function PromptForm({
     if (!prompt.trim() || isLoading) return;
     setIsLoading(true);
     setError("");
+    sessionStorage.setItem("sonificalabs_choose_voices", chooseVoices ? "1" : "0");
     try {
       await onSubmit(buildPrompt());
     } catch (err: unknown) {
@@ -473,13 +390,13 @@ export function PromptForm({
               tipo={tipo} setTipo={setTipo}
               duracion={duracion} setDuracion={setDuracion}
               personajes={personajes} setPersonajes={setPersonajes}
+              chooseVoices={chooseVoices} setChooseVoices={setChooseVoices}
               tipos={TIPOS}
               durationOptions={durationOptions}
               personajesOptions={personajesOptions}
               onLockedClick={() => router.push("/pricing")}
-              labels={{ type: t("type"), duration: t("duration"), characters: t("characters"), parameters: t("parameters") }}
+              labels={{ type: t("type"), duration: t("duration"), characters: t("characters"), parameters: t("parameters"), voices: t("voices") }}
             />
-            {isAdmin && <DebugDropdown adminClaude={adminClaude} setAdminClaude={setAdminClaude} adminTts={adminTts} setAdminTts={setAdminTts} labels={{ debugClaudeModel: t("debugClaudeModel"), debugTtsModel: t("debugTtsModel"), debugPlanDefault: t("debugPlanDefault") }} />}
           </div>
 
           {/* Right — counter + submit */}

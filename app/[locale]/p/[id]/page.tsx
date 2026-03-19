@@ -38,7 +38,12 @@ export default function JobPage() {
   const canDownload = userPlan !== "free";
   const cleanupRef = useRef<(() => void) | null>(null);
   const hasConfirmedRef = useRef(false);
+  const chooseVoicesRef = useRef(false);
   const apiToken = useApiToken();
+
+  useEffect(() => {
+    chooseVoicesRef.current = sessionStorage.getItem("sonificalabs_choose_voices") === "1";
+  }, []);
 
   useEffect(() => {
     if (authStatus === "unauthenticated") router.push("/signin");
@@ -81,6 +86,16 @@ export default function JobPage() {
       if (data.prompt) setPrompt(data.prompt);
 
       if (data.status === "confirming" && !hasConfirmedRef.current) {
+        if (!chooseVoicesRef.current) {
+          // Auto-confirm immediately
+          hasConfirmedRef.current = true;
+          apiFetch(`/p/${id}/confirm`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ voiceChanges: {} }),
+          }, apiToken).catch(() => {});
+          return;
+        }
         if (data.escaleta) setEscaleta(data.escaleta);
         if (data.confirmDeadline) setConfirmDeadline(data.confirmDeadline);
         setState("confirming");
@@ -247,8 +262,9 @@ export default function JobPage() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
                 onClick={handleCancel}
-                className="mt-10 text-label-md font-body uppercase tracking-wider text-contrast/40 hover:text-fail transition-colors duration-300"
+                className="mt-10 flex items-center gap-1.5 text-label-md font-body uppercase tracking-wider text-contrast/40 hover:text-fail transition-colors duration-300"
               >
+                <Icon icon="solar:close-circle-linear" className="h-4 w-4" />
                 {t("cancel")}
               </motion.button>
             </motion.div>

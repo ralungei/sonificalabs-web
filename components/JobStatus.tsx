@@ -36,11 +36,9 @@ export function JobStatus({
       : t("waitingTurn")
     : status === "generating"
       ? t("generatingScript")
-      : status === "producing" && progress
-        ? progress
-        : status === "producing"
-          ? t("producing")
-          : "";
+      : status === "producing"
+        ? t("producing")
+        : "";
 
   const phaseLabel = (isQueued || isLoading) ? "" : PHASES[currentPhase]?.label ?? "";
 
