@@ -251,12 +251,14 @@ function MasterPanel({
   prompt,
   onOpenEditor,
   firstVoiceText,
+  userPlan,
 }: {
   masterUrl: string;
   jobId: string;
   canDownload: boolean;
   onClose: () => void;
   inline: boolean;
+  userPlan?: string;
   prompt?: string;
   onOpenEditor?: () => void;
   firstVoiceText?: string;
@@ -292,18 +294,37 @@ function MasterPanel({
     }
   }, [masterPlaying]);
 
-  const downloadMaster = useCallback(async () => {
+  const [formatMenuOpen, setFormatMenuOpen] = useState(false);
+  const [downloadingFormat, setDownloadingFormat] = useState<string | null>(null);
+  const canLossless = userPlan === "pro" || userPlan === "studio";
+
+  const downloadMaster = useCallback(async (format: string = "mp3") => {
+    setDownloadingFormat(format);
+    setFormatMenuOpen(false);
     try {
-      const res = await fetch(masterUrl);
+      let url: string;
+      let filename: string;
+      if (format === "mp3") {
+        url = masterUrl;
+        filename = `sonificalabs-${jobId}.mp3`;
+      } else {
+        const apiBase = masterUrl.replace(/\/audio\/.*/, "");
+        url = `${apiBase}/audio/${jobId}/download?format=${format}`;
+        filename = `sonificalabs-${jobId}.${format}`;
+      }
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Download failed");
       const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
+      const blobUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = url;
-      a.download = `sonificalabs-${jobId}.mp3`;
+      a.href = blobUrl;
+      a.download = filename;
       a.click();
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(blobUrl);
     } catch {
       window.open(masterUrl, "_blank");
+    } finally {
+      setDownloadingFormat(null);
     }
   }, [masterUrl, jobId]);
 
@@ -471,13 +492,40 @@ function MasterPanel({
       >
         {canDownload ? (
           <div className="w-full flex gap-3">
-            <button
-              onClick={downloadMaster}
-              className="flex-1 flex items-center justify-center gap-2.5 px-5 py-3 rounded-xl bg-accent text-surface-0 font-body text-label-md uppercase tracking-wider font-semibold transition-all hover:bg-accent-bright hover:shadow-[0_8px_32px_rgba(232,168,56,0.25)] active:scale-[0.98]"
-            >
-              <Icon icon="solar:download-minimalistic-bold" className="h-4.5 w-4.5" />
-              {t("downloadMp3")}
-            </button>
+            <div className="relative flex-1 flex">
+              <button
+                onClick={() => downloadMaster("mp3")}
+                disabled={!!downloadingFormat}
+                className="flex-1 flex items-center justify-center gap-2.5 px-5 py-3 rounded-l-xl bg-accent text-surface-0 font-body text-label-md uppercase tracking-wider font-semibold transition-all hover:bg-accent-bright hover:shadow-[0_8px_32px_rgba(232,168,56,0.25)] active:scale-[0.98] disabled:opacity-60"
+              >
+                <Icon icon={downloadingFormat ? "svg-spinners:ring-resize" : "solar:download-minimalistic-bold"} className="h-4.5 w-4.5" />
+                {downloadingFormat ? downloadingFormat.toUpperCase() : "MP3"}
+              </button>
+              {canLossless && (
+                <button
+                  onClick={() => setFormatMenuOpen(!formatMenuOpen)}
+                  className="flex items-center justify-center px-2.5 py-3 rounded-r-xl bg-accent/80 text-surface-0 border-l border-accent-bright/30 hover:bg-accent-bright transition-all"
+                >
+                  <Icon icon="solar:alt-arrow-down-bold" className="h-3.5 w-3.5" />
+                </button>
+              )}
+              {!canLossless && <div className="rounded-r-xl" />}
+              {formatMenuOpen && (
+                <div className="absolute top-full left-0 right-0 mt-1.5 bg-surface-1 border border-contrast/[0.1] rounded-xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-20">
+                  {[{ fmt: "wav", label: "WAV" }, { fmt: "flac", label: "FLAC" }].map(({ fmt, label }) => (
+                    <button
+                      key={fmt}
+                      onClick={() => downloadMaster(fmt)}
+                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-label-md font-body text-text-secondary hover:text-text-primary hover:bg-contrast/[0.06] transition-all"
+                    >
+                      <Icon icon="solar:download-minimalistic-bold" className="h-3.5 w-3.5" />
+                      {label}
+                      <span className="ml-auto text-caption-md text-text-muted">Lossless</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <button
               onClick={() => setShareOpen(true)}
               className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white text-black border border-contrast/15 font-body text-label-md font-semibold transition-all hover:bg-white/90 active:scale-[0.98]"
@@ -579,13 +627,38 @@ function MasterPanel({
         >
           {canDownload ? (
             <>
-              <button
-                onClick={downloadMaster}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-contrast text-surface-0 text-label-md font-body font-semibold uppercase tracking-wider transition-all hover:bg-contrast/90 active:scale-[0.98] whitespace-nowrap"
-              >
-                <Icon icon="solar:download-minimalistic-bold" className="h-3.5 w-3.5" />
-                {t("downloadMp3")}
-              </button>
+              <div className="relative flex">
+                <button
+                  onClick={() => downloadMaster("mp3")}
+                  disabled={!!downloadingFormat}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-l-xl bg-contrast text-surface-0 text-label-md font-body font-semibold uppercase tracking-wider transition-all hover:bg-contrast/90 active:scale-[0.98] whitespace-nowrap disabled:opacity-60"
+                >
+                  <Icon icon={downloadingFormat ? "svg-spinners:ring-resize" : "solar:download-minimalistic-bold"} className="h-3.5 w-3.5" />
+                  {downloadingFormat ? downloadingFormat.toUpperCase() : "MP3"}
+                </button>
+                {canLossless ? (
+                  <button
+                    onClick={() => setFormatMenuOpen(!formatMenuOpen)}
+                    className="flex items-center justify-center px-2 py-2.5 rounded-r-xl bg-contrast/80 text-surface-0 border-l border-contrast/50 hover:bg-contrast/70 transition-all"
+                  >
+                    <Icon icon="solar:alt-arrow-down-bold" className="h-3 w-3" />
+                  </button>
+                ) : <div className="rounded-r-xl bg-contrast w-0.5" />}
+                {formatMenuOpen && (
+                  <div className="absolute top-full left-0 mt-1.5 min-w-[120px] bg-surface-1 border border-contrast/[0.1] rounded-xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-20">
+                    {[{ fmt: "wav", label: "WAV" }, { fmt: "flac", label: "FLAC" }].map(({ fmt, label }) => (
+                      <button
+                        key={fmt}
+                        onClick={() => downloadMaster(fmt)}
+                        className="w-full flex items-center gap-2 px-3.5 py-2 text-label-md font-body text-text-secondary hover:text-text-primary hover:bg-contrast/[0.06] transition-all"
+                      >
+                        <Icon icon="solar:download-minimalistic-bold" className="h-3 w-3" />
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
               <button
                 onClick={() => setShareOpen(true)}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-black border border-contrast/15 text-label-md font-body font-semibold transition-all hover:bg-white/90 active:scale-[0.98] whitespace-nowrap"
@@ -663,6 +736,7 @@ export function MasterDialog({
   prompt,
   onOpenEditor,
   firstVoiceText,
+  userPlan,
 }: {
   show: boolean;
   masterUrl: string | null;
@@ -673,6 +747,7 @@ export function MasterDialog({
   prompt?: string;
   onOpenEditor?: () => void;
   firstVoiceText?: string;
+  userPlan?: string;
 }) {
   const handleClose = useCallback(() => {
     onClose();
@@ -692,6 +767,7 @@ export function MasterDialog({
         prompt={prompt}
         onOpenEditor={onOpenEditor}
         firstVoiceText={firstVoiceText}
+        userPlan={userPlan}
       />
     );
   }
@@ -714,6 +790,7 @@ export function MasterDialog({
           onClose={handleClose}
           inline={false}
           firstVoiceText={firstVoiceText}
+          userPlan={userPlan}
         />
       </motion.div>
     </AnimatePresence>

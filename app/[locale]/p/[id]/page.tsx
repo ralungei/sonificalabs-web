@@ -321,6 +321,7 @@ export default function JobPage() {
                 inline
                 prompt={prompt}
                 firstVoiceText={firstVoiceText}
+                userPlan={userPlan}
               />
             </motion.div>
           )}
