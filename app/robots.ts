@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/admin", "/preview", "/api/"],
+      disallow: ["/admin", "/preview", "/api/", "/signin", "/account", "/audio", "/p/"],
     },
     sitemap: "https://sonificalabs.com/sitemap.xml",
   };
