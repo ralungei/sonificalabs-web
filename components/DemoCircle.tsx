@@ -123,10 +123,12 @@ export function DemoCircle({
   demo,
   delay,
   size = 64,
+  onTimeUpdate,
 }: {
   demo: Demo;
   delay: number;
   size?: number;
+  onTimeUpdate?: (currentTime: number, duration: number) => void;
 }) {
   const hasClip = !!demo.clip;
   const iconSize = Math.max(16, Math.round(size * 0.18));
@@ -197,6 +199,18 @@ export function DemoCircle({
     }
   }, [highlighted, playing, hovering]);
 
+  // Preload duration metadata when onTimeUpdate is provided
+  useEffect(() => {
+    if (!onTimeUpdate) return;
+    const el = new Audio();
+    el.preload = "metadata";
+    el.src = demo.file;
+    el.onloadedmetadata = () => {
+      if (el.duration && isFinite(el.duration)) onTimeUpdate(0, el.duration);
+    };
+    return () => { el.src = ""; };
+  }, [demo.file, onTimeUpdate]);
+
   const ensureAudio = () => {
     if (!audioRef.current) {
       const el = new Audio(demo.file);
@@ -204,6 +218,10 @@ export function DemoCircle({
       el.ontimeupdate = () => {
         if (!el.duration) return;
         setProgress(el.currentTime / el.duration);
+        onTimeUpdate?.(el.currentTime, el.duration);
+      };
+      el.onloadedmetadata = () => {
+        if (el.duration && isFinite(el.duration)) onTimeUpdate?.(el.currentTime, el.duration);
       };
       el.onerror = () => {
         console.error(`[Demo] Failed to load audio: ${demo.file}`, el.error);

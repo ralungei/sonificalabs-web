@@ -266,6 +266,19 @@ function MasterPanel({
   const [masterPlaying, setMasterPlaying] = useState(false);
   const [shareLoading, setShareLoading] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [timeLabel, setTimeLabel] = useState("0:00");
+  const [durationLabel, setDurationLabel] = useState("0:00");
+
+  const fmt = (s: number) => {
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${m}:${sec.toString().padStart(2, "0")}`;
+  };
+
+  const handleTimeUpdate = useCallback((currentTime: number, duration: number) => {
+    setTimeLabel(fmt(currentTime));
+    if (duration && isFinite(duration)) setDurationLabel(fmt(duration));
+  }, []);
 
   const toggleMasterPlay = useCallback(() => {
     const el = masterRef.current;
@@ -518,7 +531,20 @@ function MasterPanel({
             demo={{ id: jobId, title: "", icon: "", file: masterUrl, texture: NEUTRAL_TEXTURE }}
             delay={0.1}
             size={192}
+            onTimeUpdate={handleTimeUpdate}
           />
+        </motion.div>
+
+        {/* Time display */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="flex items-center gap-1.5 font-mono text-caption-md tabular-nums"
+        >
+          <span className="text-text-secondary">{timeLabel}</span>
+          <span className="text-text-muted">/</span>
+          <span className="text-text-muted">{durationLabel}</span>
         </motion.div>
 
         {/* Prompt text + copy */}

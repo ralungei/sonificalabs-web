@@ -358,7 +358,10 @@ export default function JobPage() {
 
                 {/* Retry button */}
                 <button
-                  onClick={() => router.push("/")}
+                  onClick={() => {
+                    if (prompt) sessionStorage.setItem("sonificalabs_draft", prompt.replace(/\[.*?\]/g, "").trim());
+                    router.push("/");
+                  }}
                   className="mt-2 flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-surface-2 border border-contrast/[0.08] text-text-secondary hover:text-text-primary text-label-md font-body uppercase tracking-wider transition-all hover:bg-surface-3 active:scale-[0.98]"
                 >
                   <Icon icon="solar:restart-bold" className="h-3.5 w-3.5" />
