@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { apiFetch, apiUrl } from "@/lib/api";
 import { Icon } from "@iconify/react";
 import type { ProductionDetail, EscaletaTrack, SerializedTrack, TimingDecision } from "./types";
@@ -133,17 +133,7 @@ export function ProductionDetailView({ id, apiToken, onError, onBack, onSelectUs
       </div>
 
       {/* ROW 3: Escaleta (full width) */}
-      <Section title="Escaleta (guion generado por IA)">
-        {prod.escaleta?.tracks && prod.escaleta.tracks.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {prod.escaleta.tracks.map((track, i) => (
-              <EscaletaTrackCard key={i} track={track} index={i} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-[13px] text-neutral-400">{NONE}</p>
-        )}
-      </Section>
+      <EscaletaSection escaleta={prod.escaleta} />
 
       {/* ROW 4: Timing + Tracks (2 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
@@ -195,6 +185,65 @@ export function ProductionDetailView({ id, apiToken, onError, onBack, onSelectUs
         <RawJSON title="Raw: Tracks (mix)" data={prod.tracks} />
       </div>
     </>
+  );
+}
+
+function CopyButton({ label, onClick }: { label: string; onClick: () => void }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      onClick={() => { onClick(); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${copied ? "bg-teal-100 text-teal-700" : "bg-neutral-100 text-neutral-500 hover:bg-neutral-200 hover:text-neutral-700"}`}
+    >
+      <Icon icon={copied ? "solar:check-circle-bold" : "solar:copy-bold"} width={13} />
+      {copied ? "Copiado" : label}
+    </button>
+  );
+}
+
+function EscaletaSection({ escaleta }: { escaleta?: { tracks: EscaletaTrack[] } | null }) {
+  const tracks = escaleta?.tracks;
+
+  const copyAll = useCallback(() => {
+    if (!tracks) return;
+    const text = tracks.map((t, i) => {
+      const header = `${i + 1}. [${t.type.toUpperCase()}]`;
+      if (t.type === "voice") return `${header} (${t.voice_id})\n${t.text}`;
+      return `${header} ${t.file || ""}${t.loop ? " [loop]" : ""}${t.effects?.duck_on_voice ? " [duck]" : ""}`;
+    }).join("\n\n");
+    navigator.clipboard.writeText(text);
+  }, [tracks]);
+
+  const copyVoices = useCallback(() => {
+    if (!tracks) return;
+    const voiceTexts = tracks
+      .filter(t => t.type === "voice" && t.text)
+      .map((t, i) => `${i + 1}. (${t.voice_id})\n${t.text}`)
+      .join("\n\n");
+    navigator.clipboard.writeText(voiceTexts);
+  }, [tracks]);
+
+  return (
+    <div className="rounded-xl border border-neutral-200 p-5 mb-5">
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-xs text-neutral-400 uppercase tracking-wider font-medium">Escaleta (guion generado por IA)</p>
+        {tracks && tracks.length > 0 && (
+          <div className="flex gap-2">
+            <CopyButton label="Copiar todo" onClick={copyAll} />
+            <CopyButton label="Solo voces" onClick={copyVoices} />
+          </div>
+        )}
+      </div>
+      {tracks && tracks.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {tracks.map((track, i) => (
+            <EscaletaTrackCard key={i} track={track} index={i} />
+          ))}
+        </div>
+      ) : (
+        <p className="text-[13px] text-neutral-400">{NONE}</p>
+      )}
+    </div>
   );
 }
 

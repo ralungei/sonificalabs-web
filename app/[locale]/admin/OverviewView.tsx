@@ -32,7 +32,7 @@ export function OverviewView({ apiToken, onError, onSelectUser, onSelectProducti
   const realProductions = useMemo(() => stats ? stats.recentProductions.filter((p) => !isTestEmail(p.email)) : [], [stats]);
   const q = search.toLowerCase().trim();
   const filteredUsers = useMemo(() => q ? realUsers.filter((u) => u.email.toLowerCase().includes(q) || u.name?.toLowerCase().includes(q)) : realUsers, [realUsers, q]);
-  const filteredProductions = useMemo(() => q ? realProductions.filter((p) => p.email.toLowerCase().includes(q) || p.prompt?.toLowerCase().includes(q) || p.id.includes(q)) : realProductions, [realProductions, q]);
+  const filteredProductions = useMemo(() => q ? realProductions.filter((p) => p.email.toLowerCase().includes(q) || p.prompt?.toLowerCase().includes(q) || p.id.toLowerCase().includes(q)) : realProductions, [realProductions, q]);
   const paidUsers = useMemo(() => realUsers.filter((u) => u.plan !== "free").length, [realUsers]);
   const errorRate = useMemo(() => realProductions.length > 0 ? Math.round((realProductions.filter((p) => p.status === "error").length / realProductions.length) * 100) : 0, [realProductions]);
 
@@ -79,6 +79,7 @@ export function OverviewView({ apiToken, onError, onSelectUser, onSelectProducti
               <table className="w-full text-[13px]">
                 <thead>
                   <tr className="text-xs text-neutral-400 uppercase tracking-wider bg-neutral-50">
+                    <th className="text-left px-4 py-2.5 font-medium">ID</th>
                     <th className="text-center px-4 py-2.5 font-medium">Estado</th>
                     <th className="text-left px-4 py-2.5 font-medium">Usuario</th>
                     <th className="text-center px-4 py-2.5 font-medium">Dur.</th>
@@ -90,6 +91,7 @@ export function OverviewView({ apiToken, onError, onSelectUser, onSelectProducti
                   {pagedProductions.map((p) => (
                     <tr key={p.id} onClick={() => onSelectProduction(p.id)}
                       className="hover:bg-neutral-50/60 transition-colors cursor-pointer">
+                      <td className="px-4 py-2.5 font-mono text-[11px] text-neutral-400">{p.id}</td>
                       <td className="px-4 py-2.5 text-center"><StatusChip status={p.status} /></td>
                       <td className="px-4 py-2.5">
                         <button onClick={(e) => { e.stopPropagation(); onSelectUser(p.email); }}
