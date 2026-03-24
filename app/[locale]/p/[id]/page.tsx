@@ -302,15 +302,33 @@ export default function JobPage() {
               className="flex flex-col items-center justify-center w-full pb-[10vh] px-6"
               style={{ minHeight: "calc(100dvh - 14vh)" }}
             >
-              {/* Title */}
+              {/* Title + prompt */}
               <motion.h2
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-heading-lg font-body font-semibold text-text-primary mb-8"
+                className="text-heading-lg font-body font-semibold text-text-primary mb-2"
               >
                 {t("audioReady")}
               </motion.h2>
+              {prompt && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="flex items-start gap-2 max-w-sm mb-8"
+                >
+                  <p className="text-body-md text-text-secondary font-body text-center leading-relaxed line-clamp-3 flex-1">
+                    {prompt.replace(/\[.*?\]/g, "").trim()}
+                  </p>
+                  <button
+                    onClick={() => navigator.clipboard.writeText(prompt.replace(/\[.*?\]/g, "").trim())}
+                    className="shrink-0 mt-0.5 p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-contrast/[0.06] transition-all"
+                  >
+                    <Icon icon="solar:copy-linear" className="h-3.5 w-3.5" />
+                  </button>
+                </motion.div>
+              )}
 
               <MasterDialog
                 show
@@ -322,6 +340,7 @@ export default function JobPage() {
                 prompt={prompt}
                 firstVoiceText={firstVoiceText}
                 userPlan={userPlan}
+                tracks={tracks ?? undefined}
               />
             </motion.div>
           )}

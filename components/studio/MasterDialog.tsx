@@ -6,6 +6,9 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 import { DemoCircle, NEUTRAL_TEXTURE, type Demo } from "@/components/DemoCircle";
+import { type TimelineTrack } from "./types";
+import { LiveTrackChips } from "./LiveTrackChips";
+import { LiveSubtitles } from "./LiveSubtitles";
 
 /* ── Animated concentric rings ── */
 function GlowRing() {
@@ -252,6 +255,7 @@ function MasterPanel({
   onOpenEditor,
   firstVoiceText,
   userPlan,
+  tracks,
 }: {
   masterUrl: string;
   jobId: string;
@@ -261,6 +265,7 @@ function MasterPanel({
   userPlan?: string;
   prompt?: string;
   onOpenEditor?: () => void;
+  tracks?: TimelineTrack[];
   firstVoiceText?: string;
 }) {
   const t = useTranslations("masterDialog");
@@ -270,6 +275,8 @@ function MasterPanel({
   const [shareOpen, setShareOpen] = useState(false);
   const [timeLabel, setTimeLabel] = useState("0:00");
   const [durationLabel, setDurationLabel] = useState("0:00");
+  const [currentTimeMs, setCurrentTimeMs] = useState(0);
+  const [totalDurationMs, setTotalDurationMs] = useState(0);
 
   const fmt = (s: number) => {
     const m = Math.floor(s / 60);
@@ -279,7 +286,11 @@ function MasterPanel({
 
   const handleTimeUpdate = useCallback((currentTime: number, duration: number) => {
     setTimeLabel(fmt(currentTime));
-    if (duration && isFinite(duration)) setDurationLabel(fmt(duration));
+    setCurrentTimeMs(currentTime * 1000);
+    if (duration && isFinite(duration)) {
+      setDurationLabel(fmt(duration));
+      setTotalDurationMs(duration * 1000);
+    }
   }, []);
 
   const toggleMasterPlay = useCallback(() => {
@@ -366,7 +377,10 @@ function MasterPanel({
   useEffect(() => {
     if (!masterRef.current) {
       masterRef.current = new Audio();
-      masterRef.current.onended = () => setMasterPlaying(false);
+      masterRef.current.onended = () => {
+        setMasterPlaying(false);
+        setCurrentTimeMs(0);
+      };
     }
     masterRef.current.preload = "auto";
     masterRef.current.src = masterUrl;
@@ -564,59 +578,67 @@ function MasterPanel({
     </>
   );
 
-  // Inline: hero player layout — circle centered, info below
+  // Inline: hero player layout — three-column with live sync
+  const hasTracks = !!tracks && tracks.length > 0;
+
   if (inline) {
     return (
     <>
-      <div className="flex flex-col items-center gap-6 w-full max-w-md mx-auto">
-        {/* Player circle */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.85 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ type: "spring", duration: 0.6 }}
-        >
-          <DemoCircle
-            demo={{ id: jobId, title: "", icon: "", file: masterUrl, texture: NEUTRAL_TEXTURE }}
-            delay={0.1}
-            size={192}
-            onTimeUpdate={handleTimeUpdate}
-          />
-        </motion.div>
-
-        {/* Time display */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="flex items-center gap-1.5 font-mono text-caption-md tabular-nums"
-        >
-          <span className="text-text-secondary">{timeLabel}</span>
-          <span className="text-text-muted">/</span>
-          <span className="text-text-muted">{durationLabel}</span>
-        </motion.div>
-
-        {/* Prompt text + copy */}
-        {prompt && (
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex items-start gap-2 max-w-sm"
-          >
-            <p className="text-body-md text-text-secondary font-body text-center leading-relaxed line-clamp-3 flex-1">
-              {prompt.replace(/\[.*?\]/g, "").trim()}
-            </p>
-            <button
-              onClick={() => {
-                navigator.clipboard.writeText(prompt.replace(/\[.*?\]/g, "").trim());
-              }}
-              className="shrink-0 mt-0.5 p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-contrast/[0.06] transition-all"
-              title={t("copyPrompt")}
+      <div className="flex flex-col items-center gap-6 w-full max-w-4xl mx-auto">
+        {/* Three-column layout: chips | player | subtitles */}
+        <div className="relative flex flex-col md:flex-row items-center md:items-center justify-center gap-4 md:gap-0 w-full">
+          {/* Left: track chips (desktop) / top (mobile) */}
+          {hasTracks && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="md:w-[200px] md:flex md:justify-end md:pr-6 z-0 shrink-0"
             >
-              <Icon icon="solar:copy-linear" className="h-3.5 w-3.5" />
-            </button>
-          </motion.div>
-        )}
+              <LiveTrackChips tracks={tracks} currentTimeMs={currentTimeMs} totalDurationMs={totalDurationMs} />
+            </motion.div>
+          )}
+
+          {/* Center: player circle */}
+          <div className="relative z-10 flex flex-col items-center gap-4 shrink-0">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: "spring", duration: 0.6 }}
+            >
+              <DemoCircle
+                demo={{ id: jobId, title: "", icon: "", file: masterUrl, texture: NEUTRAL_TEXTURE }}
+                delay={0.1}
+                size={148}
+                onTimeUpdate={handleTimeUpdate}
+              />
+            </motion.div>
+
+            {/* Time display */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="flex items-center gap-1.5 font-mono text-caption-md tabular-nums"
+            >
+              <span className="text-text-secondary">{timeLabel}</span>
+              <span className="text-text-muted">/</span>
+              <span className="text-text-muted">{durationLabel}</span>
+            </motion.div>
+          </div>
+
+          {/* Right: subtitles (desktop) / bottom (mobile) */}
+          {hasTracks && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="md:w-[200px] md:pl-6 z-0 shrink-0"
+            >
+              <LiveSubtitles tracks={tracks} currentTimeMs={currentTimeMs} />
+            </motion.div>
+          )}
+        </div>
 
         {/* Buttons */}
         <motion.div
@@ -737,6 +759,7 @@ export function MasterDialog({
   onOpenEditor,
   firstVoiceText,
   userPlan,
+  tracks,
 }: {
   show: boolean;
   masterUrl: string | null;
@@ -748,6 +771,7 @@ export function MasterDialog({
   onOpenEditor?: () => void;
   firstVoiceText?: string;
   userPlan?: string;
+  tracks?: TimelineTrack[];
 }) {
   const handleClose = useCallback(() => {
     onClose();
@@ -767,6 +791,7 @@ export function MasterDialog({
         prompt={prompt}
         onOpenEditor={onOpenEditor}
         firstVoiceText={firstVoiceText}
+        tracks={tracks}
         userPlan={userPlan}
       />
     );

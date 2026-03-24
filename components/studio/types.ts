@@ -9,6 +9,7 @@ export interface TimelineTrack {
   audioFile: string;
   audioUrl: string;
   loop?: boolean;
+  text?: string;
 }
 
 export const STYLE: Record<string, { accent: string; bg: string; label: string }> = {

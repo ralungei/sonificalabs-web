@@ -214,7 +214,7 @@ export function DemoCircle({
   const ensureAudio = () => {
     if (!audioRef.current) {
       const el = new Audio(demo.file);
-      el.onended = () => { setPlaying(false); setProgress(0); setListened(true); resumeHighlightLoop(); };
+      el.onended = () => { setPlaying(false); setProgress(0); setListened(true); resumeHighlightLoop(); onTimeUpdate?.(0, el.duration); };
       el.ontimeupdate = () => {
         if (!el.duration) return;
         setProgress(el.currentTime / el.duration);
@@ -267,6 +267,8 @@ export function DemoCircle({
       return;
     }
     el.currentTime = ratio * el.duration;
+    setProgress(ratio);
+    onTimeUpdate?.(el.currentTime, el.duration);
     if (!playing) {
       stopAllDemos();
       pauseHighlightLoop();
@@ -323,7 +325,7 @@ export function DemoCircle({
               cx="32" cy="32" r={CIRCLE_R}
               fill="none" stroke="currentColor"
               strokeWidth={hovering ? String(ringW + 2) : String(ringW)}
-              className="text-accent transition-[stroke-dashoffset] duration-100"
+              className="text-accent transition-[stroke-dashoffset] duration-300 ease-linear"
               strokeDasharray={CIRCLE_C}
               strokeDashoffset={CIRCLE_C * (1 - progress)}
               strokeLinecap="butt"
