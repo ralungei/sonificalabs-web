@@ -343,32 +343,41 @@ function MasterPanel({
 
   const shareVideo = useCallback(async () => {
     if (shareLoading) return;
-
-    // Mobile: open video URL directly — browser handles download/share natively.
-    // fetch+blob breaks on iOS Safari (share loses user gesture after async wait).
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    if (isMobile) {
-      window.open(videoUrl, "_blank");
-      return;
-    }
-
-    // Desktop: fetch blob and trigger download
     setShareLoading(true);
     try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 30_000);
-      const res = await fetch(videoUrl, { signal: controller.signal });
-      clearTimeout(timeout);
-      if (!res.ok) throw new Error("Download failed");
+      // Fetch with retry — 409 means video is being generated
+      let res: Response | null = null;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 45_000);
+        res = await fetch(videoUrl, { signal: controller.signal });
+        clearTimeout(timeout);
+        if (res.status === 409) {
+          await new Promise(r => setTimeout(r, 3000));
+          continue;
+        }
+        break;
+      }
+      if (!res || !res.ok) throw new Error("Download failed");
       const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
+      const file = new File([blob], `sonificalabs-${jobId}.mp4`, { type: "video/mp4" });
+
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], title: "SonificaLabs" });
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = file.name;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (e) {
+      if (e instanceof Error && e.name === "AbortError") return;
       const a = document.createElement("a");
-      a.href = url;
+      a.href = videoUrl;
       a.download = `sonificalabs-${jobId}.mp4`;
       a.click();
-      URL.revokeObjectURL(url);
-    } catch {
-      window.open(videoUrl, "_blank");
     } finally {
       setShareLoading(false);
     }
