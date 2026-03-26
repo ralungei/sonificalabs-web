@@ -343,30 +343,31 @@ function MasterPanel({
 
   const shareVideo = useCallback(async () => {
     if (shareLoading) return;
+
+    // Mobile: open video URL directly — browser handles download/share natively.
+    // fetch+blob breaks on iOS Safari (share loses user gesture after async wait).
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      window.open(videoUrl, "_blank");
+      return;
+    }
+
+    // Desktop: fetch blob and trigger download
     setShareLoading(true);
     try {
-      const res = await fetch(videoUrl);
-      if (!res.ok) throw new Error("Video generation failed");
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 30_000);
+      const res = await fetch(videoUrl, { signal: controller.signal });
+      clearTimeout(timeout);
+      if (!res.ok) throw new Error("Download failed");
       const blob = await res.blob();
-      const file = new File([blob], `sonificalabs-${jobId}.mp4`, { type: "video/mp4" });
-
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      if (isMobile && navigator.canShare?.({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: "SonificaLabs",
-        });
-      } else {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = file.name;
-        a.click();
-        URL.revokeObjectURL(url);
-      }
-    } catch (e) {
-      // AbortError = user cancelled share sheet, ignore
-      if (e instanceof Error && e.name === "AbortError") return;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `sonificalabs-${jobId}.mp4`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
       window.open(videoUrl, "_blank");
     } finally {
       setShareLoading(false);
