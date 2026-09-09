@@ -14,8 +14,8 @@ export async function generateMetadata({
       ? "Escucha ejemplos de audio producido con SonificaLabs: podcasts, spots publicitarios, trailers, audiocuentos y mas."
       : "Listen to audio examples produced with SonificaLabs: podcasts, ads, trailers, audiobooks and more.",
     alternates: {
-      canonical: isEs ? "/examples" : "/en/examples",
-      languages: { es: "/examples", en: "/en/examples", "x-default": "/examples" },
+      canonical: isEs ? "/es/examples" : "/examples",
+      languages: { en: "/examples", es: "/es/examples", "x-default": "/examples" },
     },
   };
 }

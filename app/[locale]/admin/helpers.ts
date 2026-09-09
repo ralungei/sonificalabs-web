@@ -163,7 +163,7 @@ export function parseDurationToMs(dur: string): number {
 
 export function shortModel(model: string | null): string {
   if (!model) return NONE;
-  return model.replace("gemini-3.1-", "g3.").replace("-preview", "").replace("claude-", "c.").replace("sonnet-", "s");
+  return model.replace(/^gemini-/, "g").replace("-preview", "").replace("claude-", "c.").replace("sonnet-", "s");
 }
 
 export function val(v: unknown): string {

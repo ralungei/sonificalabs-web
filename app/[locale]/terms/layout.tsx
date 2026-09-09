@@ -14,8 +14,8 @@ export async function generateMetadata({
       ? "Terminos y condiciones de uso de SonificaLabs."
       : "SonificaLabs terms and conditions of use.",
     alternates: {
-      canonical: isEs ? "/terms" : "/en/terms",
-      languages: { es: "/terms", en: "/en/terms", "x-default": "/terms" },
+      canonical: isEs ? "/es/terms" : "/terms",
+      languages: { en: "/terms", es: "/es/terms", "x-default": "/terms" },
     },
   };
 }

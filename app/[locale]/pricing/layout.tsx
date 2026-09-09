@@ -14,8 +14,8 @@ export async function generateMetadata({
       ? "Planes y precios de SonificaLabs. Empieza gratis, sin tarjeta. Produce podcasts, spots y mas con IA."
       : "SonificaLabs plans and pricing. Start free, no credit card required. Produce podcasts, ads and more with AI.",
     alternates: {
-      canonical: isEs ? "/pricing" : "/en/pricing",
-      languages: { es: "/pricing", en: "/en/pricing", "x-default": "/pricing" },
+      canonical: isEs ? "/es/pricing" : "/pricing",
+      languages: { en: "/pricing", es: "/es/pricing", "x-default": "/pricing" },
     },
   };
 }
@@ -29,7 +29,7 @@ const FAQ_JSONLD = {
       name: "How do credits work?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Each production has a base cost of 10 credits, plus 5 credits per generated voice. A production with 2 voices costs 20 credits, one with 8 voices costs 50.",
+        text: "Credits are charged in 2-minute blocks. Each block costs 10 credits plus 5 credits per generated voice, and that amount is multiplied by the number of blocks in the duration you request (2 minutes by default). A 30-second ad with 2 voices costs 20 credits (1 block). A 5-minute podcast with 4 hosts costs 90 credits (3 blocks of 30). A 10-minute radio drama with 8 voices costs 250 credits (5 blocks of 50).",
       },
     },
     {

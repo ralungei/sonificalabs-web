@@ -3,6 +3,8 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useTranslations, useLocale } from "next-intl";
+import { Icon } from "@iconify/react";
+import { createPortal } from "react-dom";
 import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 import { apiFetch } from "@/lib/api";
@@ -21,39 +23,50 @@ interface QuotaData {
   creditsLimit: number;
   maxDuration: number;
   maxVoices: number;
+  maxPromptChars?: number;
+}
+
+// Mirrors PLAN_CONFIG in the API. Ordered cheapest first: "starter" used to be
+// missing here, so paying Starter users saw their own limits locked behind Pro.
+const PLAN_TIERS = [
+  { plan: "free", label: "Free", maxDuration: 30, maxVoices: 2 },
+  { plan: "starter", label: "Starter", maxDuration: 60, maxVoices: 3 },
+  { plan: "pro", label: "Pro", maxDuration: 300, maxVoices: 4 },
+  { plan: "studio", label: "Studio", maxDuration: 600, maxVoices: 8 },
+];
+
+const DURATIONS = [
+  { value: "30s", seconds: 30 },
+  { value: "1min", seconds: 60 },
+  { value: "2min", seconds: 120 },
+  { value: "3min", seconds: 180 },
+  { value: "5min", seconds: 300 },
+  { value: "10min", seconds: 600 },
+];
+
+const PERSONAJES = ["1", "2", "3", "4", "5", "6", "7", "8"];
+
+function tierFor(plan: string) {
+  return PLAN_TIERS.find(t => t.plan === plan) ?? PLAN_TIERS[0];
 }
 
 function buildDurationOptions(plan: string): DropdownOption[] {
-  if (plan === "studio" || plan === "pro") {
-    return [
-      { value: "30s" },
-      { value: "1min" },
-      { value: "2min" },
-    ];
-  }
-  // free
-  return [
-    { value: "30s" },
-    { value: "1min", locked: true, lockBadge: "Pro" },
-    { value: "2min", locked: true, lockBadge: "Pro" },
-  ];
+  const current = tierFor(plan);
+  return DURATIONS.map(({ value, seconds }) => {
+    if (seconds <= current.maxDuration) return { value };
+    // Badge the cheapest plan that really unlocks it, not a blanket "Pro"
+    const unlocks = PLAN_TIERS.find(t => t.maxDuration >= seconds);
+    return { value, locked: true, lockBadge: unlocks?.label ?? "Studio" };
+  });
 }
 
 function buildPersonajesOptions(plan: string): DropdownOption[] {
-  const all = ["1", "2", "3", "4", "5", "6", "7", "8"];
-  if (plan === "studio") return all.map(v => ({ value: v }));
-  if (plan === "pro") {
-    return all.map(v => {
-      const n = parseInt(v, 10);
-      if (n <= 4) return { value: v };
-      return { value: v, locked: true, lockBadge: "Studio" };
-    });
-  }
-  // free
-  return all.map(v => {
-    const n = parseInt(v, 10);
-    if (n <= 2) return { value: v };
-    return { value: v, locked: true, lockBadge: "Pro" };
+  const current = tierFor(plan);
+  return PERSONAJES.map((value) => {
+    const n = parseInt(value, 10);
+    if (n <= current.maxVoices) return { value };
+    const unlocks = PLAN_TIERS.find(t => t.maxVoices >= n);
+    return { value, locked: true, lockBadge: unlocks?.label ?? "Studio" };
   });
 }
 
@@ -237,6 +250,31 @@ export function PromptForm({
 
   const plan = quota?.plan ?? "free";
   const remaining = quota?.remaining ?? null;
+  // Paid plans allow long-form prompts (scripts); free stays at 3500
+  const maxPromptChars = quota?.maxPromptChars ?? 3500;
+
+  // The quota round-trips after mount, so maxPromptChars is the free cap for a
+  // moment even for paid users. Until it lands we let the server be the judge.
+  const limitKnown = quota !== null || authStatus === "unauthenticated";
+
+  // Long pastes collapse into attached cards instead of flooding the textarea
+  const PASTE_CARD_THRESHOLD = 1000;
+  const [pastedChunks, setPastedChunks] = useState<string[]>([]);
+  const [viewerChunk, setViewerChunk] = useState<number | null>(null);
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const text = e.clipboardData.getData("text");
+    if (text.length < PASTE_CARD_THRESHOLD) return;
+    e.preventDefault();
+    // Never trim on paste: the quota may still be in flight and a paid user
+    // would silently lose most of a long script. Submit enforces the limit.
+    setPastedChunks((prev) => [...prev, text]);
+  };
+
+  const removeChunk = (idx: number) => {
+    setPastedChunks((prev) => prev.filter((_, i) => i !== idx));
+    setViewerChunk(null);
+  };
   const durationOptions = buildDurationOptions(plan);
   const personajesOptions = buildPersonajesOptions(plan);
 
@@ -275,20 +313,32 @@ export function PromptForm({
     if (tipo) parts.push(`[Tipo: ${tipo}]`);
     if (duracion) parts.push(`[Duracion: ${duracion}]`);
     if (personajes) parts.push(`[Personajes: ${personajes}]`);
+    const pasted = pastedChunks.length > 0 ? `\n\n${pastedChunks.join("\n\n")}` : "";
     if (parts.length > 0) {
-      return `${parts.join(" ")} ${prompt.trim()}`;
+      return `${parts.join(" ")} ${prompt.trim()}${pasted}`;
     }
-    return prompt.trim();
+    return `${prompt.trim()}${pasted}`.trim();
   };
+
+  // Count what is actually sent (separators and [Tipo: ...] prefix included) or
+  // the client shows 3500/3500 while the server rejects 3550 with an upsell
+  const outgoingPrompt = buildPrompt();
+  const totalChars = outgoingPrompt.length;
+  const overBy = totalChars - maxPromptChars;
+  const isOverLimit = limitKnown && overBy > 0;
+  // A paste with no typed text is a valid submission
+  const hasContent = prompt.trim().length > 0 || pastedChunks.length > 0;
+  const canSubmit = hasContent && !isLoading && !isOverLimit && rateLimitCountdown === 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!prompt.trim() || isLoading) return;
+    if (!hasContent || isLoading) return;
+    if (isOverLimit) return;
     setIsLoading(true);
     setError("");
     sessionStorage.setItem("sonificalabs_choose_voices", chooseVoices ? "1" : "0");
     try {
-      await onSubmit(buildPrompt());
+      await onSubmit(outgoingPrompt);
     } catch (err: unknown) {
       if (err instanceof Error && err.name === "RateLimitError") {
         const seconds = parseInt(err.message.replace("rate_limit:", ""), 10) || 30;
@@ -336,17 +386,52 @@ export function PromptForm({
           )}
         />
 
+        {/* Pasted content cards (Claude-style: text preview + PASTED chip) */}
+        {pastedChunks.length > 0 && (
+          <div className="flex flex-wrap gap-3 px-4 pt-4">
+            {pastedChunks.map((chunk, i) => (
+              <div key={i} className="relative group">
+                <button
+                  type="button"
+                  onClick={() => setViewerChunk(i)}
+                  className="w-28 h-28 rounded-xl border border-border-subtle bg-surface-2/90 overflow-hidden text-left flex flex-col hover:border-accent/40 hover:shadow-sm transition-all"
+                >
+                  <div className="flex-1 overflow-hidden px-2 pt-2">
+                    <p className="text-[7px] leading-[1.5] font-mono text-text-muted whitespace-pre-wrap break-words select-none">
+                      {chunk.slice(0, 480)}
+                    </p>
+                  </div>
+                  <div className="shrink-0 px-2 py-1.5 bg-surface-1/80 border-t border-border-subtle">
+                    <span className="text-[9px] font-mono uppercase tracking-wider text-text-muted">
+                      {t("pastedLabel")}
+                    </span>
+                  </div>
+                </button>
+                {/* Remove — always visible on touch, hover-revealed on pointer devices */}
+                <button
+                  type="button"
+                  aria-label={t("removePasted")}
+                  onClick={() => removeChunk(i)}
+                  className="absolute -top-2 -left-2 h-6 w-6 rounded-full grid place-items-center bg-surface-0 border border-border-subtle shadow-sm text-text-muted hover:text-red-400 opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 focus:opacity-100 transition-opacity"
+                >
+                  <Icon icon="solar:close-circle-bold" className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Textarea area */}
         <div className="relative">
           <textarea
             ref={textareaRef}
             value={prompt}
-            onChange={(e) => setPrompt(e.target.value.slice(0, 3500))}
+            onChange={(e) => setPrompt(e.target.value)}
+            onPaste={handlePaste}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             onKeyDown={handleKeyDown}
             autoFocus
-            maxLength={3500}
             rows={2}
             className="w-full bg-transparent px-5 pt-4 pb-3 text-text-primary placeholder-transparent outline-none text-base font-body resize-none"
             disabled={isLoading}
@@ -376,9 +461,9 @@ export function PromptForm({
             </span>
           )}
 
-          {prompt.length > 2800 && (
-            <span className={`absolute bottom-1 right-3 text-[10px] font-mono ${prompt.length >= 3500 ? "text-red-400" : "text-contrast/30"}`}>
-              {prompt.length}/3500
+          {totalChars > 2800 && (
+            <span className={`absolute bottom-1 right-3 text-[10px] font-mono ${isOverLimit ? "text-red-400" : "text-contrast/30"}`}>
+              {limitKnown ? `${totalChars}/${maxPromptChars}` : totalChars}
             </span>
           )}
         </div>
@@ -410,7 +495,7 @@ export function PromptForm({
                   </span>
             ) : remaining > 0 ? (
               <span className="text-[11px] text-contrast/50 whitespace-nowrap flex items-center gap-1.5">
-                {(plan === "pro" || plan === "studio") && (
+                {(plan === "starter" || plan === "pro" || plan === "studio") && (
                   <span className="text-[10px] font-semibold uppercase tracking-wide text-accent bg-accent/10 border border-accent/20 rounded px-1.5 py-0.5 leading-none">
                     {plan}
                   </span>
@@ -428,13 +513,13 @@ export function PromptForm({
 
             <motion.button
               type="submit"
-              disabled={!prompt.trim() || isLoading || rateLimitCountdown > 0}
-              whileHover={prompt.trim() && !isLoading ? { scale: 1.1 } : {}}
-              whileTap={prompt.trim() && !isLoading ? { scale: 0.9 } : {}}
+              disabled={!canSubmit}
+              whileHover={canSubmit ? { scale: 1.1 } : {}}
+              whileTap={canSubmit ? { scale: 0.9 } : {}}
               className={cn(
                 "flex items-center justify-center h-8 w-8 rounded-xl shrink-0",
                 "transition-all duration-300",
-                prompt.trim() && !isLoading
+                canSubmit
                   ? "bg-accent text-white"
                   : "bg-contrast/5 text-contrast/25 cursor-not-allowed",
               )}
@@ -480,6 +565,64 @@ export function PromptForm({
         )}
       </AnimatePresence>
 
+      {/* Over the limit the submit button is disabled, so say why and how to fix it */}
+      <AnimatePresence>
+        {isOverLimit && !error && (
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mt-3 rounded-xl border border-fail/30 bg-fail/[0.06] px-4 py-3 text-sm text-center font-body text-fail"
+          >
+            {t("overLimit", { count: overBy, max: maxPromptChars })}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+
+      {typeof document !== "undefined" && createPortal(
+        <AnimatePresence>
+          {viewerChunk !== null && pastedChunks[viewerChunk] != null && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 grid place-items-center bg-black/40 backdrop-blur-sm p-4"
+              onClick={() => setViewerChunk(null)}
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 16, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 12, scale: 0.97 }}
+                transition={{ type: "spring", duration: 0.4, bounce: 0.1 }}
+                className="relative w-full max-w-2xl max-h-[75vh] flex flex-col rounded-2xl bg-surface-0 border border-border-subtle shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between px-5 py-3.5 border-b border-border-subtle shrink-0">
+                  <div className="flex flex-col">
+                    <span className="text-label-md font-body font-semibold text-text-primary">
+                      {t("pastedContent")}
+                    </span>
+                    <span className="text-[10px] font-mono text-text-muted">
+                      {t("pastedChars", { count: pastedChunks[viewerChunk].length })}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setViewerChunk(null)}
+                    className="h-7 w-7 rounded-full grid place-items-center text-text-muted hover:text-text-primary hover:bg-contrast/[0.06] transition-all"
+                  >
+                    <Icon icon="solar:close-circle-linear" className="h-4.5 w-4.5" />
+                  </button>
+                </div>
+                <div className="overflow-y-auto px-5 py-4 text-sm font-body text-text-secondary whitespace-pre-wrap break-words leading-relaxed">
+                  {pastedChunks[viewerChunk]}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body)}
     </form>
   );
 }

@@ -1,3 +1,9 @@
+export interface WordTiming {
+  word: string;
+  start_ms: number;
+  end_ms: number;
+}
+
 export interface TimelineTrack {
   index: number;
   type: "voice" | "music" | "sfx" | "ambience" | "stinger";
@@ -10,6 +16,7 @@ export interface TimelineTrack {
   audioUrl: string;
   loop?: boolean;
   text?: string;
+  word_timings?: WordTiming[];
 }
 
 export const STYLE: Record<string, { accent: string; bg: string; label: string }> = {

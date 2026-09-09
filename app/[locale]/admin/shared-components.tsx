@@ -128,16 +128,21 @@ export function Tag({ label }: { label: string }) {
   );
 }
 
-export function CreditBreakdown({ credits, escaleta }: { credits: number; escaleta: { tracks: EscaletaTrack[] } | null }) {
+export function CreditBreakdown({ credits, escaleta, durationMs }: { credits: number; escaleta: { tracks: EscaletaTrack[] } | null; durationMs?: number | null }) {
   const voiceCount = escaleta?.tracks?.filter((t) => t.type === "voice").length ?? 0;
-  const expected = voiceCount > 0 ? 10 + voiceCount * 5 : null;
+  const perBlock = voiceCount > 0 ? 10 + voiceCount * 5 : null;
+  // Se factura por bloques de 2 min sobre la duracion pedida; la real puede desviarse
+  // unos segundos, asi que sin duracion mostramos solo el coste de un bloque.
+  const blocks = durationMs != null ? Math.max(1, Math.ceil(durationMs / 120_000)) : null;
   return (
     <div>
       <p className="text-xs text-neutral-400 uppercase tracking-wider font-medium">Creditos</p>
       <p className="text-[14px] mt-0.5 text-accent font-semibold">{credits}</p>
-      {expected != null ? (
+      {perBlock != null ? (
         <p className="text-xs text-neutral-400 mt-0.5 font-mono">
-          10 base + {voiceCount} voces x 5 = {expected}
+          {blocks != null
+            ? `(10 base + ${voiceCount} voces x 5) x ${blocks} bloque${blocks === 1 ? "" : "s"} de 2 min = ${perBlock * blocks}`
+            : `10 base + ${voiceCount} voces x 5 = ${perBlock} por bloque de 2 min`}
         </p>
       ) : (
         <p className="text-xs text-neutral-400 mt-0.5">sin desglose</p>

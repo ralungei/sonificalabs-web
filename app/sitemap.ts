@@ -19,8 +19,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority,
     alternates: {
       languages: {
-        es: `${BASE}${path}`,
-        en: `${BASE}/en${path}`,
+        en: `${BASE}${path}`,
+        es: `${BASE}/es${path}`,
       },
     },
   }));

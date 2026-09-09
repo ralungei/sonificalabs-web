@@ -48,7 +48,7 @@ export async function generateMetadata({
       locale: isEs ? "es_ES" : "en_US",
       images: [
         {
-          url: "/og-image.png",
+          url: "/og-image.jpg",
           width: 1200,
           height: 630,
           alt: "SonificaLabs - AI Audio Production",
@@ -57,13 +57,13 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      images: ["/og-image.png"],
+      images: ["/og-image.jpg"],
     },
     alternates: {
-      canonical: isEs ? "/" : "/en",
+      canonical: isEs ? "/es" : "/",
       languages: {
-        es: "/",
-        en: "/en",
+        en: "/",
+        es: "/es",
         "x-default": "/",
       },
     },

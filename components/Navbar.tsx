@@ -234,6 +234,15 @@ export function Navbar() {
                       )}
                     </div>
                     <Link
+                      href="/console"
+                      className="flex items-center gap-2 w-full text-left px-3 py-2 text-label-md text-text-secondary hover:text-text-primary hover:bg-contrast/[0.06] transition-colors"
+                    >
+                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 12h3l2-6 4 12 2.5-7.5L17 12h4" />
+                      </svg>
+                      {t("myProductions")}
+                    </Link>
+                    <Link
                       href="/account"
                       className="flex items-center gap-2 w-full text-left px-3 py-2 text-label-md text-text-secondary hover:text-text-primary hover:bg-contrast/[0.06] transition-colors"
                     >
@@ -401,6 +410,14 @@ export function Navbar() {
                         <p className="text-label-md text-text-primary truncate">{session.user.name}</p>
                         <p className="text-label-md text-text-muted truncate">{session.user.email}</p>
                       </div>
+                    </Link>
+                    <Link
+                      href="/console"
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-body-md font-body text-text-secondary hover:text-text-primary hover:bg-contrast/[0.06] transition-colors"
+                    >
+                      <Icon icon="solar:soundwave-linear" className="h-5 w-5 text-contrast/40" />
+                      {t("myProductions")}
                     </Link>
                     <button
                       onClick={() => { signOut(); setMobileOpen(false); }}

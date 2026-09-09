@@ -32,7 +32,7 @@ export const TEST_SCENARIOS: TestScenario[] = [
 ];
 
 export const LAB_MODELS: { model: string; tts: string; tag: string }[] = [
-  { model: "gemini-3.1-flash-lite-preview", tts: "", tag: "Gemini 3.1 Flash Lite" },
+  { model: "gemini-3.7-flash", tts: "", tag: "Gemini 3.7 Flash" },
 ];
 
 export const LAB_CATEGORIES = [...new Set(TEST_SCENARIOS.map((s) => s.category))];

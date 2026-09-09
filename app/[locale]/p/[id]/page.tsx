@@ -4,16 +4,17 @@ import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
-import { useRouter, Link } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { Icon } from "@iconify/react";
 import { JobStatus } from "@/components/JobStatus";
 import { VoiceConfirmation } from "@/components/VoiceConfirmation";
-import { Studio, type TimelineTrack } from "@/components/Studio";
-import { MasterDialog } from "@/components/studio/MasterDialog";
+import type { TimelineTrack } from "@/components/Studio";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { Navbar } from "@/components/Navbar";
-import { apiFetch, apiUrl, API_URL } from "@/lib/api";
+import { apiFetch, apiUrl } from "@/lib/api";
 import { useApiToken } from "@/components/Providers";
+import { ShowController } from "@/components/show/ShowController";
+import { RaveShow } from "@/components/show/RaveShow";
 
 type JobState = "working" | "confirming" | "done" | "error" | "not-found";
 
@@ -30,12 +31,11 @@ export default function JobPage() {
   const [tracks, setTracks] = useState<TimelineTrack[] | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [prompt, setPrompt] = useState("");
+  const [title, setTitle] = useState("");
   const [escaleta, setEscaleta] = useState<any>(null);
   const [confirmDeadline, setConfirmDeadline] = useState<number>(0);
   const [userPlan, setUserPlan] = useState<string>("free");
-  const [editorOpen, setEditorOpen] = useState(false);
-  const [firstVoiceText, setFirstVoiceText] = useState<string | undefined>();
-  const canDownload = userPlan !== "free";
+  const [handedOver, setHandedOver] = useState(false);
   const cleanupRef = useRef<(() => void) | null>(null);
   const hasConfirmedRef = useRef(false);
   const chooseVoicesRef = useRef(false);
@@ -45,18 +45,15 @@ export default function JobPage() {
     chooseVoicesRef.current = sessionStorage.getItem("sonificalabs_choose_voices") === "1";
   }, []);
 
+  // Someone opening a shared /p/{id} link with no session: hand the page over
+  // to ShowController instead of bouncing to a bare /signin, which dropped the
+  // visitor on the homepage after authenticating. It shows the "private
+  // production" screen with a callbackUrl back here, and once the session
+  // arrives its own polling takes it the rest of the way (ready / not-found /
+  // error). Latched: the handover must survive the session resolving.
   useEffect(() => {
-    if (authStatus === "unauthenticated") router.push("/signin");
-  }, [authStatus, router]);
-
-  useEffect(() => {
-    if (!editorOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setEditorOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [editorOpen]);
+    if (authStatus === "unauthenticated") setHandedOver(true);
+  }, [authStatus]);
 
   useEffect(() => {
     if (!apiToken) return;
@@ -77,6 +74,7 @@ export default function JobPage() {
       tracks?: TimelineTrack[];
       error?: string;
       prompt?: string;
+      title?: string;
       escaleta?: any;
       confirmDeadline?: number;
     }) => {
@@ -84,6 +82,7 @@ export default function JobPage() {
       setProgress(data.progress || "");
       setQueuePosition(data.queuePosition);
       if (data.prompt) setPrompt(data.prompt);
+      if (data.title) setTitle(data.title);
 
       if (data.status === "confirming" && !hasConfirmedRef.current) {
         if (!chooseVoicesRef.current) {
@@ -106,8 +105,6 @@ export default function JobPage() {
           : null;
         setAudioUrl(url);
         if (data.tracks) {
-          const voice = data.tracks.find((tr: any) => tr.type === "voice" && tr.text);
-          if (voice) setFirstVoiceText((voice as any).text);
           setTracks(data.tracks.map((tr: TimelineTrack) => ({
             ...tr,
             audioUrl: tr.audioUrl?.startsWith("http") ? tr.audioUrl : apiUrl(tr.audioUrl, apiToken),
@@ -195,7 +192,29 @@ export default function JobPage() {
     await apiFetch(`/cancel/${id}`, { method: "POST" }, apiToken).catch(() => {});
     cleanupRef.current?.();
     router.push("/");
-  }, [id, router]);
+  }, [id, router, apiToken]);
+
+  // No session, or a job that reported "done" without a playable URL (which
+  // used to render a blank page): ShowController owns the fetch from here, so
+  // its sign-in / loading / not-found / error screens drive the outcome.
+  if (handedOver || (state === "done" && !audioUrl)) {
+    return <ShowController id={id} view={RaveShow} withAnalyser />;
+  }
+
+  // Done state: render the fullscreen Reactive show, handing over the data
+  // this page already fetched (no duplicate /p/{id} + /user/quota round-trips,
+  // no loading flash).
+  if (state === "done" && audioUrl) {
+    return (
+      <ShowController
+        id={id}
+        view={RaveShow}
+        withAnalyser
+        userPlan={userPlan}
+        initialData={{ audioUrl, tracks: tracks ?? [], prompt, title }}
+      />
+    );
+  }
 
   return (
     <>
@@ -291,60 +310,6 @@ export default function JobPage() {
             />
           )}
 
-          {/* Done state — hero player layout */}
-          {state === "done" && audioUrl && (
-            <motion.div
-              key="done"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              className="flex flex-col items-center justify-center w-full pb-[10vh] px-6"
-              style={{ minHeight: "calc(100dvh - 14vh)" }}
-            >
-              {/* Title + prompt */}
-              <motion.h2
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-heading-lg font-body font-semibold text-text-primary mb-2"
-              >
-                {t("audioReady")}
-              </motion.h2>
-              {prompt && (
-                <motion.div
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="flex items-start gap-2 max-w-sm mb-8"
-                >
-                  <p className="text-body-md text-text-secondary font-body text-center leading-relaxed line-clamp-3 flex-1">
-                    {prompt.replace(/\[.*?\]/g, "").trim()}
-                  </p>
-                  <button
-                    onClick={() => navigator.clipboard.writeText(prompt.replace(/\[.*?\]/g, "").trim())}
-                    className="shrink-0 mt-0.5 p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-contrast/[0.06] transition-all"
-                  >
-                    <Icon icon="solar:copy-linear" className="h-3.5 w-3.5" />
-                  </button>
-                </motion.div>
-              )}
-
-              <MasterDialog
-                show
-                masterUrl={audioUrl}
-                jobId={id}
-                onClose={() => {}}
-                canDownload={canDownload}
-                inline
-                prompt={prompt}
-                firstVoiceText={firstVoiceText}
-                userPlan={userPlan}
-                tracks={tracks ?? undefined}
-              />
-            </motion.div>
-          )}
-
           {/* Error state */}
           {state === "error" && (
             <motion.div
@@ -394,40 +359,6 @@ export default function JobPage() {
       </div>
     </main>
 
-      {/* Fullscreen editor — outside main to avoid overflow clipping */}
-      <AnimatePresence>
-        {editorOpen && tracks && tracks.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[var(--z-editor)] bg-surface-0 flex flex-col"
-          >
-            {/* Header bar */}
-            <div className="flex items-center justify-between px-5 h-12 border-b border-contrast/[0.06] flex-shrink-0">
-              <span className="text-label-md font-body uppercase tracking-wider text-contrast/40">Timeline</span>
-              <button
-                onClick={() => setEditorOpen(false)}
-                className="flex items-center justify-center w-8 h-8 rounded-lg text-contrast/50 hover:text-contrast hover:bg-contrast/[0.06] transition-all"
-              >
-                <Icon icon="solar:close-circle-linear" className="h-5 w-5" />
-              </button>
-            </div>
-
-            {/* Studio fills remaining space */}
-            <div className="flex-1 overflow-y-auto px-3 py-4">
-              <Studio
-                tracks={tracks}
-                jobId={id}
-                audioUrl={audioUrl!}
-                onRemixDone={(newUrl) => setAudioUrl(newUrl)}
-                canDownload={canDownload}
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 }

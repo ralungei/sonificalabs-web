@@ -8,7 +8,8 @@
     "signOut": "Sign out",
     "signIn": "Sign in",
     "about": "Who we are",
-    "examples": "Examples"
+    "examples": "Examples",
+    "myProductions": "My generations"
   },
   "home": {
     "heroLine": "Produce your next",
@@ -91,7 +92,12 @@
     "errorProducing": "Error producing",
     "debugClaudeModel": "Claude model",
     "debugTtsModel": "TTS model",
-    "debugPlanDefault": "Plan default"
+    "debugPlanDefault": "Plan default",
+    "pastedContent": "Pasted content",
+    "pastedChars": "{count} characters",
+    "removePasted": "Remove pasted content",
+    "pastedLabel": "PASTED",
+    "overLimit": "You are {count} characters over the {max} limit. Shorten your text or remove pasted content."
   },
   "jobStatus": {
     "script": "Script",
@@ -250,7 +256,7 @@
         "badge": "Popular",
         "includes": "Everything in Starter, plus",
         "features": [
-          "Up to 2 minutes per audio",
+          "Up to 5 minutes per audio",
           "Up to 4 voices per production",
           "27+ voices in Spanish, Latin and English",
           "Expressive voices with emotion",
@@ -262,6 +268,7 @@
         "cta": "Choose Studio",
         "includes": "Everything in Pro, plus",
         "features": [
+          "Up to 10 minutes per audio",
           "Up to 8 voices per production",
           "2.5x more credits than Pro",
           "Priority in production queue"
@@ -269,18 +276,33 @@
       }
     },
     "creditCosts": [
-      { "action": "Base production (AI + mixing)", "credits": 10 },
-      { "action": "Per generated voice", "credits": 5 }
+      {
+        "action": "Each 2-minute block (AI + mixing)",
+        "credits": 10
+      },
+      {
+        "action": "Each generated voice, per block",
+        "credits": 5
+      }
     ],
     "creditExamples": [
-      { "desc": "Ad spot (2 voices)", "total": "20 credits" },
-      { "desc": "Podcast with 4 hosts", "total": "30 credits" },
-      { "desc": "Radio drama (8 voices)", "total": "50 credits" }
+      {
+        "desc": "Ad spot (2 voices, 30 sec)",
+        "total": "20 credits"
+      },
+      {
+        "desc": "Podcast with 4 hosts (5 min)",
+        "total": "90 credits"
+      },
+      {
+        "desc": "Radio drama (8 voices, 10 min)",
+        "total": "250 credits"
+      }
     ],
     "faqs": [
       {
         "q": "How do credits work?",
-        "a": "Each production has a base cost of 10 credits, plus 5 credits per generated voice. A production with 2 voices costs 20 credits, one with 8 voices costs 50. You pay proportionally to what you use."
+        "a": "Credits are charged in 2-minute blocks. Each block costs 10 credits plus 5 credits per generated voice, and that amount is multiplied by the number of blocks in the duration you request (2 minutes by default). A 30-second ad with 2 voices costs 20 credits (1 block). A 5-minute podcast with 4 hosts costs 90 credits (3 blocks of 30). A 10-minute radio drama with 8 voices costs 250 credits (5 blocks of 50). You pay proportionally to what you use."
       },
       {
         "q": "Do credits accumulate?",
@@ -345,12 +367,36 @@
     "forWhoTitle": "Made to create",
     "forWhoSubtitle": "Whether you make videos, podcasts or work in production. If you have an idea, you can turn it into audio here.",
     "forWhoItems": [
-      { "icon": "video", "label": "Content creators", "desc": "Intros, voiceovers and audio for reels, TikToks and YouTube" },
-      { "icon": "mic", "label": "Podcasters", "desc": "Intros, dramatized segments and transitions" },
-      { "icon": "film", "label": "Film & TV", "desc": "Pilot scenes, trailers and quick dramatizations" },
-      { "icon": "megaphone", "label": "Agencies & brands", "desc": "Radio spots, client demos and audio prototypes" },
-      { "icon": "book", "label": "Education", "desc": "Audiobooks, educational podcasts and learning materials" },
-      { "icon": "zap", "label": "Anyone with an idea", "desc": "If you can describe it, you can produce it" }
+      {
+        "icon": "video",
+        "label": "Content creators",
+        "desc": "Intros, voiceovers and audio for reels, TikToks and YouTube"
+      },
+      {
+        "icon": "mic",
+        "label": "Podcasters",
+        "desc": "Intros, dramatized segments and transitions"
+      },
+      {
+        "icon": "film",
+        "label": "Film & TV",
+        "desc": "Pilot scenes, trailers and quick dramatizations"
+      },
+      {
+        "icon": "megaphone",
+        "label": "Agencies & brands",
+        "desc": "Radio spots, client demos and audio prototypes"
+      },
+      {
+        "icon": "book",
+        "label": "Education",
+        "desc": "Audiobooks, educational podcasts and learning materials"
+      },
+      {
+        "icon": "zap",
+        "label": "Anyone with an idea",
+        "desc": "If you can describe it, you can produce it"
+      }
     ],
     "rasTitle": "Hey, I'm Ras",
     "rasRole": "Founder of SonificaLabs",
@@ -460,5 +506,69 @@
   "localeSwitcher": {
     "es": "ES",
     "en": "EN"
+  },
+  "show": {
+    "loading": "loading",
+    "notFound": "Production not found",
+    "error": "Something went wrong",
+    "privateProduction": "private production",
+    "signInPrompt": "Sign in to view this audio. Only the owner can play it.",
+    "signIn": "Sign in →",
+    "copyPrompt": "Copy prompt",
+    "play": "Play",
+    "pause": "Pause",
+    "untitled": "Untitled",
+    "shareDescription": "Copy the link or save a video for social.",
+    "saveAsVideo": "Save as video",
+    "preparingVideo": "Preparing video…",
+    "videoFailed": "Couldn't prepare the video. Try again in a moment.",
+    "downloadFailed": "Download failed. Try again.",
+    "bestFor": "Best for Reels / TikTok / Stories",
+    "copy": "Copy",
+    "trackMusic": "Music",
+    "trackSfx": "SFX",
+    "trackAmbience": "Ambience",
+    "trackStinger": "Stinger",
+    "trackVoice": "Voice"
+  },
+  "console": {
+    "greeting": "Hi, {name}",
+    "title": "My generations",
+    "subtitle": "Everything you have created, in one place.",
+    "listTitle": "History",
+    "newProduction": "New production",
+    "untitled": "Untitled",
+    "credits": "{n} credits",
+    "pageOf": "Page {page} of {pages} · {total} productions",
+    "error": "We could not load your generations.",
+    "retry": "Retry",
+    "stats": {
+      "credits": "Credits",
+      "productions": "Productions",
+      "minutes": "Minutes generated",
+      "upgrade": "Upgrade plan"
+    },
+    "empty": {
+      "title": "Nothing here yet",
+      "body": "Once you generate your first audio it will show up here, ready to play and download.",
+      "cta": "Create my first production"
+    },
+    "status": {
+      "queued": "Queued",
+      "generating": "Generating",
+      "confirming": "Awaiting confirmation",
+      "producing": "Producing",
+      "done": "Ready",
+      "error": "Failed",
+      "cancelled": "Cancelled"
+    },
+    "actions": {
+      "play": "Play {title}",
+      "pause": "Pause {title}",
+      "download": "Download {title}",
+      "follow": "Follow",
+      "prev": "Previous page",
+      "next": "Next page"
+    }
   }
 }
