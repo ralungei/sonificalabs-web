@@ -179,7 +179,7 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
 
       {/* 1. User prompt */}
       <Node color="neutral" icon="1" title="Prompt del usuario">
-        <p>El usuario escribe un prompt en lenguaje natural (max 3500 chars).</p>
+        <p>El usuario escribe un prompt en lenguaje natural (max 3500 chars free / 200000 de pago).</p>
         <p>Se extraen metadatos opcionales: <Tag>[Tipo: ...]</Tag> <Tag>[Duracion: ...]</Tag> <Tag>[Personajes: N]</Tag></p>
         <div className="flex flex-wrap gap-1.5 mt-1">
           <Tag color="neutral">POST /produce</Tag>
@@ -208,12 +208,12 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
             <tbody className="font-mono">
               <tr><td>Free</td><td>20</td><td>30s</td><td>2</td><td className="text-amber-600">flash_v2.5</td><td className="text-teal-600">flash-lite</td></tr>
               <tr><td>Starter</td><td>400</td><td>60s</td><td>3</td><td className="text-amber-600">flash_v2.5</td><td className="text-violet-600">pro</td></tr>
-              <tr><td>Pro</td><td>2000</td><td>120s</td><td>4</td><td className="text-amber-600">eleven_v3</td><td className="text-violet-600">pro</td></tr>
-              <tr><td>Studio</td><td>5000</td><td>120s</td><td>8</td><td className="text-amber-600">eleven_v3</td><td className="text-violet-600">pro</td></tr>
+              <tr><td>Pro</td><td>2000</td><td>300s</td><td>4</td><td className="text-amber-600">eleven_v3</td><td className="text-violet-600">pro</td></tr>
+              <tr><td>Studio</td><td>5000</td><td>600s</td><td>8</td><td className="text-amber-600">eleven_v3</td><td className="text-violet-600">pro</td></tr>
             </tbody>
           </table>
         </div>
-        <p className="text-sm text-neutral-400 mt-1">Coste: <Tag>10 + voces * 5</Tag> creditos por produccion</p>
+        <p className="text-sm text-neutral-400 mt-1">Coste: <Tag>(10 + voces * 5) * ceil(duracion / 120s)</Tag> creditos por produccion (minimo 1 bloque)</p>
       </Node>
 
       <Arrow label="Job creado (nanoid 12)" />

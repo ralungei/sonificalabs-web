@@ -53,7 +53,7 @@ Every production follows 5 automated steps -from your idea to a downloadable MP3
 <tr>
 <td width="50%">
 
-![DAW View](public/screenshots/pipeline-daw.jpg)
+![Examples](public/screenshots/examples.jpg)
 
 </td>
 <td width="50%">

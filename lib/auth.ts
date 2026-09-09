@@ -33,9 +33,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return true;
     },
-    jwt({ token, user }) {
+    async jwt({ token, user }) {
       if (user?.email) {
         token.email = user.email;
+      }
+      // Mint the API JWE once and persist it in the JWT cookie. Re-encoding
+      // per session() call produced a DIFFERENT string on every session
+      // refetch (random IV/jti), which cascaded into new tokenized audio
+      // URLs and reset playback to 0 whenever the tab regained focus.
+      // Re-mint daily; the JWE itself is valid for 30 days.
+      const REFRESH_MS = 24 * 60 * 60 * 1000;
+      const mintedAt = (token.apiTokenMintedAt as number) || 0;
+      if (!token.apiToken || Date.now() - mintedAt > REFRESH_MS) {
+        const { apiToken: _a, apiTokenMintedAt: _b, ...payload } = token as Record<string, unknown>;
+        token.apiToken = await encode({
+          token: payload,
+          secret: process.env.AUTH_SECRET!,
+          salt: "",
+        });
+        token.apiTokenMintedAt = Date.now();
       }
       return token;
     },
@@ -43,15 +59,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token.email && session.user) {
         session.user.email = token.email as string;
       }
-      // Encode the JWT as JWE so the client can send it to the API as Bearer token.
-      // The backend decrypts this with the same NEXTAUTH_SECRET.
-      const apiToken = await encode({
-        token,
-        secret: process.env.AUTH_SECRET!,
-        salt: "",
-      });
       // @ts-expect-error - extending session with apiToken
-      session.apiToken = apiToken;
+      session.apiToken = token.apiToken;
       return session;
     },
   },

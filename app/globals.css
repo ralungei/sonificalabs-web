@@ -324,3 +324,243 @@ body {
   0% { transform: translate(0, -50px); }
   100% { transform: translate(0, 50px); }
 }
+
+
+/* ─── Player (sonifica /p/[id]) ─────────────────────────── */
+
+@utility font-player {
+  font-family: var(--font-player), "Geist", ui-sans-serif, -apple-system, system-ui, sans-serif;
+}
+@utility font-player-mono {
+  font-family: var(--font-player-mono), "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* Karaoke stack */
+.kk-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  max-width: 1100px;
+  width: 100%;
+  text-align: center;
+}
+.kk-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.28em;
+  font-family: var(--font-player), "Geist", system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  transition: opacity 320ms ease, transform 320ms ease;
+}
+.kk-prev,
+.kk-next {
+  color: #a0a0a0;
+  opacity: 0.5;
+}
+.kk-curr {
+  color: #d2d2d2;
+  text-wrap: balance;
+}
+.kk-ghost { min-height: 1em; }
+
+.kk-word {
+  position: relative;
+  display: inline-block;
+  color: #d2d2d2;
+  transform: translateY(0) scale(1);
+  transition:
+    color 240ms ease,
+    transform 420ms cubic-bezier(.22,.7,.18,1),
+    filter 260ms ease;
+  will-change: transform, color;
+}
+.kk-curr .kk-word.kk-past { color: #0a0a0a; }
+.kk-curr .kk-word.kk-active {
+  color: #0d9488;
+  transform: translateY(-3px) scale(1.045);
+  filter: drop-shadow(0 2px 14px rgba(20, 184, 166, 0.32));
+}
+.kk-prev .kk-word,
+.kk-next .kk-word { color: #5a5a5a; }
+
+/* Bottom player bar (glass card) */
+.player-bar {
+  background: rgba(255,255,255,0.7);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  backdrop-filter: blur(28px) saturate(160%);
+  border: 0.5px solid rgba(0,0,0,0.06);
+  border-radius: 22px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.7) inset,
+    0 18px 50px -20px rgba(0,0,0,0.12),
+    0 2px 8px -2px rgba(0,0,0,0.04);
+}
+
+/* Stems chips */
+.player-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px 6px 9px;
+  font-family: var(--font-player), "Geist", system-ui, sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  border-radius: 999px;
+  color: #0a0a0a;
+  background: rgba(0,0,0,0.04);
+  border: 0.5px solid rgba(0,0,0,0.05);
+  font-variant-numeric: tabular-nums;
+}
+.player-chip-dot {
+  width: 6px; height: 6px;
+  border-radius: 999px;
+  background: #0d9488;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.18);
+}
+
+/* Freq bars */
+/* Hidden on mobile. The media query lives here because Tailwind utilities
+   sit in @layer and lose the cascade to these unlayered rules. */
+.player-fb {
+  display: none;
+  align-items: flex-end;
+  gap: 3px;
+  height: 28px;
+  width: clamp(180px, 28vw, 360px);
+  justify-self: center;
+}
+@media (min-width: 768px) {
+  .player-fb { display: flex; }
+}
+.player-fb-bar {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(to top, #a0a0a0, #0a0a0a);
+  border-radius: 2px;
+  opacity: 0.4;
+  transition: height 80ms ease, opacity 120ms ease;
+  min-height: 2px;
+}
+.player-fb-bar.is-accent {
+  background: linear-gradient(to top, #0d9488, #0d9488);
+}
+
+/* Progress bar Apple-style */
+.player-pg {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  gap: 14px;
+}
+.player-pg-time {
+  font-family: var(--font-player-mono), "Geist Mono", ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: #a0a0a0;
+  font-variant-numeric: tabular-nums;
+}
+.player-pg-time-right { text-align: right; }
+.player-pg-track {
+  position: relative;
+  height: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+.player-pg-track::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 3px;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.08);
+  border-radius: 999px;
+  transition: height 140ms ease;
+}
+.player-pg-track:hover::before,
+.player-pg-track.is-drag::before { height: 5px; }
+.player-pg-fill {
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  height: 3px;
+  background: #0a0a0a;
+  border-radius: 999px;
+  transition: height 140ms ease;
+  pointer-events: none;
+}
+.player-pg-track:hover .player-pg-fill,
+.player-pg-track.is-drag .player-pg-fill { height: 5px; }
+.player-pg-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 12px; height: 12px;
+  border-radius: 999px;
+  background: #0a0a0a;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+  transition: transform 140ms ease;
+  pointer-events: none;
+}
+.player-pg-track:hover .player-pg-thumb,
+.player-pg-track.is-drag .player-pg-thumb { transform: translate(-50%, -50%) scale(1); }
+.player-pg-hover {
+  position: absolute;
+  top: -22px;
+  transform: translateX(-50%);
+  font-family: var(--font-player-mono), "Geist Mono", ui-monospace, monospace;
+  font-size: 10px;
+  color: #0a0a0a;
+  background: rgba(255,255,255,0.96);
+  border: 0.5px solid rgba(0,0,0,0.08);
+  padding: 3px 6px;
+  border-radius: 6px;
+  pointer-events: none;
+  box-shadow: 0 4px 10px -4px rgba(0,0,0,0.12);
+}
+
+/* Play button */
+.player-play {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  width: 48px; height: 48px;
+  border-radius: 999px;
+  background: #0a0a0a;
+  color: #fafafa;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 140ms ease, background-color 140ms ease, box-shadow 140ms ease;
+  box-shadow: 0 4px 14px -4px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.1) inset;
+}
+.player-play:hover { transform: scale(1.04); }
+.player-play:active { transform: scale(0.96); }
+
+/* Icon button */
+.player-ic {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  width: 36px; height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #5a5a5a;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease, transform 120ms ease;
+}
+.player-ic:hover { background: rgba(0,0,0,0.05); color: #0a0a0a; }
+.player-ic:active { transform: scale(0.94); }
+.player-ic.is-on { color: #0d9488; }

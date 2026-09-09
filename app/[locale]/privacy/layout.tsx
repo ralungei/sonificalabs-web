@@ -14,8 +14,8 @@ export async function generateMetadata({
       ? "Politica de privacidad de SonificaLabs. Como recogemos, usamos y protegemos tus datos."
       : "SonificaLabs privacy policy. How we collect, use and protect your data.",
     alternates: {
-      canonical: isEs ? "/privacy" : "/en/privacy",
-      languages: { es: "/privacy", en: "/en/privacy", "x-default": "/privacy" },
+      canonical: isEs ? "/es/privacy" : "/privacy",
+      languages: { en: "/privacy", es: "/es/privacy", "x-default": "/privacy" },
     },
   };
 }

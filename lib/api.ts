@@ -28,7 +28,10 @@ export async function apiFetch(
     const lastRedirect = Number(sessionStorage.getItem("auth_redirect_ts") || "0");
     if (now - lastRedirect > 10000) {
       sessionStorage.setItem("auth_redirect_ts", String(now));
-      window.location.href = "/signin";
+      // Preserve where the user was (e.g. a /p/{id} link) so sign-in
+      // returns them there instead of dumping them on the homepage.
+      const here = window.location.pathname + window.location.search;
+      window.location.href = `/signin?callbackUrl=${encodeURIComponent(here)}`;
     }
   }
 
