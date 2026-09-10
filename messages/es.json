@@ -9,7 +9,8 @@
     "signIn": "Iniciar sesión",
     "about": "Quiénes somos",
     "examples": "Ejemplos",
-    "myProductions": "Mis generaciones"
+    "myProductions": "Mis generaciones",
+    "goToConsole": "Consola"
   },
   "home": {
     "heroLine": "Produce tu siguiente",
@@ -569,6 +570,16 @@
       "follow": "Seguir",
       "prev": "Página anterior",
       "next": "Página siguiente"
-    }
+    },
+    "nav": {
+      "generator": "Generador de audio",
+      "history": "Mis generaciones",
+      "account": "Ajustes de cuenta",
+      "signOut": "Cerrar sesión"
+    },
+    "generatorSubtitle": "Describe lo que quieres y lo convertimos en audio producido.",
+    "recentTitle": "Recientes",
+    "seeAll": "Ver todas",
+    "openMenu": "Abrir menú"
   }
 }

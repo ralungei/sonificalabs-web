@@ -192,7 +192,19 @@ export function Navbar() {
           {status === "loading" ? (
             <div className="hidden md:block h-8 w-8 rounded-full bg-contrast/[0.06] animate-pulse" />
           ) : session?.user ? (
-            <div ref={menuRef} className="relative hidden md:block">
+            <div className="hidden md:flex items-center gap-2">
+              {/* Signed-in users get a direct way into the app, like any SaaS
+                  where the marketing page is not where the work happens. */}
+              <Link
+                href="/console"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-accent px-3.5 py-1.5 text-label-md font-semibold text-surface-0 transition-all duration-200 hover:bg-accent-bright hover:shadow-[var(--shadow-glow-sm)]"
+              >
+                {t("goToConsole")}
+                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </Link>
+            <div ref={menuRef} className="relative">
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
                 className="flex items-center rounded-full transition-colors hover:bg-contrast/[0.06] p-0.5"
@@ -272,6 +284,7 @@ export function Navbar() {
                   </motion.div>
                 )}
               </AnimatePresence>
+            </div>
             </div>
           ) : (
             <Link

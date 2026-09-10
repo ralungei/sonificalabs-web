@@ -9,7 +9,7 @@ import { apiFetch, API_URL } from "@/lib/api";
 import { useApiToken } from "@/components/Providers";
 import { timeAgo, formatDate, formatDuration } from "@/lib/format";
 
-const PAGE_SIZE = 12;
+const DEFAULT_PAGE_SIZE = 12;
 
 export interface ProductionItem {
   id: string;
@@ -143,7 +143,8 @@ function RowSkeleton() {
   );
 }
 
-export function ConsoleList() {
+export function ConsoleList({ limit, compact = false }: { limit?: number; compact?: boolean } = {}) {
+  const PAGE_SIZE = limit ?? DEFAULT_PAGE_SIZE;
   const t = useTranslations("console");
   const locale = useLocale();
   const token = useApiToken();
@@ -193,7 +194,7 @@ export function ConsoleList() {
 
   if (loading && !data) {
     return (
-      <div className="overflow-hidden rounded-2xl border border-border-subtle bg-surface-1">
+      <div className="overflow-hidden rounded-2xl border border-border-subtle bg-surface-0">
         {Array.from({ length: 4 }).map((_, i) => (
           <RowSkeleton key={i} />
         ))}
@@ -203,7 +204,7 @@ export function ConsoleList() {
 
   if (failed) {
     return (
-      <div className="rounded-2xl border border-border-subtle bg-surface-1 px-6 py-14 text-center">
+      <div className="rounded-2xl border border-border-subtle bg-surface-0 px-6 py-14 text-center">
         <Icon icon="solar:cloud-cross-linear" className="mx-auto mb-3 h-8 w-8 text-text-muted" />
         <p className="text-body-sm text-text-secondary">{t("error")}</p>
         <button
@@ -222,7 +223,7 @@ export function ConsoleList() {
 
   if (!active.length && !items.length) {
     return (
-      <div className="rounded-2xl border border-dashed border-border-subtle bg-surface-1 px-6 py-16 text-center">
+      <div className="rounded-2xl border border-dashed border-border-subtle bg-surface-0 px-6 py-16 text-center">
         <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full bg-accent/8 text-accent">
           <Icon icon="solar:soundwave-linear" className="h-7 w-7" />
         </div>
@@ -241,7 +242,7 @@ export function ConsoleList() {
 
   return (
     <>
-      <div className="overflow-hidden rounded-2xl border border-border-subtle bg-surface-1">
+      <div className="overflow-hidden rounded-2xl border border-border-subtle bg-surface-0">
         <AnimatePresence initial={false}>
           {active.map((item) => (
             <motion.div
@@ -333,7 +334,7 @@ export function ConsoleList() {
         })}
       </div>
 
-      {pages > 1 ? (
+      {pages > 1 && !compact ? (
         <div className="mt-6 flex items-center justify-between gap-4">
           <p className="text-caption-md text-text-muted">{t("pageOf", { page, pages, total })}</p>
           <div className="flex gap-2">
