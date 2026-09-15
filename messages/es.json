@@ -569,7 +569,8 @@
       "download": "Descargar {title}",
       "follow": "Seguir",
       "prev": "Página anterior",
-      "next": "Página siguiente"
+      "next": "Página siguiente",
+      "playError": "No se ha podido reproducir {title}. Pulsa para reintentar"
     },
     "nav": {
       "generator": "Generador de audio",

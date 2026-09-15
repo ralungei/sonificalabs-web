@@ -5,7 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Icon } from "@iconify/react";
-import { apiFetch, API_URL } from "@/lib/api";
+import { apiFetch, apiUrl } from "@/lib/api";
 import { useApiToken } from "@/components/Providers";
 import { timeAgo, formatDate, formatDuration } from "@/lib/format";
 
@@ -68,82 +68,120 @@ function StatusDot({ status }: { status: string }) {
   );
 }
 
+/** The row currently playing, so starting another one stops it. */
+let activeAudio: HTMLAudioElement | null = null;
+
+type PlayState = "idle" | "loading" | "playing" | "error";
+
 /**
- * Inline player. One shared <audio> element per row, created on demand: a
- * WaveSurfer instance per row would mean a dozen decoders on one page.
+ * Inline player.
+ *
+ * It streams through a plain audio element. The first version fetched the
+ * whole MP3 as a blob and only then called play(), after an await and outside
+ * the click, which browsers that require a user gesture reject; the rejection
+ * was swallowed, so the button flipped to "pause" while nothing sounded. The
+ * token rides in the query string, which the API accepts for media requests.
  */
 function PlayButton({ id, title }: { id: string; title: string }) {
   const t = useTranslations("console");
-  const [playing, setPlaying] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const token = useApiToken();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [state, setState] = useState<PlayState>("idle");
 
   useEffect(() => {
     return () => {
-      audioRef.current?.pause();
-      audioRef.current = null;
+      const el = audioRef.current;
+      if (!el) return;
+      el.pause();
+      el.removeAttribute("src");
+      el.load();
+      if (activeAudio === el) activeAudio = null;
     };
   }, []);
 
-  const toggle = useCallback(async () => {
-    if (audioRef.current) {
-      if (playing) {
-        audioRef.current.pause();
-        setPlaying(false);
-      } else {
-        await audioRef.current.play().catch(() => {});
-        setPlaying(true);
-      }
+  const toggle = () => {
+    let el = audioRef.current;
+
+    if (el && state === "error") {
+      el.removeAttribute("src");
+      el = null;
+      audioRef.current = null;
+    }
+
+    if (el && !el.paused) {
+      el.pause();
       return;
     }
 
-    // The audio endpoint needs the bearer token, so fetch it and play a blob
-    // rather than putting the token in a src URL.
-    setLoading(true);
-    try {
-      const res = await apiFetch(`/audio/${id}`, {}, token);
-      if (!res.ok) return;
-      const blob = await res.blob();
-      const el = new Audio(URL.createObjectURL(blob));
-      el.addEventListener("ended", () => setPlaying(false));
-      el.addEventListener("pause", () => setPlaying(false));
+    if (!el) {
+      el = new Audio();
+      el.preload = "none";
+      el.addEventListener("playing", () => setState("playing"));
+      el.addEventListener("waiting", () => setState("loading"));
+      el.addEventListener("pause", () => setState((s) => (s === "error" ? s : "idle")));
+      el.addEventListener("ended", () => setState("idle"));
+      el.addEventListener("error", () => setState("error"));
+      el.src = apiUrl(`/audio/${id}`, token);
       audioRef.current = el;
-      await el.play().catch(() => {});
-      setPlaying(true);
-    } finally {
-      setLoading(false);
     }
-  }, [id, playing, token]);
+
+    if (activeAudio && activeAudio !== el) activeAudio.pause();
+    activeAudio = el;
+    setState("loading");
+    // Called synchronously inside the click, so the gesture still counts.
+    el.play().catch((err: unknown) => {
+      if ((err as { name?: string })?.name !== "AbortError") setState("error");
+    });
+  };
+
+  const icon =
+    state === "loading" ? "svg-spinners:ring-resize"
+    : state === "playing" ? "solar:pause-bold"
+    : state === "error" ? "solar:danger-triangle-linear"
+    : "solar:play-bold";
+
+  const label =
+    state === "playing" ? t("actions.pause", { title })
+    : state === "error" ? t("actions.playError", { title })
+    : t("actions.play", { title });
 
   return (
     <button
       type="button"
       onClick={toggle}
-      aria-label={playing ? t("actions.pause", { title }) : t("actions.play", { title })}
-      className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-border-subtle bg-surface-0 text-accent transition-all duration-200 hover:border-accent hover:shadow-[var(--shadow-glow-sm)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      aria-label={label}
+      title={state === "error" ? label : undefined}
+      className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border bg-surface-0 transition-all duration-200 hover:shadow-[var(--shadow-glow-sm)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+        state === "error" ? "border-fail/40 text-fail hover:border-fail" : "border-border-subtle text-accent hover:border-accent"
+      }`}
     >
-      <Icon
-        icon={loading ? "svg-spinners:ring-resize" : playing ? "solar:pause-bold" : "solar:play-bold"}
-        className={playing ? "h-4 w-4" : "h-4 w-4 translate-x-px"}
-      />
+      <Icon icon={icon} className={state === "idle" ? "h-4 w-4 translate-x-px" : "h-4 w-4"} />
     </button>
   );
 }
 
 function RowSkeleton() {
   return (
-    <div className="flex items-center gap-4 border-b border-border-subtle px-4 py-4 sm:px-5">
+    <div className="flex items-center gap-4 border-b border-border-subtle px-4 py-3 sm:px-5">
       <div className="h-11 w-11 shrink-0 animate-pulse rounded-full bg-surface-2" />
-      <div className="min-w-0 flex-1 space-y-2">
-        <div className="h-3.5 w-2/5 animate-pulse rounded bg-surface-2" />
-        <div className="h-3 w-4/5 animate-pulse rounded bg-surface-2" />
+      <div className="min-w-0 flex-1">
+        <div className="flex h-[21px] items-center"><div className="h-3.5 w-2/5 animate-pulse rounded bg-surface-2" /></div>
+        <div className="mt-1 flex h-[18px] items-center"><div className="h-3 w-1/3 animate-pulse rounded bg-surface-2" /></div>
       </div>
     </div>
   );
 }
 
-export function ConsoleList({ limit, compact = false }: { limit?: number; compact?: boolean } = {}) {
+export function ConsoleList({
+  limit,
+  compact = false,
+  refreshKey,
+}: {
+  limit?: number;
+  compact?: boolean;
+  /** Bump to reload in place. Remounting instead flashed the skeleton on every window focus. */
+  refreshKey?: number;
+} = {}) {
   const PAGE_SIZE = limit ?? DEFAULT_PAGE_SIZE;
   const t = useTranslations("console");
   const locale = useLocale();
@@ -180,6 +218,12 @@ export function ConsoleList({ limit, compact = false }: { limit?: number; compac
     load(offset, true);
   }, [load, offset]);
 
+  useEffect(() => {
+    if (refreshKey) load(offset, false);
+    // Only the key should trigger this; offset changes already reload above.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshKey]);
+
   // Anything still rendering will change state on its own; poll only while
   // something is actually in flight.
   useEffect(() => {
@@ -195,7 +239,7 @@ export function ConsoleList({ limit, compact = false }: { limit?: number; compac
   if (loading && !data) {
     return (
       <div className="overflow-hidden rounded-2xl border border-border-subtle bg-surface-0">
-        {Array.from({ length: 4 }).map((_, i) => (
+        {Array.from({ length: compact ? PAGE_SIZE : 6 }).map((_, i) => (
           <RowSkeleton key={i} />
         ))}
       </div>
@@ -251,7 +295,7 @@ export function ConsoleList({ limit, compact = false }: { limit?: number; compac
               initial={reduceMotion ? false : { opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={reduceMotion ? undefined : { opacity: 0 }}
-              className="flex items-center gap-4 border-b border-border-subtle bg-accent/[0.03] px-4 py-4 sm:px-5"
+              className="flex items-center gap-4 border-b border-border-subtle bg-accent/[0.03] px-4 py-3 sm:px-5"
             >
               <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-accent/30 text-accent">
                 <Icon icon="svg-spinners:ring-resize" className="h-4 w-4" />
@@ -260,13 +304,14 @@ export function ConsoleList({ limit, compact = false }: { limit?: number; compac
                 <p className="truncate text-body-sm font-medium text-contrast">
                   {item.title || item.prompt || t("untitled")}
                 </p>
-                <div className="mt-1 flex items-center gap-2">
+                <div className="mt-1 flex items-center gap-x-3 text-caption-md text-text-muted">
                   <StatusDot status={item.status} />
+                  <span title={formatDate(item.createdAt, locale)}>{timeAgo(item.createdAt, locale)}</span>
                 </div>
               </div>
               <Link
                 href={`/p/${item.id}`}
-                className="shrink-0 rounded-full border border-border-subtle px-3.5 py-1.5 text-label-sm text-text-secondary transition-colors hover:border-accent hover:text-accent"
+                className="inline-flex h-9 shrink-0 items-center rounded-full border border-border-subtle px-4 text-label-md text-text-secondary transition-colors hover:border-accent hover:text-accent"
               >
                 {t("actions.follow")}
               </Link>
@@ -282,7 +327,7 @@ export function ConsoleList({ limit, compact = false }: { limit?: number; compac
               initial={reduceMotion ? false : { opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: reduceMotion ? 0 : Math.min(i * 0.03, 0.25), duration: 0.25 }}
-              className="group flex items-center gap-4 border-b border-border-subtle px-4 py-4 last:border-b-0 transition-colors hover:bg-surface-2/40 sm:px-5"
+              className="group flex items-center gap-4 border-b border-border-subtle px-4 py-3 last:border-b-0 transition-colors hover:bg-surface-2/40 sm:px-5"
             >
               {item.hasAudio ? (
                 <PlayButton id={item.id} title={label} />
@@ -299,31 +344,18 @@ export function ConsoleList({ limit, compact = false }: { limit?: number; compac
                 <p className="truncate text-body-sm font-medium text-contrast transition-colors group-hover:text-accent">
                   {label}
                 </p>
-                {item.title && item.prompt ? (
-                  <p className="mt-0.5 truncate text-caption-md text-text-muted">{item.prompt}</p>
-                ) : null}
-                <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-                  <StatusDot status={item.status} />
-                  <span className="text-caption-md text-text-muted" title={formatDate(item.createdAt, locale)}>
-                    {timeAgo(item.createdAt, locale)}
-                  </span>
-                  {item.durationMs ? (
-                    <span className="text-caption-md tabular-nums text-text-muted">
-                      {formatDuration(item.durationMs)}
-                    </span>
-                  ) : null}
-                  {item.creditsUsed ? (
-                    <span className="text-caption-md tabular-nums text-text-muted">
-                      {t("credits", { n: item.creditsUsed })}
-                    </span>
-                  ) : null}
+                <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-caption-md text-text-muted">
+                  {item.status !== "done" ? <StatusDot status={item.status} /> : null}
+                  <span title={formatDate(item.createdAt, locale)}>{timeAgo(item.createdAt, locale)}</span>
+                  {item.durationMs ? <span className="tabular-nums">{formatDuration(item.durationMs)}</span> : null}
+                  {item.creditsUsed ? <span className="tabular-nums">{t("credits", { n: item.creditsUsed })}</span> : null}
                 </div>
               </Link>
 
               {item.hasAudio ? (
                 <a
-                  href={`${API_URL}/audio/${item.id}/download?format=mp3`}
-                  className="hidden shrink-0 rounded-full border border-border-subtle p-2.5 text-text-secondary transition-colors hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:block"
+                  href={apiUrl(`/audio/${item.id}/download?format=mp3`, token)}
+                  className="hidden h-9 w-9 shrink-0 place-items-center rounded-full border border-border-subtle text-text-secondary transition-colors hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:grid"
                   aria-label={t("actions.download", { title: label })}
                 >
                   <Icon icon="solar:download-minimalistic-linear" className="h-4 w-4" />
@@ -342,7 +374,7 @@ export function ConsoleList({ limit, compact = false }: { limit?: number; compac
               type="button"
               disabled={offset === 0}
               onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}
-              className="rounded-full border border-border-subtle p-2.5 text-text-secondary transition-colors hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-35"
+              className="grid h-9 w-9 place-items-center rounded-full border border-border-subtle text-text-secondary transition-colors hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-35"
               aria-label={t("actions.prev")}
             >
               <Icon icon="solar:alt-arrow-left-linear" className="h-4 w-4" />
@@ -351,7 +383,7 @@ export function ConsoleList({ limit, compact = false }: { limit?: number; compac
               type="button"
               disabled={page >= pages}
               onClick={() => setOffset(offset + PAGE_SIZE)}
-              className="rounded-full border border-border-subtle p-2.5 text-text-secondary transition-colors hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-35"
+              className="grid h-9 w-9 place-items-center rounded-full border border-border-subtle text-text-secondary transition-colors hover:border-accent hover:text-accent disabled:pointer-events-none disabled:opacity-35"
               aria-label={t("actions.next")}
             >
               <Icon icon="solar:alt-arrow-right-linear" className="h-4 w-4" />

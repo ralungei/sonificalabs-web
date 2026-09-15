@@ -223,8 +223,14 @@ function ParametersPopover({
 
 export function PromptForm({
   onSubmit,
+  className,
+  showQuota = true,
 }: {
   onSubmit: (prompt: string) => Promise<void>;
+  /** Extra classes for the outer form, e.g. `max-w-none` to fill a wider container. */
+  className?: string;
+  /** Hide the plan badge and credit count on surfaces that already show them. */
+  showQuota?: boolean;
 }) {
   const t = useTranslations("promptForm");
   const router = useRouter();
@@ -369,7 +375,7 @@ export function PromptForm({
   }, []);
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto">
+    <form onSubmit={handleSubmit} className={cn("w-full max-w-2xl mx-auto", className)}>
       <div
         className={cn(
           "relative rounded-2xl border transition-all duration-500",
@@ -487,7 +493,7 @@ export function PromptForm({
 
           {/* Right — counter + submit */}
           <div className="flex items-center gap-3 ml-auto">
-            {remaining === null ? (
+            {showQuota && (remaining === null ? (
               session
                 ? <span className="h-4 w-16 rounded bg-contrast/[0.06] animate-pulse" />
                 : <span className="text-[11px] text-contrast/50 whitespace-nowrap flex items-center gap-1.5">
@@ -505,11 +511,12 @@ export function PromptForm({
             ) : (
               <button
                 type="button"
+                onClick={() => router.push("/pricing")}
                 className="text-[11px] text-accent border border-accent/30 rounded-lg px-2.5 py-1 hover:bg-accent/10 transition-colors font-body whitespace-nowrap"
               >
                 {t("upgradePlan")}
               </button>
-            )}
+            ))}
 
             <motion.button
               type="submit"

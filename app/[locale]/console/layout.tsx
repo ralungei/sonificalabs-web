@@ -16,7 +16,7 @@ export default function ConsoleLayout({ children }: { children: React.ReactNode 
 
   if (status === "loading") {
     return (
-      <div className="grid min-h-screen place-items-center bg-surface-1">
+      <div className="grid min-h-screen place-items-center bg-surface-0">
         <Icon icon="svg-spinners:ring-resize" className="h-6 w-6 text-accent" />
       </div>
     );

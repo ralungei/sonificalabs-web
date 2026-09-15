@@ -569,7 +569,8 @@
       "download": "Download {title}",
       "follow": "Follow",
       "prev": "Previous page",
-      "next": "Next page"
+      "next": "Next page",
+      "playError": "Could not play {title}. Click to retry"
     },
     "nav": {
       "generator": "Audio generator",

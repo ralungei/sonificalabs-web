@@ -104,8 +104,17 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${dmSans.variable} ${beVietnam.variable} bg-surface-0`}>
-      <body className="min-h-screen font-body antialiased bg-surface-0">
+    // Browser extensions (dark-mode ones like Nocturne, Grammarly, password
+    // managers) stamp attributes on <html> and <body> before React hydrates,
+    // which React reports as a mismatch. suppressHydrationWarning only tolerates
+    // differences in these two elements' own attributes; mismatches anywhere
+    // deeper in the tree are still reported.
+    <html
+      lang={locale}
+      className={`${dmSans.variable} ${beVietnam.variable} bg-surface-0`}
+      suppressHydrationWarning
+    >
+      <body className="min-h-screen font-body antialiased bg-surface-0" suppressHydrationWarning>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSONLD) }}
