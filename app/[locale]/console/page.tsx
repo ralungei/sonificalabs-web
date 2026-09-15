@@ -19,12 +19,14 @@ export default function ConsoleGeneratorPage() {
 
   // Same contract as the landing form, so both surfaces behave identically.
   const handleSubmit = useCallback(
-    async (prompt: string) => {
+    // `instruction` is what the user typed, sent apart from any pasted material
+    // so the API reads the requested duration from it and not from a script.
+    async (prompt: string, instruction?: string) => {
       let res: Response;
       try {
         res = await apiFetch(
           "/produce",
-          { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt }) },
+          { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt, instruction }) },
           apiToken,
         );
       } catch {

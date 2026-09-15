@@ -226,7 +226,8 @@ export function PromptForm({
   className,
   showQuota = true,
 }: {
-  onSubmit: (prompt: string) => Promise<void>;
+  /** `instruction` is only what the user typed, without tags or pasted cards. */
+  onSubmit: (prompt: string, instruction: string) => Promise<void>;
   /** Extra classes for the outer form, e.g. `max-w-none` to fill a wider container. */
   className?: string;
   /** Hide the plan badge and credit count on surfaces that already show them. */
@@ -344,7 +345,7 @@ export function PromptForm({
     setError("");
     sessionStorage.setItem("sonificalabs_choose_voices", chooseVoices ? "1" : "0");
     try {
-      await onSubmit(outgoingPrompt);
+      await onSubmit(outgoingPrompt, prompt.trim());
     } catch (err: unknown) {
       if (err instanceof Error && err.name === "RateLimitError") {
         const seconds = parseInt(err.message.replace("rate_limit:", ""), 10) || 30;
