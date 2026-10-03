@@ -155,7 +155,7 @@
         "subtitle": "La IA analiza tu prompt y genera una escaleta completa con voces, música, efectos y timing."
       },
       {
-        "title": "23+ voces eligen su papel",
+        "title": "29 voces eligen su papel",
         "subtitle": "Voces reales seleccionadas automaticamente segun el tono y el personaje."
       },
       {
@@ -257,7 +257,7 @@
         "features": [
           "Hasta 5 minutos por audio",
           "Hasta 4 voces por producción",
-          "27+ voces en español, latino e inglés",
+          "29 voces en español, latino e inglés",
           "Voces expresivas con emoción",
           "Descarga en MP3"
         ]
@@ -413,7 +413,7 @@
   },
   "privacy": {
     "title": "Política de privacidad",
-    "lastUpdated": "Última actualización: 11 de marzo de 2026",
+    "lastUpdated": "Última actualización: 3 de octubre de 2026",
     "controller": "Responsable del tratamiento",
     "controllerText": "SonificaLabs es un proyecto de Ras Alungei. Puedes contactarnos en info@sonificalabs.com para cualquier consulta relacionada con tus datos personales.",
     "dataCollected": "Datos que recogemos",
@@ -436,8 +436,7 @@
     "thirdPartyItems": [
       "Google (autenticación OAuth)",
       "Stripe (procesamiento de pagos — ver su política de privacidad en stripe.com/privacy)",
-      "Anthropic / Claude (generación de guiones con IA — recibe el texto de tus prompts)",
-      "ElevenLabs (síntesis de voz — recibe los textos de las voces generadas)",
+      "Google Gemini (generación de guiones y síntesis de voz con IA: recibe el texto de tus prompts y de las voces generadas)",
       "Cloudflare (alojamiento, almacenamiento de archivos y base de datos)"
     ],
     "thirdPartiesTransfer": "Estos servicios pueden estar ubicados fuera del EEE (Estados Unidos). Las transferencias se amparan en el EU-US Data Privacy Framework y/o Cláusulas Contractuales Tipo.",
@@ -458,7 +457,7 @@
   },
   "terms": {
     "title": "Términos de uso",
-    "lastUpdated": "Última actualización: 11 de marzo de 2026",
+    "lastUpdated": "Última actualización: 3 de octubre de 2026",
     "legalNotice": "Aviso legal",
     "legalNoticeText": "SonificaLabs es un proyecto de Ras Alungei con domicilio en España. Contacto: info@sonificalabs.com.",
     "service": "El servicio",
@@ -486,7 +485,7 @@
       "Sobre el audio generado: te concedemos una licencia de uso amplia (incluido uso comercial en planes de pago). SonificaLabs no reclama derechos sobre tus producciones."
     ],
     "ai": "Contenido generado por IA",
-    "aiText": "El audio se genera mediante inteligencia artificial (Anthropic Claude para guiones, ElevenLabs para voces). El resultado no está garantizado en cuanto a precisión, originalidad o idoneidad. Eres responsable de revisar el contenido antes de publicarlo.",
+    "aiText": "El audio se genera mediante inteligencia artificial (Google Gemini para guiones y voces). El resultado no está garantizado en cuanto a precisión, originalidad o idoneidad. Eres responsable de revisar el contenido antes de publicarlo.",
     "acceptable": "Uso aceptable",
     "acceptableItems": [
       "No generar contenido ilegal, difamatorio o que incite al odio.",

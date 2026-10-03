@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Icon } from "@iconify/react";
-import { fetchVoices, getVoices, VOICE_ID_TO_NAME, getVoicesForPlan, type VoiceDef } from "@/lib/voices";
+import { fetchVoices, VOICE_ID_TO_NAME, getVoicesForPlan, type VoiceDef } from "@/lib/voices";
 import { API_URL } from "@/lib/api";
 import type { PlanId } from "@/lib/types";
 
@@ -162,7 +162,6 @@ export function VoiceConfirmation({ escaleta, confirmDeadline, userPlan, onConfi
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
             <span className="text-body-sm font-body font-medium text-text-primary">{v.name}</span>
-            <span className="text-[9px] text-text-muted">{v.lang}</span>
           </div>
           <span className="text-[9px] text-text-muted truncate block">{v.desc}</span>
         </div>
@@ -197,7 +196,6 @@ export function VoiceConfirmation({ escaleta, confirmDeadline, userPlan, onConfi
         {voiceGroups.map((group, i) => {
           const voiceId = getCurrentVoiceId(group.originalVoiceId);
           const name = VOICE_ID_TO_NAME[voiceId] || "?";
-          const def = getVoices().find(v => v.id === voiceId);
           const isSelected = selectedGroup === group.originalVoiceId;
           const wasChanged = group.originalVoiceId in voiceSwaps;
           const isPlaying = playingVoiceId === voiceId;
@@ -236,7 +234,6 @@ export function VoiceConfirmation({ escaleta, confirmDeadline, userPlan, onConfi
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="font-body font-semibold text-body-md text-text-primary">{name}</span>
-                    <span className="text-[10px] text-text-muted bg-surface-2 px-1.5 py-0.5 rounded font-body">{def?.lang}</span>
                     {group.trackCount > 1 && (
                       <span className="text-[10px] text-accent bg-accent/10 px-1.5 py-0.5 rounded font-body">
                         {group.trackCount} clips

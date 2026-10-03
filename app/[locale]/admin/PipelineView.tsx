@@ -206,10 +206,10 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
               </tr>
             </thead>
             <tbody className="font-mono">
-              <tr><td>Free</td><td>20</td><td>30s</td><td>2</td><td className="text-amber-600">flash_v2.5</td><td className="text-teal-600">flash-lite</td></tr>
-              <tr><td>Starter</td><td>400</td><td>60s</td><td>3</td><td className="text-amber-600">flash_v2.5</td><td className="text-violet-600">pro</td></tr>
-              <tr><td>Pro</td><td>2000</td><td>300s</td><td>4</td><td className="text-amber-600">eleven_v3</td><td className="text-violet-600">pro</td></tr>
-              <tr><td>Studio</td><td>5000</td><td>600s</td><td>8</td><td className="text-amber-600">eleven_v3</td><td className="text-violet-600">pro</td></tr>
+              <tr><td>Free</td><td>20</td><td>30s</td><td>2</td><td className="text-amber-600">3.8-flash-tts</td><td className="text-teal-600">flash-lite</td></tr>
+              <tr><td>Starter</td><td>400</td><td>60s</td><td>3</td><td className="text-amber-600">3.8-flash-tts</td><td className="text-violet-600">pro</td></tr>
+              <tr><td>Pro</td><td>2000</td><td>300s</td><td>4</td><td className="text-amber-600">3.8-flash-tts</td><td className="text-violet-600">pro</td></tr>
+              <tr><td>Studio</td><td>5000</td><td>600s</td><td>8</td><td className="text-amber-600">3.8-flash-tts</td><td className="text-violet-600">pro</td></tr>
             </tbody>
           </table>
         </div>
@@ -271,8 +271,8 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
           <div className="flex items-start gap-2">
             <span className="text-xs font-bold text-neutral-400 shrink-0 w-14">System</span>
             <div>
-              <p>Contiene: catalogo de voces (23+), solo los sonidos pre-seleccionados por el planificador (no los 189), plan de produccion, limites del plan, instrucciones creativas</p>
-              <p className="text-neutral-400 mt-0.5">Para <Tag color="amber">eleven_v3</Tag>: incluye audio tags (<Tag>[whispers]</Tag> <Tag>[excited]</Tag> <Tag>[tense]</Tag> etc.)</p>
+              <p>Contiene: catalogo de voces (29, acento por linea), solo los sonidos pre-seleccionados por el planificador (no los 189), plan de produccion, limites del plan, instrucciones creativas</p>
+              <p className="text-neutral-400 mt-0.5">Direccion de voz con etiquetas de una palabra (<Tag>[whispers]</Tag> <Tag>[excited]</Tag> <Tag>[tense]</Tag> etc.): las acotaciones escritas se leerian en voz alta</p>
             </div>
           </div>
           <div className="flex items-start gap-2">
@@ -295,24 +295,24 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
       <ParallelSplit>
         {/* Left: voice tracks */}
         <div>
-          <Node color="amber" icon="5a" title="Voice tracks — ElevenLabs TTS">
-            <p className="font-medium text-amber-700">Sintetiza cada track de voz en paralelo (batch de 4).</p>
+          <Node color="amber" icon="5a" title="Voice tracks: Gemini TTS">
+            <p className="font-medium text-amber-700">Sintetiza cada track de voz; todas a la vez, espaciadas por el limitador (10 por minuto).</p>
             <div className="space-y-1.5 mt-1">
               <div className="flex items-start gap-2">
                 <span className="text-xs font-bold text-neutral-400 shrink-0 w-12">API</span>
-                <Tag color="amber">POST /v1/text-to-speech/&#123;voiceId&#125;/stream</Tag>
+                <Tag color="amber">POST /v1beta/models/&#123;model&#125;:generateContent</Tag>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-xs font-bold text-neutral-400 shrink-0 w-12">Modelo</span>
-                <span><Tag color="amber">eleven_flash_v2_5</Tag> o <Tag color="amber">eleven_v3</Tag></span>
+                <span><Tag color="amber">gemini-3.8-flash-tts</Tag> (cuota: 100 al dia)</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-xs font-bold text-neutral-400 shrink-0 w-12">Params</span>
-                <span>stability=0.5, similarity=0.75, speed=0.7-1.2</span>
+                <span>voz + languageCode (acento), speed 0.85-1.15 aplicado con atempo</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-xs font-bold text-neutral-400 shrink-0 w-12">Retry</span>
-                <span>5 intentos, backoff exponencial (2s base)</span>
+                <span>6 intentos con el retryDelay del 429; cuota diaria agotada falla al momento</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-xs font-bold text-neutral-400 shrink-0 w-12">Salida</span>
@@ -493,7 +493,7 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
         <div className="flex flex-wrap gap-3 text-sm">
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-teal-500" /> Gemini (IA generativa)</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500" /> Gemini Embedding 2 (busqueda semantica)</span>
-          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500" /> ElevenLabs (TTS)</span>
+          <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500" /> Gemini TTS (voces)</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-sky-500" /> Cloudflare R2 (storage)</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-rose-500" /> FFmpeg (local)</span>
           <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-neutral-400" /> Cloudflare D1 (database)</span>

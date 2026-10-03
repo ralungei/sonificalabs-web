@@ -155,7 +155,7 @@
         "subtitle": "The AI analyzes your prompt and generates a complete script with voices, music, effects and timing."
       },
       {
-        "title": "23+ voices choose their role",
+        "title": "29 voices choose their role",
         "subtitle": "Real voices automatically selected based on tone and character."
       },
       {
@@ -257,7 +257,7 @@
         "features": [
           "Up to 5 minutes per audio",
           "Up to 4 voices per production",
-          "27+ voices in Spanish, Latin and English",
+          "29 voices in Spanish, Latin and English",
           "Expressive voices with emotion",
           "Download in MP3"
         ]
@@ -413,7 +413,7 @@
   },
   "privacy": {
     "title": "Privacy Policy",
-    "lastUpdated": "Last updated: March 11, 2026",
+    "lastUpdated": "Last updated: October 3, 2026",
     "controller": "Data controller",
     "controllerText": "SonificaLabs is a project by Ras Alungei. You can contact us at info@sonificalabs.com for any questions about your personal data.",
     "dataCollected": "Data we collect",
@@ -436,8 +436,7 @@
     "thirdPartyItems": [
       "Google (OAuth authentication)",
       "Stripe (payment processing — see their privacy policy at stripe.com/privacy)",
-      "Anthropic / Claude (AI script generation — receives your prompt text)",
-      "ElevenLabs (voice synthesis — receives generated voice text)",
+      "Google Gemini (AI script generation and voice synthesis: receives your prompt text and the generated voice text)",
       "Cloudflare (hosting, file storage, and database)"
     ],
     "thirdPartiesTransfer": "These services may be located outside the EEA (United States). Transfers are covered by the EU-US Data Privacy Framework and/or Standard Contractual Clauses.",
@@ -458,7 +457,7 @@
   },
   "terms": {
     "title": "Terms of Use",
-    "lastUpdated": "Last updated: March 11, 2026",
+    "lastUpdated": "Last updated: October 3, 2026",
     "legalNotice": "Legal notice",
     "legalNoticeText": "SonificaLabs is a project by Ras Alungei, based in Spain. Contact: info@sonificalabs.com.",
     "service": "The service",
@@ -486,7 +485,7 @@
       "Regarding generated audio: we grant you a broad usage license (including commercial use on paid plans). SonificaLabs does not claim rights over your productions."
     ],
     "ai": "AI-generated content",
-    "aiText": "Audio is generated using artificial intelligence (Anthropic Claude for scripts, ElevenLabs for voices). Results are not guaranteed in terms of accuracy, originality, or suitability. You are responsible for reviewing the content before publishing it.",
+    "aiText": "Audio is generated using artificial intelligence (Google Gemini for scripts and voices). Results are not guaranteed in terms of accuracy, originality, or suitability. You are responsible for reviewing the content before publishing it.",
     "acceptable": "Acceptable use",
     "acceptableItems": [
       "Do not generate illegal, defamatory, or hate-inciting content.",

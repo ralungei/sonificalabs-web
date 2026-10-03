@@ -20,7 +20,7 @@ No templates. No timelines. No audio skills needed.
 
 SonificaLabs turns a single sentence into broadcast-ready audio. Describe what you want in natural language -a true crime podcast intro, a radio spot for your pizzeria, an ASMR meditation -and the AI produces it end-to-end in ~30 seconds.
 
-Behind the scenes: **Claude** writes a structured audio script (escaleta), **ElevenLabs** synthesizes 23+ realistic voices, and **FFmpeg** mixes everything with professional-grade processing -volume normalization, EQ, reverb, stereo panning, crossfades.
+Behind the scenes: **Gemini** writes a structured audio script (escaleta) and voices it with 29 voices, and **FFmpeg** mixes everything with professional-grade processing -volume normalization, EQ, reverb, stereo panning, crossfades.
 
 You just write. The AI produces.
 
@@ -170,7 +170,7 @@ sonificalabs-web/
 
 ## Related
 
-- **[sonificalabs-api](https://github.com/ralungei/sonificalabs-api)** -Backend API (Hono, Claude, ElevenLabs, FFmpeg)
+- **[sonificalabs-api](https://github.com/ralungei/sonificalabs-api)** -Backend API (Hono, Gemini, FFmpeg)
 
 ---
 
@@ -178,6 +178,6 @@ sonificalabs-web/
 
 **[sonificalabs.com](https://sonificalabs.com)**
 
-Built with Claude, ElevenLabs & FFmpeg.
+Built with Gemini & FFmpeg.
 
 </div>

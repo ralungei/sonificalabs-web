@@ -61,13 +61,12 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
 
   // Produce one job via SSE for real-time progress updates
   const produceJob = useCallback(async (
-    prompt: string, model: string, tts: string,
+    prompt: string, model: string,
     runId: string, resultIndex: number,
     onUpdate: (result: Partial<LabResult>) => void,
   ) => {
     const body: Record<string, string> = { prompt };
     if (model) body.model = model;
-    if (tts) body.ttsModel = tts;
 
     const res = await apiFetch("/produce", {
       method: "POST",
@@ -150,7 +149,7 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
     const runId = `${scenario.id}-${Date.now()}`;
 
     const initialResults: LabResult[] = LAB_MODELS.map((m) => ({
-      id: "", model: m.tag, tts: m.tts || "default",
+      id: "", model: m.tag,
       status: "queued", audioUrl: null, durationMs: null, error: null,
       rating: null, notes: "", startedAt: new Date().toISOString(), finishedAt: null,
       escaleta: null, timing: null, tracks: null,
@@ -166,7 +165,7 @@ export function LabView({ apiToken }: { apiToken: string | null }) {
 
     await Promise.allSettled(
       LAB_MODELS.map((m, i) =>
-        produceJob(scenario.prompt, m.model, m.tts, runId, i, (update) => {
+        produceJob(scenario.prompt, m.model, runId, i, (update) => {
           setRuns((prev) => {
             const updated = prev.map((r) => {
               if (r.id !== runId) return r;
