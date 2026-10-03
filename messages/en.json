@@ -17,7 +17,7 @@
     "tagline": "Voices · Music · SFX · Professional mix",
     "listenExamples": "Listen to examples",
     "ctaTitle": "Try it now",
-    "ctaSubtitle": "1 free production. Describe your idea and in 30 seconds you'll have professional-quality audio.",
+    "ctaSubtitle": "1 free production. Describe your idea and in a couple of minutes you'll have professional-quality audio.",
     "ctaButton": "Create my audio for free",
     "serviceUnavailable": "The service is temporarily unavailable. Please try again in a few seconds.",
     "footer": "© 2026 SonificaLabs",
@@ -143,7 +143,7 @@
       "voice2": "Voice 2",
       "ambience": "Ambience"
     },
-    "dawBadges": "Uniform volume,Voice always clear,Equalization,Reverb,Stereo,Fades",
+    "dawBadges": "Uniform volume,Voice always clear,Equalization,Stereo,Fades",
     "waveformDuration": "~30 seconds",
     "phases": [
       {
@@ -164,7 +164,7 @@
       },
       {
         "title": "Audio ready",
-        "subtitle": "Download your production in seconds."
+        "subtitle": "Ready to play and download in a couple of minutes."
       }
     ]
   },
@@ -269,8 +269,7 @@
         "features": [
           "Up to 10 minutes per audio",
           "Up to 8 voices per production",
-          "2.5x more credits than Pro",
-          "Priority in production queue"
+          "2.5x more credits than Pro"
         ]
       }
     },
@@ -403,6 +402,11 @@
     "rasBio2": "I've always been fascinated by how sound transforms any production, but creating it properly was expensive and painfully slow. I've spent 4 years working with AI at major tech companies, so combining skills I came up with the idea of building this platform.",
     "rasBio3": "It's not perfect, but it sounds a little better every day. If you like it, great. If you find a bug, write me.",
     "linkedIn": "LinkedIn",
+    "teamTitle": "The team",
+    "team": [
+      { "name": "Ras Alungei", "role": "Founder", "photo": "/team/ras.jpg", "linkedin": "https://www.linkedin.com/in/ras-alungei/" },
+      { "name": "Roxana Alungei", "role": "Head of Marketing & Social Media", "photo": "/team/roxana.jpg", "linkedin": "https://www.linkedin.com/in/roxana-alungei-93a73a146/" }
+    ],
     "ctaLine": "Your first production is on me.",
     "ctaButton": "Produce my first audio"
   },

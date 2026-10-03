@@ -81,6 +81,13 @@ function Reveal({
   );
 }
 
+interface TeamMember {
+  name: string;
+  role: string;
+  photo: string;
+  linkedin: string;
+}
+
 /* ── Page ──────────────────────────────────────────────────────── */
 
 export default function AboutPage() {
@@ -192,6 +199,43 @@ export default function AboutPage() {
               </a>
             </div>
           </Reveal>
+        </div>
+      </section>
+
+      {/* ── Team ──────────────────────────────────────────────── */}
+      <section className="px-6 pb-28 md:pb-36">
+        <div className="max-w-4xl mx-auto">
+          <Reveal>
+            <h2 className="text-heading-lg md:text-display-sm font-body font-black tracking-tight text-center mb-12 md:mb-16">
+              {t("teamTitle")}
+            </h2>
+          </Reveal>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 md:gap-14 max-w-2xl mx-auto">
+            {(t.raw("team") as TeamMember[]).map((m, i) => (
+              <Reveal key={m.name} delay={i * 0.08}>
+                <a
+                  href={m.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex flex-col items-center text-center"
+                >
+                  <img
+                    src={m.photo}
+                    alt={m.name}
+                    className="w-40 h-40 md:w-48 md:h-48 rounded-full object-cover object-[center_15%] ring-1 ring-contrast/10 transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                  <span className="mt-5 text-heading-sm font-body font-bold text-contrast">{m.name}</span>
+                  <span className="mt-1 text-body-md font-body text-contrast/50">{m.role}</span>
+                  <span className="mt-3 inline-flex items-center gap-2 text-body-sm text-contrast/40 group-hover:text-[#0A66C2] transition-colors duration-300">
+                    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor" aria-hidden>
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                    </svg>
+                    {t("linkedIn")}
+                  </span>
+                </a>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
