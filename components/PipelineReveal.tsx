@@ -80,11 +80,13 @@ function EscaletaViz({ lines, label }: { lines: EscaletaLine[]; label: string })
 
 /* ── Phase 3: Voice Grid ──────────────────────────────────────── */
 
+// Real catalog voices (Gemini TTS). The active ones are the ones the script
+// mock above would cast: Charon for Daniel, Zephyr for Sara, Kore for the third.
 const FEATURED_NAMES = [
-  "Daniel", "Sara", "Eva", "Enrique", "Hector", "Celeste",
-  "Barbara", "Rafael", "Norah", "Fiona", "Arconte", "Dylan",
+  "Charon", "Zephyr", "Kore", "Puck", "Leda", "Algieba",
+  "Despina", "Schedar", "Aoede", "Orus", "Gacrux", "Achird",
 ];
-const ACTIVE_NAMES = new Set(["Daniel", "Sara", "Eva"]);
+const ACTIVE_NAMES = new Set(["Charon", "Zephyr", "Kore"]);
 
 const DISPLAY_VOICES = FEATURED_NAMES.map(name => ({
   initials: name.slice(0, 2),
