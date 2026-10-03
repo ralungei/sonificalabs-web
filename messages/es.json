@@ -233,6 +233,7 @@
           "Hasta 30 segundos por audio",
           "Hasta 2 voces por producción",
           "10 voces en español, latino e inglés",
+          "Voces con emoción, risas y susurros",
           "Música, SFX y mezcla con IA",
           "Compartir vía enlace"
         ]
@@ -245,6 +246,7 @@
           "~20 producciones al mes",
           "Hasta 1 minuto por audio",
           "Hasta 3 voces por producción",
+          "Las 29 voces del catálogo",
           "Descarga en MP3",
           "Licencia comercial"
         ]
@@ -257,9 +259,7 @@
         "features": [
           "Hasta 5 minutos por audio",
           "Hasta 4 voces por producción",
-          "29 voces en español, latino e inglés",
-          "Voces expresivas con emoción",
-          "Descarga en MP3"
+          "Descarga en WAV y FLAC sin pérdida"
         ]
       },
       "studio": {
@@ -308,8 +308,8 @@
         "a": "Los créditos no usados se mantienen hasta el final del ciclo de facturación. No se acumulan de un mes a otro."
       },
       {
-        "q": "¿Qué es el modelo avanzado de voces?",
-        "a": "El plan gratuito usa un modelo de voz rápido con buena calidad. Los planes Pro y Studio usan un modelo más expresivo, más natural y con soporte para 70+ idiomas. La diferencia se nota especialmente en diálogos y narraciones largas."
+        "q": "¿Qué voces hay?",
+        "a": "29 voces de mujer y de hombre, de jóvenes a mayores. El plan gratuito incluye 10 y los planes de pago, todas. Cualquier voz puede hablar con acento de España, latinoamericano, inglés de EE. UU., británico o italiano: la IA elige el acento según tu idea y puedes pedirle uno concreto. Todos los planes usan el mismo motor de voz, con emoción, risas, suspiros y susurros."
       },
       {
         "q": "¿Puedo cancelar cuando quiera?",
