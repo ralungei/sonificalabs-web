@@ -6,8 +6,15 @@ import { Footer } from "@/components/Footer";
 import { AudioBubble } from "@/components/site/AudioBubble";
 import { stopDemo } from "@/components/site/demo-audio";
 import { Keyword } from "@/components/site/ui";
+import { HeroWave } from "@/components/site/HeroWave";
 import { DEMO_CATEGORIES, DEMOS, demoSrc, type DemoCategory } from "@/lib/demos";
 import { cn } from "@/lib/cn";
+
+/** Two soft orange and coral pools behind the page, the tones of its title. */
+const GLOWS: [side: "left" | "right", offset: string, top: string, size: number, color: string][] = [
+  ["left", "-16%", "-12vh", 820, "rgba(249,115,22,.09)"],
+  ["right", "-16%", "22vh", 760, "rgba(244,63,94,.06)"],
+];
 
 /** Bubble sizes cycle through this list so each group looks hand-placed. */
 const SIZES = [118, 92, 104, 86, 124, 96];
@@ -29,10 +36,19 @@ export default function ExamplesPage() {
   const groups = DEMO_CATEGORIES.filter((c) => cat === "all" || c.id === cat);
 
   return (
-    <main className="min-h-screen bg-white text-ink">
+    <main className="relative isolate min-h-screen overflow-x-clip bg-white text-ink">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        {GLOWS.map(([side, offset, top, size, color], i) => (
+          <span key={i} className="absolute rounded-full"
+            style={{ [side]: offset, top, width: size, height: size, background: `radial-gradient(closest-side,${color},transparent)` }} />
+        ))}
+      </div>
       <Navbar />
 
-      <section className="px-[clamp(18px,4vw,48px)] pt-[clamp(48px,7vw,96px)] text-center">
+      <section className="relative px-[clamp(18px,4vw,48px)] pt-[clamp(48px,7vw,96px)] text-center">
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 -bottom-[clamp(40px,5vw,80px)] top-0 -z-10">
+          <HeroWave active={false} tone="coral" />
+        </div>
         <h1 className="m-0 text-[clamp(42px,6vw,96px)] font-normal leading-[1.02] tracking-[-0.07em]">
           {t("titleStart")} <Keyword underline="tilt" line="coral">{t("titleKeyword")}</Keyword>
         </h1>
@@ -42,7 +58,7 @@ export default function ExamplesPage() {
             <button key={id} type="button" onClick={() => setCat(id)} aria-pressed={cat === id}
               className={cn(
                 "h-[42px] shrink-0 rounded-full border px-[18px] text-[15px] font-medium transition-all duration-200",
-                cat === id ? "border-ink bg-ink text-white" : "border-contrast/[0.12] bg-white text-ink hover:border-ink",
+                cat === id ? "border-[#ea580c] bg-[#ea580c] text-white" : "border-contrast/[0.12] bg-white text-ink hover:border-[#ea580c] hover:text-[#ea580c]",
               )}>
               {t(`categories.${id}` as Parameters<typeof t>[0])}
             </button>

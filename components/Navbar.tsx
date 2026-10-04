@@ -51,6 +51,16 @@ export function Navbar({ variant = "page", overlay = false }: { variant?: "home"
   const [quota, setQuota] = useState<QuotaData | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const home = variant === "home";
+  // The page header stays see-through at the top (a white band cut across the
+  // tinted backgrounds) and only takes a soft backdrop once content scrolls under it.
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    if (home || overlay) return;
+    const on = () => setScrolled(window.scrollY > 8);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, [home, overlay]);
 
   useEffect(() => {
     if (!apiToken) return;
@@ -117,7 +127,7 @@ export function Navbar({ variant = "page", overlay = false }: { variant?: "home"
           "left-0 right-0 top-0 z-[var(--z-dropdown)] flex items-center justify-between gap-5 px-[clamp(18px,3vw,40px)]",
           home || overlay
             ? "fixed py-[22px] bg-[linear-gradient(to_bottom,rgba(255,255,255,.92),rgba(255,255,255,0))]"
-            : "sticky py-5 bg-white/90 backdrop-blur-[10px]",
+            : cn("sticky py-5 transition-[background-color,backdrop-filter] duration-300", scrolled ? "bg-white/80 backdrop-blur-[10px]" : "bg-transparent"),
         )}
       >
         <Link href="/" aria-label="sonificalabs"><Wordmark /></Link>

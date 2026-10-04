@@ -18,7 +18,7 @@ export function PageShell({
   children: React.ReactNode;
 }) {
   return (
-    <main className="flex min-h-screen flex-col overflow-x-hidden bg-white text-ink">
+    <main className="flex min-h-screen flex-col overflow-x-clip bg-white text-ink">
       <Navbar />
 
       <section className="relative px-[clamp(18px,4vw,48px)] pb-[clamp(32px,4vw,56px)] pt-[clamp(48px,7vw,96px)] text-center">

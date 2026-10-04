@@ -125,7 +125,7 @@ export default function AccountPage() {
   const pct = limit > 0 ? Math.min(100, (used / limit) * 100) : 0;
 
   return (
-    <main className="flex min-h-screen flex-col overflow-x-hidden bg-white text-ink">
+    <main className="flex min-h-screen flex-col overflow-x-clip bg-white text-ink">
       <Navbar />
       <div className="relative mx-auto flex w-full max-w-[640px] flex-1 flex-col px-[clamp(18px,4vw,48px)] pb-[clamp(64px,8vw,110px)] pt-[clamp(48px,7vw,96px)]">
         <div aria-hidden className="pointer-events-none absolute -top-10 left-1/2 -z-10 h-[420px] w-[min(900px,120vw)] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(45,212,191,.14),transparent)]" />

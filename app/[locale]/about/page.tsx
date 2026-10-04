@@ -7,10 +7,8 @@ import { HeroWave } from "@/components/site/HeroWave";
 
 /** Soft violet and pink pools behind the page, the tones of its title. */
 const GLOWS: [side: "left" | "right", offset: string, top: string, size: number, color: string][] = [
-  ["left", "-14%", "-6vh", 900, "rgba(139,92,246,.18)"],
-  ["right", "-12%", "18vh", 820, "rgba(236,72,153,.13)"],
-  ["left", "-10%", "95vh", 900, "rgba(168,85,247,.12)"],
-  ["right", "-14%", "130vh", 950, "rgba(99,102,241,.10)"],
+  ["left", "-16%", "-12vh", 820, "rgba(139,92,246,.10)"],
+  ["right", "-16%", "22vh", 760, "rgba(236,72,153,.07)"],
 ];
 
 function Member({
@@ -52,7 +50,7 @@ export default function AboutPage() {
   const t = useTranslations("about");
 
   return (
-    <main className="relative isolate flex min-h-screen flex-col overflow-x-hidden bg-white text-ink">
+    <main className="relative isolate flex min-h-screen flex-col overflow-x-clip bg-white text-ink">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         {GLOWS.map(([side, offset, top, size, color], i) => (
           <span key={i} className="absolute rounded-full"
@@ -65,7 +63,7 @@ export default function AboutPage() {
         <div aria-hidden className="pointer-events-none absolute inset-x-0 -bottom-[clamp(40px,5vw,80px)] top-0">
           <HeroWave active={false} tone="violet" />
         </div>
-        <div aria-hidden className="pointer-events-none absolute left-1/2 top-[40%] h-[520px] w-[min(1000px,120vw)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(168,85,247,.14),transparent)]" />
+        <div aria-hidden className="pointer-events-none absolute left-1/2 top-[40%] h-[520px] w-[min(1000px,120vw)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(168,85,247,.08),transparent)]" />
         <h1 className="relative m-0 text-balance text-[clamp(42px,6vw,96px)] font-normal leading-[1.02] tracking-[-0.07em] anim-rise" style={{ animationDelay: ".1s" }}>
           {t("heroStart")} <Keyword underline="draw" line="violet">{t("heroKeyword")}</Keyword>
         </h1>
