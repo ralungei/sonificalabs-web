@@ -263,7 +263,7 @@ export function RaveShow({
       const cy = h * 0.5;
 
       // Soft trail (cleans without smearing)
-      ctx.fillStyle = "rgba(250,250,250,0.22)";
+      ctx.fillStyle = "rgba(255,255,255,0.22)";
       ctx.fillRect(0, 0, w, h);
 
       const tealHue = 195;
@@ -313,7 +313,7 @@ export function RaveShow({
       : null;
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#fafafa] pt-14">
+    <main className="relative min-h-screen overflow-hidden bg-white pt-14">
       <canvas
         ref={canvasRef}
         className="pointer-events-none absolute inset-0 h-full w-full"
@@ -359,7 +359,7 @@ export function RaveShow({
                       <span key={t.index} className="player-chip">
                         <span className="player-chip-dot" />
                         <span>{TYPE_LABEL[t.type] || t.type}</span>
-                        <span className="text-[#a0a0a0] font-normal truncate max-w-[14ch]">
+                        <span className="text-text-muted font-normal truncate max-w-[14ch]">
                           {t.label}
                         </span>
                       </span>
@@ -369,7 +369,7 @@ export function RaveShow({
                   <FreqBars analyser={analyser} playing={isPlaying} />
 
                   <div className="text-right min-w-0">
-                    <div className="text-[13px] font-player font-semibold tracking-tight text-[#0a0a0a] truncate">
+                    <div className="text-[13px] font-player font-semibold tracking-tight text-ink truncate">
                       {title}
                     </div>
                   </div>
@@ -427,7 +427,7 @@ export function RaveShow({
           >
             <div className="flex flex-col items-center gap-10 text-center">
               <h1
-                className="font-player font-semibold tracking-[-0.025em] text-[#0a0a0a] leading-[1.08] text-balance"
+                className="m-0 font-normal tracking-[-0.06em] text-ink leading-[1.04] text-balance"
                 style={titleStyle}
               >
                 {title}

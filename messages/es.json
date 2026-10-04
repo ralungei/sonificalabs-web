@@ -1,6 +1,5 @@
 {
   "nav": {
-    "howItWorks": "Cómo funciona",
     "pricing": "Precios",
     "credits": "créditos",
     "myAccount": "Mi cuenta",
@@ -8,46 +7,45 @@
     "signOut": "Cerrar sesión",
     "signIn": "Iniciar sesión",
     "about": "Quiénes somos",
-    "examples": "Ejemplos"
+    "examples": "Ejemplos",
+    "ideas": "Ideas",
+    "business": "Empresas",
+    "enter": "Entrar",
+    "createAudio": "Crear audio",
+    "menu": "Menú",
+    "close": "Cerrar"
   },
   "home": {
-    "heroLine": "Produce tu siguiente",
-    "flipWords": "podcast,spot,tráiler,radionovela,informativo,intro,audiocuento,sketch",
     "heroSub": "Si tienes una idea, aquí la conviertes en audio.",
-    "tagline": "Voces · Música · SFX · Mezcla profesional",
-    "listenExamples": "Escucha ejemplos",
-    "ctaTitle": "Pruébalo ahora",
-    "ctaSubtitle": "1 producción gratis. Escribe tu idea y en un par de minutos tendrás tu audio con calidad profesional.",
     "ctaButton": "Crear mi audio gratis",
     "serviceUnavailable": "El servicio no está disponible en este momento. Inténtalo de nuevo en unos segundos.",
     "footer": "© 2026 SonificaLabs",
-    "capabilities": "Podcasts,Spots publicitarios,Intros,Radionovelas,Documentales,Escenas cinemáticas,Informativos,Audiocuentos,Tráilers,Sketches,Meditaciones,Doblajes",
     "demos": {
-      "pizzeria": "Spot Radio",
+      "pizzeria": "Spot de radio",
       "meditacion": "Meditación",
       "informativo": "Informativo",
       "thriller": "Thriller",
       "documental": "Documental",
       "audiocuento": "Audiocuento",
-      "trailer": "Trailer",
+      "trailer": "Tráiler",
       "pasoPublicidad": "Paso a publicidad",
       "avanceProgramacion": "Avance TV",
-      "esperaTelefonica": "Espera telefonica",
+      "esperaTelefonica": "Espera telefónica",
       "introYoutube": "Intro YouTube",
       "outroSuscribete": "Outro YouTube",
       "locucionAeropuerto": "Aeropuerto",
       "introReels": "Intro Reels",
       "introDocuYoutube": "Docu YouTube",
-      "despedidaPodcast": "Despedida Podcast",
-      "hablandoAMares": "Hablando a Mares",
+      "despedidaPodcast": "Despedida de podcast",
+      "hablandoAMares": "Hablando a mares",
       "cabeceraMagazine": "Magazine TV",
       "cortinillaLateNight": "Late Night",
-      "podcastCosasRaras": "Podcast Cosas Raras",
-      "audioElearning": "Clase E-Learning",
-      "tourInmobiliaria": "Tour Inmobiliaria",
-      "introWebinar": "Intro Webinar",
+      "podcastCosasRaras": "Podcast cosas raras",
+      "audioElearning": "Clase e-learning",
+      "tourInmobiliaria": "Tour inmobiliaria",
+      "introWebinar": "Intro webinar",
       "contestador": "Contestador",
-      "guiaTuristica": "Guía Turística"
+      "guiaTuristica": "Guía turística"
     }
   },
   "examples": {
@@ -61,42 +59,39 @@
       "podcast": "Podcast",
       "creators": "Creadores",
       "wellness": "Bienestar"
-    }
+    },
+    "titleStart": "Escucha lo que",
+    "titleKeyword": "puedes crear.",
+    "hint": "Toca una burbuja para escucharla.",
+    "count": "{count, plural, one {# audio} other {# audios}}"
   },
   "promptForm": {
-    "placeholders": [
-      "Podcast sobre mis vacaciones en Tailandia con dos presentadores",
-      "Thriller: mi madre abre la puerta del cuarto a las 3am",
-      "Intro cinematica para mi corto de ciencia ficcion",
-      "Voz en off epica para mi reel de Instagram",
-      "Noticiero dramatico sobre lo que paso hoy en mi oficina",
-      "Audio para TikTok: narrador cuenta mi peor cita",
-      "Cuna de radio para la barberia de mi barrio",
-      "Trailer de pelicula de terror en un pueblo abandonado",
-      "Podcast de dos amigos debatiendo sobre conspiraciones",
-      "Audiocuento infantil sobre un dragon que tenia miedo al fuego"
-    ],
-    "tipos": "Podcast,Spot,Intro,Informativo,Radionovela,Meditacion,Trailer,Sketch,Otro",
+    "tipos": "Podcast,Spot,Intro,Informativo,Radionovela,Meditación,Tráiler,Sketch,Otro",
     "parameters": "Personalizar",
     "type": "Tipo",
     "duration": "Duración",
     "characters": "Personajes",
     "voices": "Elegir voces",
-    "describePlaceholder": "Describe tu audio...",
     "remove": "Quitar",
     "credits": "{count} créditos",
     "creditsUnit": "créditos",
     "upgradePlan": "Mejorar plan",
     "rateLimitWait": "Espera {seconds}s para volver a intentar",
     "errorProducing": "Error al producir",
-    "debugClaudeModel": "Modelo Claude",
-    "debugTtsModel": "Modelo TTS",
-    "debugPlanDefault": "Plan default",
     "pastedContent": "Contenido pegado",
     "pastedChars": "{count} caracteres",
     "removePasted": "Quitar contenido pegado",
     "pastedLabel": "PEGADO",
-    "overLimit": "Te pasas por {count} caracteres del límite de {max}. Acorta el texto o quita contenido pegado."
+    "overLimit": "Te pasas por {count} caracteres del límite de {max}. Acorta el texto o quita contenido pegado.",
+    "heroPlaceholder": "Describe lo que quieres escuchar…",
+    "create": "Crear audio",
+    "creating": "Creando…",
+    "attach": "Adjuntar documento",
+    "attachAria": "Adjuntar documento (PDF, Word o texto)",
+    "attachEmpty": "No hemos encontrado texto en ese documento.",
+    "attachDefaultPrompt": "Conviértelo en un podcast con dos voces",
+    "attachUnsupported": "Ese formato no se puede leer. Prueba con PDF, Word (.docx) o texto.",
+    "attachFailed": "No hemos podido leer el documento."
   },
   "jobStatus": {
     "script": "Guion",
@@ -106,8 +101,7 @@
     "queuePosition": "Posición {position} en cola",
     "waitingTurn": "Esperando turno...",
     "generatingScript": "Generando guion con IA...",
-    "producing": "Produciendo...",
-    "inQueue": "En cola"
+    "producing": "Produciendo..."
   },
   "voiceConfirmation": {
     "title": "Revisa las voces",
@@ -116,71 +110,15 @@
     "cancel": "Cancelar",
     "autoConfirm": "Auto-confirmación en {seconds}",
     "women": "Mujeres",
-    "men": "Hombres",
-    "clips": "{count} clips",
-    "use": "Usar"
-  },
-  "audioPlayer": {
-    "download": "Descargar"
-  },
-  "pipeline": {
-    "sectionTitle": "Qué pasa cuando pulsas producir",
-    "step": "Paso",
-    "typewriterText": "Podcast true crime con dos presentadores sobre Jack el Destripador",
-    "scriptLabel": "guion",
-    "escaletaLines": {
-      "suspenseAmbience": "Ambiente suspense de fondo",
-      "danielLine": "Daniel: \"Buenas noches, bienvenidos...\"",
-      "transitionEffect": "Efecto de transicion",
-      "saraLine": "Sara: \"Hoy hablamos de un caso que...\"",
-      "rainOnGlass": "Lluvia sobre cristal",
-      "dramaticHit": "Golpe dramatico"
-    },
-    "dawTracks": {
-      "music": "Música",
-      "voice1": "Voz 1",
-      "sfx": "SFX",
-      "voice2": "Voz 2",
-      "ambience": "Ambiente"
-    },
-    "dawBadges": "Volumen uniforme,Voz siempre clara,Ecualizacion,Estereo,Fades",
-    "waveformDuration": "~30 segundos",
-    "phases": [
-      {
-        "title": "Tu idea",
-        "subtitle": "Escríbelo como se lo dirías a un humano. Sin formatos, sin plantillas."
-      },
-      {
-        "title": "La IA escribe el guión",
-        "subtitle": "La IA analiza tu prompt y genera una escaleta completa con voces, música, efectos y timing."
-      },
-      {
-        "title": "23+ voces eligen su papel",
-        "subtitle": "Voces reales seleccionadas automaticamente segun el tono y el personaje."
-      },
-      {
-        "title": "Timing y mezcla inteligente",
-        "subtitle": "Volumen, efectos, silencios y capas se ajustan solos para un sonido profesional."
-      },
-      {
-        "title": "Audio listo",
-        "subtitle": "Lista para escuchar y descargar en un par de minutos."
-      }
-    ]
+    "men": "Hombres"
   },
   "jobPage": {
-    "back": "Volver",
-    "audioReady": "Tu audio esta listo",
+    "audioReady": "Tu audio está listo",
     "cancel": "Cancelar",
-    "createAnother": "Crear otro",
-    "newProduction": "Nueva producción",
     "somethingWentWrong": "Algo ha fallado",
     "errorDescription": "Ha ocurrido un error al generar tu audio. Inténtalo de nuevo en unos segundos.",
     "tryAgain": "Intentar de nuevo",
-    "openEditor": "Abrir editor",
     "close": "Cerrar",
-    "signInRequired": "Inicia sesión",
-    "signInRequiredDescription": "Inicia sesión para ver esta producción.",
     "signIn": "Iniciar sesión",
     "notFound": "Producción no encontrada",
     "notFoundDescription": "Esta producción no existe o no tienes acceso.",
@@ -197,13 +135,9 @@
     "downloadInMp3": "MP3 Alta Calidad",
     "availableInPro": "Disponible en el plan Pro",
     "pro": "Pro",
-    "yourText": "Instrucción",
     "share": "Compartir",
     "preparingShare": "Preparando...",
-    "shareAsVideo": "Compartir como video",
-    "shareAsVideoDesc": "Video MP4 con carátula para redes sociales",
     "downloadVideo": "Descargar video",
-    "subtitlePreview": "Los subtítulos aparecerán aquí",
     "copyPrompt": "Copiar prompt"
   },
   "trackLane": {
@@ -211,8 +145,9 @@
   },
   "pricing": {
     "title": "Precios",
+    "titleStart": "Un plan para cada",
+    "titleKeyword": "proyecto.",
     "subtitle": "Paga por lo que produces. Cancela cuando quieras.",
-    "comingSoon": "Próximamente",
     "currentPlan": "Plan actual",
     "priceNote": "Precios sin IVA. Los créditos de pago se renuevan cada mes.",
     "howCreditsWork": "Cómo se gastan los créditos",
@@ -353,71 +288,47 @@
     "pendingDowngradeNoDate": "Tu plan cambiará a {plan} al final del periodo actual."
   },
   "signin": {
-    "subtitle": "Inicia sesión para crear audio con IA",
-    "oauthError": "Este correo ya esta registrado con otro metodo.",
+    "titleStart": "Entra y crea tu",
+    "titleKeyword": "audio.",
+    "subtitle": "Tu primer audio es gratis. Solo necesitas una cuenta de Google.",
+    "oauthError": "Este correo ya está registrado con otro método.",
     "genericError": "Error al iniciar sesión. Inténtalo de nuevo.",
-    "continueWith": "Continuar con",
-    "signInWithGoogle": "Iniciar sesión con Google",
-    "termsNotice": "Al continuar, aceptas los <terms>terminos de uso</terms> y la <privacy>politica de privacidad</privacy>.",
+    "signInWithGoogle": "Continuar con Google",
+    "termsNotice": "Al continuar, aceptas los <terms>términos de uso</terms> y la <privacy>política de privacidad</privacy>.",
     "backToHome": "Volver a SonificaLabs"
   },
   "about": {
-    "forWhoTitle": "Hecho para crear",
-    "forWhoSubtitle": "Da igual si haces vídeos, podcasts o trabajas en producción. Si tienes una idea, aquí la conviertes en audio.",
-    "forWhoItems": [
-      {
-        "icon": "video",
-        "label": "Creadores de contenido",
-        "desc": "Intros, voiceovers y audio para reels, TikToks y YouTube"
-      },
-      {
-        "icon": "mic",
-        "label": "Podcasters",
-        "desc": "Entradillas, secciones dramatizadas y transiciones con voz profesional"
-      },
-      {
-        "icon": "film",
-        "label": "Cine y televisión",
-        "desc": "Escenas piloto, tráilers y dramatizaciones rápidas para preproducción"
-      },
-      {
-        "icon": "megaphone",
-        "label": "Agencias y marcas",
-        "desc": "Spots de radio, demos para clientes y prototipos de audio en minutos"
-      },
-      {
-        "icon": "book",
-        "label": "Educación",
-        "desc": "Audiocuentos, podcasts educativos y material didáctico accesible"
-      },
-      {
-        "icon": "zap",
-        "label": "Cualquiera con una idea",
-        "desc": "Si puedes describirlo, puedes producirlo"
-      }
-    ],
-    "rasTitle": "Hola, soy Ras",
-    "rasRole": "Fundador de SonificaLabs",
+    "heroStart": "Las personas detrás del",
+    "heroKeyword": "sonido.",
+    "heroSub": "Un equipo pequeño, de familia, con una idea: que cualquiera pueda crear audio profesional.",
+    "rasName": "Ras Alungei",
+    "rasRole": "Fundador · Producto e IA",
     "rasBio1": "Gracias por pasarte por aquí. Soy ingeniero, creador de contenido y desde pequeño siempre me ha gustado la edición de foto y vídeo.",
     "rasBio2": "Siempre me ha fascinado cómo el sonido transforma cualquier producción, pero crearlo bien era carísimo y lentísimo. Llevo 4 años trabajando con inteligencia artificial en grandes tecnológicas, así que combinando habilidades se me ocurrió crear esta plataforma.",
     "rasBio3": "No es perfecta, pero cada día suena un poco mejor. Si te gusta, genial. Si encuentras un fallo, escríbeme.",
+    "roxanaName": "Roxana Alungei",
+    "roxanaRole": "Responsable de marketing y redes sociales",
+    "roxanaBio1": "Lleva la voz de Sonifica a redes y a quienes aún no nos conocen.",
+    "roxanaBio2": "Si te ha llegado un audio nuestro, seguramente pasó por ella.",
     "linkedIn": "LinkedIn",
-    "teamTitle": "El equipo",
-    "team": [
-      { "name": "Ras Alungei", "role": "Fundador", "photo": "/team/ras.jpg", "linkedin": "https://www.linkedin.com/in/ras-alungei/" },
-      { "name": "Roxana Alungei", "role": "Responsable de marketing y redes sociales", "photo": "/team/roxana.jpg", "linkedin": "https://www.linkedin.com/in/roxana-alungei-93a73a146/" }
-    ],
-    "ctaLine": "Tu primera producción va por mi cuenta.",
-    "ctaButton": "Producir mi primer audio"
+    "writeHim": "Escríbele",
+    "collaborations": "Colaboraciones",
+    "quote": "“Tu primera producción va por mi cuenta.”",
+    "quoteBy": "Ras",
+    "ctaBand": "Tu primera producción va por nuestra cuenta.",
+    "ctaButton": "Crear mi audio gratis"
   },
   "footer": {
     "privacy": "Privacidad",
     "terms": "Términos",
-    "copyright": "© 2026 SonificaLabs"
+    "copyright": "© 2026 SonificaLabs",
+    "pricing": "Precios",
+    "contact": "Contacto",
+    "language": "Idioma"
   },
   "privacy": {
     "title": "Política de privacidad",
-    "lastUpdated": "Última actualización: 11 de marzo de 2026",
+    "lastUpdated": "Última actualización: 4 de octubre de 2026",
     "controller": "Responsable del tratamiento",
     "controllerText": "SonificaLabs es un proyecto de Ras Alungei. Puedes contactarnos en info@sonificalabs.com para cualquier consulta relacionada con tus datos personales.",
     "dataCollected": "Datos que recogemos",
@@ -439,9 +350,9 @@
     "thirdPartiesText": "Compartimos datos con los siguientes servicios, necesarios para el funcionamiento de la plataforma:",
     "thirdPartyItems": [
       "Google (autenticación OAuth)",
-      "Stripe (procesamiento de pagos — ver su política de privacidad en stripe.com/privacy)",
-      "Anthropic / Claude (generación de guiones con IA — recibe el texto de tus prompts)",
-      "ElevenLabs (síntesis de voz — recibe los textos de las voces generadas)",
+      "Stripe (procesamiento de pagos; consulta su política de privacidad en stripe.com/privacy)",
+      "Google Gemini (generación de guiones con IA: recibe el texto de tus prompts)",
+      "ElevenLabs (síntesis de voz: recibe los textos de las voces generadas)",
       "Cloudflare (alojamiento, almacenamiento de archivos y base de datos)"
     ],
     "thirdPartiesTransfer": "Estos servicios pueden estar ubicados fuera del EEE (Estados Unidos). Las transferencias se amparan en el EU-US Data Privacy Framework y/o Cláusulas Contractuales Tipo.",
@@ -462,7 +373,7 @@
   },
   "terms": {
     "title": "Términos de uso",
-    "lastUpdated": "Última actualización: 11 de marzo de 2026",
+    "lastUpdated": "Última actualización: 4 de octubre de 2026",
     "legalNotice": "Aviso legal",
     "legalNoticeText": "SonificaLabs es un proyecto de Ras Alungei con domicilio en España. Contacto: info@sonificalabs.com.",
     "service": "El servicio",
@@ -490,7 +401,7 @@
       "Sobre el audio generado: te concedemos una licencia de uso amplia (incluido uso comercial en planes de pago). SonificaLabs no reclama derechos sobre tus producciones."
     ],
     "ai": "Contenido generado por IA",
-    "aiText": "El audio se genera mediante inteligencia artificial (Anthropic Claude para guiones, ElevenLabs para voces). El resultado no está garantizado en cuanto a precisión, originalidad o idoneidad. Eres responsable de revisar el contenido antes de publicarlo.",
+    "aiText": "El audio se genera mediante inteligencia artificial (Google Gemini para guiones, ElevenLabs para voces). El resultado no está garantizado en cuanto a precisión, originalidad o idoneidad. Eres responsable de revisar el contenido antes de publicarlo.",
     "acceptable": "Uso aceptable",
     "acceptableItems": [
       "No generar contenido ilegal, difamatorio o que incite al odio.",
@@ -505,10 +416,6 @@
     "lawText": "Estos términos se rigen por la legislación española. Para cualquier disputa, serán competentes los juzgados y tribunales del domicilio del usuario si es consumidor, o los de España en caso contrario.",
     "changes": "Modificaciones",
     "changesText": "Podemos actualizar estos términos. Publicaremos los cambios en esta página y, para cambios relevantes, te avisaremos por correo. El uso continuado del servicio tras la notificación implica la aceptación de los nuevos términos."
-  },
-  "localeSwitcher": {
-    "es": "ES",
-    "en": "EN"
   },
   "show": {
     "loading": "cargando",
@@ -533,5 +440,312 @@
     "trackAmbience": "Ambiente",
     "trackStinger": "Stinger",
     "trackVoice": "Voz"
+  },
+  "landing": {
+    "heroTitle": "Convierte tu texto en",
+    "heroKeyword": "sonido.",
+    "heroSuggestions": [
+      {
+        "label": "Dormir en 10 minutos",
+        "prompt": "Una meditación para dormir: voz muy suave, respiración guiada y lluvia de fondo"
+      },
+      {
+        "label": "Tu PDF hecho podcast",
+        "prompt": "Convierte el informe que tengo que leer para el trabajo en un podcast con dos voces que lo comentan"
+      },
+      {
+        "label": "Anuncio para tu bar",
+        "prompt": "Un anuncio de radio de 20 segundos para mi bar de tapas, voz cercana y música alegre"
+      }
+    ],
+    "discover": "Descubre cómo funciona",
+    "listen": "Escuchar {name}",
+    "bubbles": {
+      "pizzeria": {
+        "label": "Anuncio",
+        "prompt": "Un anuncio de radio de 20 segundos para una pizzería, divertido"
+      },
+      "audiocuento": {
+        "label": "Cuento",
+        "prompt": "Un cuento para dormir sobre un dragón con miedo a la oscuridad"
+      },
+      "thriller": {
+        "label": "Misterio",
+        "prompt": "Un detective entra en una casa abandonada una noche de tormenta"
+      },
+      "meditacion": {
+        "label": "Relax",
+        "prompt": "Una meditación para dormir con voz suave y lluvia"
+      },
+      "informativo": {
+        "label": "Noticias",
+        "prompt": "Un informativo de radio con dos presentadores"
+      },
+      "trailer": {
+        "label": "Tráiler",
+        "prompt": "Un tráiler de película de ciencia ficción, épico"
+      },
+      "documental": {
+        "label": "Documental",
+        "prompt": "La intro de un documental sobre el fondo del mar"
+      }
+    },
+    "problemTitle": "Hasta hoy, un audio así llevaba",
+    "problemKeyword": "días.",
+    "before": "Antes",
+    "beforeValue": "3 días",
+    "beforeSteps": [
+      "Guion",
+      "Locutor",
+      "Músico",
+      "Estudio",
+      "Edición"
+    ],
+    "after": "Con Sonifica",
+    "afterValue": "2 min",
+    "afterTag": "Una frase",
+    "solutionTitle": "Ahora basta con",
+    "solutionKeyword": "una frase.",
+    "exampleWho": "Por ejemplo",
+    "exampleWhere": "Una pizzería en Valencia",
+    "examplePrompt": [
+      "“Un anuncio ",
+      "divertido",
+      " para mi pizzería, con ",
+      "música italiana",
+      " y ",
+      "sonido de horno",
+      ", de ",
+      "20 segundos",
+      ".”"
+    ],
+    "analysis": [
+      {
+        "k": "Voz",
+        "v": "Locutor alegre"
+      },
+      {
+        "k": "Música",
+        "v": "Tarantela"
+      },
+      {
+        "k": "Efectos",
+        "v": "Horno de leña"
+      },
+      {
+        "k": "Duración",
+        "v": "20 segundos"
+      }
+    ],
+    "resultLabel": "Así sonó",
+    "resultPlaying": "Sonando…",
+    "resultFile": "anuncio_pizzeria.mp3",
+    "ideasTitle": "Ideas para tu",
+    "ideasKeyword": "día a día.",
+    "ideas": [
+      {
+        "moment": "Por la mañana",
+        "title": "Tus noticias, en tu radio",
+        "prompt": "Convierte estas noticias en un informativo de radio con dos presentadores",
+        "demo": "informativo"
+      },
+      {
+        "moment": "De camino al trabajo",
+        "title": "Tu PDF, convertido en podcast",
+        "prompt": "Convierte este informe en un podcast con dos voces que lo comentan"
+      },
+      {
+        "moment": "Para estudiar",
+        "title": "Repasa el examen escuchando",
+        "prompt": "Resume el tema 4 de historia en un audio corto para repasar"
+      },
+      {
+        "moment": "Para regalar",
+        "title": "Una felicitación sorpresa",
+        "prompt": "Felicitación de cumpleaños para mi madre, con voz de locutor de radio",
+        "demo": "cumple"
+      },
+      {
+        "moment": "Antes de dormir",
+        "title": "Un cuento con el nombre de tu hijo",
+        "prompt": "Un cuento sobre Lucía y un dragón que tiene miedo a la oscuridad",
+        "demo": "audiocuento"
+      },
+      {
+        "moment": "Por la noche",
+        "title": "Una meditación para dormir",
+        "prompt": "Meditación para dormir, voz suave y lluvia de fondo",
+        "demo": "meditacion"
+      }
+    ],
+    "try": "Probar",
+    "play": "Escuchar",
+    "pause": "Pausar",
+    "demosTitle": "Escucha lo que puedes crear",
+    "seeAll": "Ver los {count} ejemplos",
+    "featuresTitle": "Tu audio viene con todo",
+    "features": [
+      {
+        "title": "Voces naturales",
+        "desc": "Expresivas, en tu idioma"
+      },
+      {
+        "title": "Música",
+        "desc": "Elegida para cada audio"
+      },
+      {
+        "title": "Efectos",
+        "desc": "Lluvia, puertas, aplausos…"
+      },
+      {
+        "title": "Rápido",
+        "desc": "En un par de minutos"
+      }
+    ],
+    "insideTitle": "Dentro de una frase",
+    "lanes": [
+      "Voz",
+      "Música",
+      "Efectos"
+    ],
+    "scenes": [
+      {
+        "name": "Misterio",
+        "words": [
+          "Un relato de misterio con ",
+          "voz grave",
+          ", ",
+          "piano lento",
+          " y ",
+          "una tormenta que se acerca"
+        ],
+        "what": [
+          "Narrador · grave",
+          "Piano lento",
+          "Lluvia y truenos"
+        ],
+        "marks": [
+          [
+            12,
+            "Lluvia"
+          ],
+          [
+            52,
+            "Trueno"
+          ],
+          [
+            84,
+            "Puerta"
+          ]
+        ]
+      },
+      {
+        "name": "Anuncio",
+        "words": [
+          "Anuncio para mi pizzería con ",
+          "locutor alegre",
+          ", ",
+          "tarantela italiana",
+          " y ",
+          "el horno crepitando"
+        ],
+        "what": [
+          "Locutor · alegre",
+          "Tarantela",
+          "Horno y campanilla"
+        ],
+        "marks": [
+          [
+            8,
+            "Horno"
+          ],
+          [
+            70,
+            "Campanilla"
+          ]
+        ]
+      },
+      {
+        "name": "Cuento",
+        "words": [
+          "Un cuento para Lucía con ",
+          "voz dulce",
+          ", ",
+          "caja de música",
+          " y ",
+          "grillos de noche"
+        ],
+        "what": [
+          "Narradora · dulce",
+          "Caja de música",
+          "Grillos y búho"
+        ],
+        "marks": [
+          [
+            18,
+            "Grillos"
+          ],
+          [
+            62,
+            "Búho"
+          ]
+        ]
+      }
+    ],
+    "tryPhrase": "Probar esta frase",
+    "businessTag": "Para empresas",
+    "businessTitle": "Audio para tu marca,",
+    "businessKeyword": "sin estudio.",
+    "talkSales": "Hablar con ventas",
+    "salesSubject": "SonificaLabs para empresas",
+    "seePlans": "Ver planes",
+    "businessCases": [
+      {
+        "title": "Anuncios de radio",
+        "desc": "Cuñas listas para emitir.",
+        "prompt": "Un spot de radio de 20 segundos para las rebajas de mi tienda"
+      },
+      {
+        "title": "Formación interna",
+        "desc": "Manuales y PDFs, en audio.",
+        "prompt": "Convierte nuestro manual de bienvenida en audios cortos para nuevos empleados"
+      },
+      {
+        "title": "Atención telefónica",
+        "desc": "Bienvenida y espera, con voz profesional.",
+        "prompt": "Una locución de centralita: bienvenida y mensaje de espera, tono amable"
+      },
+      {
+        "title": "Podcast de marca",
+        "desc": "Episodios sin estudio.",
+        "prompt": "Un podcast de marca con las novedades del mes, con dos voces"
+      },
+      {
+        "title": "Voz para redes",
+        "desc": "Voz en off para reels y vídeos.",
+        "prompt": "Una voz en off de 30 segundos para un reel de producto"
+      },
+      {
+        "title": "Accesibilidad",
+        "desc": "Tu blog, también en audio.",
+        "prompt": "Convierte este artículo del blog en un audio narrado"
+      }
+    ],
+    "businessPerks": [
+      "Uso comercial en planes de pago",
+      "Sin marcas de agua"
+    ],
+    "giftTag": "Regalo de bienvenida",
+    "giftTitle": "Tu primer audio",
+    "giftKeyword": "es gratis.",
+    "giftPlaceholder": "¿Qué quieres escuchar?",
+    "giftButton": "Crear gratis",
+    "giftAria": "Crear mi audio gratis",
+    "giftPerks": [
+      "Sin tarjeta",
+      "El audio es tuyo"
+    ],
+    "giftFile": "tu_primer_audio.mp3",
+    "giftMeta": "Voces · Música · Efectos"
   }
 }

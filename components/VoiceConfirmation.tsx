@@ -6,6 +6,7 @@ import { Icon } from "@iconify/react";
 import { fetchVoices, getVoices, VOICE_ID_TO_NAME, getVoicesForPlan, type VoiceDef } from "@/lib/voices";
 import { API_URL } from "@/lib/api";
 import type { PlanId } from "@/lib/types";
+import { ArrowDot } from "@/components/site/ui";
 
 interface EscaletaTrack {
   type: string;
@@ -143,17 +144,17 @@ export function VoiceConfirmation({ escaleta, confirmDeadline, userPlan, onConfi
       <div
         onClick={() => { if (!isActive) handleVoiceChange(groupId, v.id); }}
         className={`
-          flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg cursor-pointer
-          ${isActive ? "bg-accent/8" : "hover:bg-surface-2"}
+          flex items-center gap-2.5 px-2.5 py-2 rounded-[14px] cursor-pointer
+          ${isActive ? "bg-mint" : "hover:bg-surface-2"}
         `}
       >
         <button
           onClick={(e) => { e.stopPropagation(); togglePreview(v.id); }}
           className={`
-            flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center
+            flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors
             ${isPlaying
               ? "bg-accent text-white"
-              : "bg-surface-2 text-text-muted hover:text-accent hover:bg-accent/10"
+              : "bg-ink text-white hover:bg-accent"
             }
           `}
         >
@@ -161,10 +162,10 @@ export function VoiceConfirmation({ escaleta, confirmDeadline, userPlan, onConfi
         </button>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <span className="text-body-sm font-body font-medium text-text-primary">{v.name}</span>
-            <span className="text-[9px] text-text-muted">{v.lang}</span>
+            <span className="text-[15px] font-medium text-ink">{v.name}</span>
+            <span className="text-[11px] text-text-muted">{v.lang}</span>
           </div>
-          <span className="text-[9px] text-text-muted truncate block">{v.desc}</span>
+          <span className="block truncate text-xs text-text-muted">{v.desc}</span>
         </div>
         {isActive && (
           <Icon icon="solar:check-circle-bold" className="flex-shrink-0 h-4 w-4 text-accent" />
@@ -183,17 +184,17 @@ export function VoiceConfirmation({ escaleta, confirmDeadline, userPlan, onConfi
       className="flex flex-col items-center justify-center w-full min-h-[60vh] px-4"
     >
       {/* Header */}
-      <div className="flex flex-col items-center gap-2 mb-8">
-        <h2 className="text-heading-sm font-body font-semibold text-text-primary">
+      <div className="mb-8 flex flex-col items-center gap-3 text-center">
+        <h1 className="m-0 text-balance text-[clamp(32px,4vw,48px)] font-normal leading-[1.04] tracking-[-0.06em]">
           {t("title")}
-        </h2>
-        <p className="text-body-md text-text-secondary font-body text-center max-w-md">
+        </h1>
+        <p className="m-0 max-w-md text-base leading-[1.45] text-text-secondary">
           {t("subtitle")}
         </p>
       </div>
 
       {/* Voice cards */}
-      <div className="flex flex-col gap-3 mb-8 max-w-md w-full">
+      <div className="mb-8 flex w-full max-w-[520px] flex-col gap-2.5">
         {voiceGroups.map((group, i) => {
           const voiceId = getCurrentVoiceId(group.originalVoiceId);
           const name = VOICE_ID_TO_NAME[voiceId] || "?";
@@ -209,12 +210,13 @@ export function VoiceConfirmation({ escaleta, confirmDeadline, userPlan, onConfi
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: i * 0.06 }}
                 className={`
-                  flex items-center gap-3 px-4 py-3 rounded-2xl border cursor-pointer transition-all
+                  flex items-center gap-3 rounded-[21px] border bg-white px-3 py-3 cursor-pointer transition-all
+                  shadow-[0_20px_44px_-34px_rgba(15,42,46,.45)]
                   ${isSelected
-                    ? "border-accent bg-accent/5"
+                    ? "border-accent"
                     : wasChanged
-                      ? "border-accent/30 bg-accent/[0.02]"
-                      : "border-contrast/8 bg-surface-0 hover:border-contrast/15"
+                      ? "border-accent/40"
+                      : "border-contrast/[0.07] hover:border-contrast/20"
                   }
                 `}
                 onClick={() => setSelectedGroup(isSelected ? null : group.originalVoiceId)}
@@ -223,10 +225,10 @@ export function VoiceConfirmation({ escaleta, confirmDeadline, userPlan, onConfi
                 <button
                   onClick={(e) => { e.stopPropagation(); togglePreview(voiceId); }}
                   className={`
-                    flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all
+                    flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-all
                     ${isPlaying
-                      ? "bg-accent text-white shadow-[0_0_12px_rgba(13,148,136,0.4)]"
-                      : "bg-surface-2 text-text-muted hover:text-accent hover:bg-accent/10"
+                      ? "bg-accent text-white shadow-[0_0_0_4px_rgba(13,148,136,.15)]"
+                      : "bg-ink text-white hover:bg-accent"
                     }
                   `}
                 >
@@ -235,15 +237,15 @@ export function VoiceConfirmation({ escaleta, confirmDeadline, userPlan, onConfi
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-body font-semibold text-body-md text-text-primary">{name}</span>
-                    <span className="text-[10px] text-text-muted bg-surface-2 px-1.5 py-0.5 rounded font-body">{def?.lang}</span>
+                    <span className="text-[17px] font-medium tracking-[-0.025em] text-ink">{name}</span>
+                    <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[11px] text-text-secondary">{def?.lang}</span>
                     {group.trackCount > 1 && (
-                      <span className="text-[10px] text-accent bg-accent/10 px-1.5 py-0.5 rounded font-body">
+                      <span className="rounded-full bg-mint px-2 py-0.5 text-[11px] font-medium text-accent-dim">
                         {group.trackCount} clips
                       </span>
                     )}
                   </div>
-                  <p className="text-[11px] text-text-muted font-body truncate mt-0.5">{group.sampleText}</p>
+                  <p className="m-0 mt-0.5 truncate text-[13px] text-text-muted">{group.sampleText}</p>
                 </div>
                 {/* Chevron */}
                 <div className="flex-shrink-0">
@@ -263,11 +265,11 @@ export function VoiceConfirmation({ escaleta, confirmDeadline, userPlan, onConfi
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute left-0 right-0 top-full mt-2 z-50 border border-contrast/10 rounded-2xl bg-surface-0 shadow-xl max-h-64 overflow-y-auto p-2"
+                    className="absolute left-0 right-0 top-full z-50 mt-2 max-h-72 overflow-y-auto rounded-[21px] border border-contrast/[0.07] bg-white p-2 shadow-[0_30px_60px_-30px_rgba(15,42,46,.45)]"
                   >
                     {women.length > 0 && (
                       <div className="mb-1.5">
-                        <p className="text-[9px] font-body uppercase tracking-wider text-text-muted mb-1 px-2">{t("women")}</p>
+                        <p className="mb-1 mt-1 px-2 text-[11px] font-semibold uppercase tracking-[.08em] text-text-muted">{t("women")}</p>
                         {women.map(v => (
                           <VoiceRow key={v.id} v={v} isActive={getCurrentVoiceId(group.originalVoiceId) === v.id} groupId={group.originalVoiceId} isPlaying={playingVoiceId === v.id} />
                         ))}
@@ -275,7 +277,7 @@ export function VoiceConfirmation({ escaleta, confirmDeadline, userPlan, onConfi
                     )}
                     {men.length > 0 && (
                       <div>
-                        <p className="text-[9px] font-body uppercase tracking-wider text-text-muted mb-1 px-2">{t("men")}</p>
+                        <p className="mb-1 mt-1 px-2 text-[11px] font-semibold uppercase tracking-[.08em] text-text-muted">{t("men")}</p>
                         {men.map(v => (
                           <VoiceRow key={v.id} v={v} isActive={getCurrentVoiceId(group.originalVoiceId) === v.id} groupId={group.originalVoiceId} isPlaying={playingVoiceId === v.id} />
                         ))}
@@ -291,20 +293,20 @@ export function VoiceConfirmation({ escaleta, confirmDeadline, userPlan, onConfi
 
       {/* Bottom actions */}
       <div className="flex flex-col items-center gap-4">
-        <p className="text-label-sm font-body text-text-muted">
-          {t("autoConfirm", { seconds: formatTime(secondsLeft) })}
-        </p>
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={handleConfirm}
-          className="px-8 py-3 rounded-xl bg-accent text-white font-body font-semibold text-body-md
-            hover:bg-accent-bright transition-colors active:scale-[0.98]"
+          className="flex h-14 items-center gap-[13px] rounded-full bg-ink pl-6 pr-2 text-base font-medium tracking-[-0.02em] text-white transition-colors hover:bg-accent"
         >
           {t("confirm")}
+          <ArrowDot size={40} />
         </motion.button>
+        <p className="m-0 text-sm text-text-muted">
+          {t("autoConfirm", { seconds: formatTime(secondsLeft) })}
+        </p>
         <button
           onClick={onCancel}
-          className="text-label-md font-body uppercase tracking-wider text-contrast/40 hover:text-fail transition-colors duration-300"
+          className="flex h-10 items-center rounded-full px-4 text-sm font-medium text-text-muted transition-colors duration-300 hover:bg-fail/[0.08] hover:text-fail"
         >
           {t("cancel")}
         </button>

@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import { DM_Sans, Be_Vietnam_Pro } from "next/font/google";
+import { Work_Sans, Bricolage_Grotesque } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { Providers } from "@/components/Providers";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
-const dmSans = DM_Sans({
-  weight: ["700", "800"],
+// Display face: the highlighted keyword of every headline ("sonido.").
+const bricolage = Bricolage_Grotesque({
+  weight: ["600", "700"],
   subsets: ["latin"],
   variable: "--font-logo",
   display: "swap",
 });
 
-const beVietnam = Be_Vietnam_Pro({
+const workSans = Work_Sans({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-body",
@@ -104,7 +105,9 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${dmSans.variable} ${beVietnam.variable} bg-surface-0`}>
+    // Browser extensions (dark mode readers and the like) stamp attributes on
+    // <html> before hydration; this only silences mismatches on this element.
+    <html lang={locale} className={`${bricolage.variable} ${workSans.variable} bg-surface-0`} suppressHydrationWarning>
       <body className="min-h-screen font-body antialiased bg-surface-0">
         <script
           type="application/ld+json"

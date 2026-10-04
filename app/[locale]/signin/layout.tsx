@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Iniciar sesion",
+  title: "Iniciar sesión",
   robots: { index: false, follow: false },
 };
 

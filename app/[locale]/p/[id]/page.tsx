@@ -9,7 +9,7 @@ import { Icon } from "@iconify/react";
 import { JobStatus } from "@/components/JobStatus";
 import { VoiceConfirmation } from "@/components/VoiceConfirmation";
 import type { TimelineTrack } from "@/components/Studio";
-import { BackgroundBeams } from "@/components/ui/background-beams";
+import { HeroWave } from "@/components/site/HeroWave";
 import { Navbar } from "@/components/Navbar";
 import { apiFetch, apiUrl } from "@/lib/api";
 import { useApiToken } from "@/components/Providers";
@@ -216,51 +216,32 @@ export default function JobPage() {
     );
   }
 
+  const backHome = (
+    <button onClick={() => router.push("/")} className={PILL}>
+      <Icon icon="solar:alt-arrow-left-linear" className="h-4 w-4" />
+      {t("backToHome")}
+    </button>
+  );
+
   return (
-    <>
-    <main className="relative flex min-h-screen flex-col items-center px-3 pt-[6vh] overflow-hidden">
-      <BackgroundBeams />
+    <main className="relative flex min-h-screen flex-col overflow-hidden bg-white text-ink">
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <span className="absolute -left-[12%] top-[20%] h-[800px] w-[800px] rounded-full bg-[radial-gradient(closest-side,rgba(45,212,191,.2),transparent)]" />
+        <span className="absolute -right-[14%] top-[5%] h-[700px] w-[700px] rounded-full bg-[radial-gradient(closest-side,rgba(13,148,136,.12),transparent)]" />
+      </div>
+      {state === "working" && <HeroWave active />}
       <Navbar />
 
-      <div className="relative z-10 flex flex-col items-center w-full max-w-6xl">
+      <div className="relative z-10 flex w-full flex-1 flex-col items-center justify-center px-3 pb-[8vh]">
 
         <AnimatePresence mode="wait">
 
           {/* Not found state */}
           {state === "not-found" && authStatus !== "unauthenticated" && (
-            <motion.div
-              key="not-found"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
-              className="flex flex-col items-center justify-center w-full min-h-[60vh]"
-            >
-              <div className="flex flex-col items-center gap-5 max-w-sm w-full">
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", duration: 0.5, delay: 0.1 }}
-                  className="h-16 w-16 rounded-2xl bg-text-muted/10 border border-text-muted/15 flex items-center justify-center"
-                >
-                  <Icon icon="solar:file-remove-bold" className="h-8 w-8 text-text-muted/80" />
-                </motion.div>
-                <div className="flex flex-col items-center gap-2 text-center">
-                  <h2 className="text-heading-sm font-body font-semibold text-text-primary">
-                    {t("notFound")}
-                  </h2>
-                  <p className="text-body-md text-text-secondary font-body leading-relaxed">
-                    {t("notFoundDescription")}
-                  </p>
-                </div>
-                <button
-                  onClick={() => router.push("/")}
-                  className="mt-2 flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-surface-2 border border-contrast/[0.08] text-text-secondary hover:text-text-primary text-label-md font-body uppercase tracking-wider transition-all hover:bg-surface-3 active:scale-[0.98]"
-                >
-                  <Icon icon="solar:alt-arrow-left-linear" className="h-3.5 w-3.5" />
-                  {t("backToHome")}
-                </button>
-              </div>
+            <motion.div key="not-found" {...FADE} className="w-full">
+              <Notice icon="solar:file-remove-linear" tone="muted" title={t("notFound")} text={t("notFoundDescription")}>
+                {backHome}
+              </Notice>
             </motion.div>
           )}
 
@@ -272,7 +253,7 @@ export default function JobPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4 }}
-              className="flex flex-col items-center justify-center w-full min-h-[60vh]"
+              className="flex w-full flex-col items-center"
             >
               <JobStatus status={status} progress={progress} queuePosition={queuePosition} />
 
@@ -281,7 +262,7 @@ export default function JobPage() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
                 onClick={handleCancel}
-                className="mt-10 flex items-center gap-1.5 text-label-md font-body uppercase tracking-wider text-contrast/40 hover:text-fail transition-colors duration-300"
+                className="mt-10 flex h-10 items-center gap-1.5 rounded-full px-4 text-sm font-medium text-text-muted transition-colors duration-300 hover:bg-fail/[0.08] hover:text-fail"
               >
                 <Icon icon="solar:close-circle-linear" className="h-4 w-4" />
                 {t("cancel")}
@@ -289,7 +270,7 @@ export default function JobPage() {
             </motion.div>
           )}
 
-          {/* Confirming state — voice review */}
+          {/* Confirming state: voice review */}
           {state === "confirming" && escaleta && (
             <VoiceConfirmation
               escaleta={escaleta}
@@ -312,53 +293,58 @@ export default function JobPage() {
 
           {/* Error state */}
           {state === "error" && (
-            <motion.div
-              key="error"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
-              className="flex flex-col items-center justify-center w-full min-h-[60vh]"
-            >
-              <div className="flex flex-col items-center gap-5 max-w-sm w-full">
-                {/* Icon */}
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", duration: 0.5, delay: 0.1 }}
-                  className="h-16 w-16 rounded-2xl bg-fail/10 border border-fail/15 flex items-center justify-center"
-                >
-                  <Icon icon="solar:danger-triangle-bold" className="h-8 w-8 text-fail/80" />
-                </motion.div>
-
-                {/* Text */}
-                <div className="flex flex-col items-center gap-2 text-center">
-                  <h2 className="text-heading-sm font-body font-semibold text-text-primary">
-                    {t("somethingWentWrong")}
-                  </h2>
-                  <p className="text-body-md text-text-secondary font-body leading-relaxed">
-                    {errorMsg || t("errorDescription")}
-                  </p>
-                </div>
-
-                {/* Retry button */}
+            <motion.div key="error" {...FADE} className="w-full">
+              <Notice icon="solar:danger-triangle-linear" tone="fail" title={t("somethingWentWrong")} text={errorMsg || t("errorDescription")}>
                 <button
                   onClick={() => {
                     if (prompt) sessionStorage.setItem("sonificalabs_draft", prompt.replace(/\[.*?\]/g, "").trim());
                     router.push("/");
                   }}
-                  className="mt-2 flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-surface-2 border border-contrast/[0.08] text-text-secondary hover:text-text-primary text-label-md font-body uppercase tracking-wider transition-all hover:bg-surface-3 active:scale-[0.98]"
+                  className={PILL}
                 >
-                  <Icon icon="solar:restart-bold" className="h-3.5 w-3.5" />
+                  <Icon icon="solar:restart-linear" className="h-4 w-4" />
                   {t("tryAgain")}
                 </button>
-              </div>
+              </Notice>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
     </main>
+  );
+}
 
-    </>
+const FADE = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0 },
+  transition: { duration: 0.4 },
+};
+
+const PILL = "mt-2 flex h-12 items-center gap-2 rounded-full bg-ink px-5 text-[15px] font-medium text-white transition-colors hover:bg-accent";
+
+function Notice({ icon, tone, title, text, children }: {
+  icon: string;
+  tone: "muted" | "fail";
+  title: string;
+  text: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="mx-auto flex w-full max-w-[460px] flex-col items-center gap-5 text-center">
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: "spring", duration: 0.5, delay: 0.1 }}
+        className={`flex h-16 w-16 items-center justify-center rounded-full ${tone === "fail" ? "bg-fail/10 text-fail" : "bg-surface-2 text-text-muted"}`}
+      >
+        <Icon icon={icon} className="h-8 w-8" />
+      </motion.div>
+      <div className="flex flex-col items-center gap-3">
+        <h1 className="m-0 text-balance text-[clamp(32px,4vw,48px)] font-normal leading-[1.04] tracking-[-0.06em]">{title}</h1>
+        <p className="m-0 text-base leading-[1.5] text-text-secondary">{text}</p>
+      </div>
+      {children}
+    </div>
   );
 }

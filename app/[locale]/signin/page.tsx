@@ -5,8 +5,20 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { ACCENT } from "@/lib/theme";
-import { LogoIcon } from "@/components/Logo";
+import { Wordmark } from "@/components/Navbar";
+import { HeroWave } from "@/components/site/HeroWave";
+import { Keyword } from "@/components/site/ui";
+
+function GoogleG() {
+  return (
+    <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden>
+      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
+      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+    </svg>
+  );
+}
 
 function SignInContent() {
   const t = useTranslations("signin");
@@ -15,96 +27,55 @@ function SignInContent() {
   const error = params.get("error");
 
   return (
-    <div className="h-dvh flex items-center justify-center relative overflow-hidden">
-      {/* Background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url(/waves-bg-black.jpg)" }}
-      />
-      <div className="absolute inset-0 bg-surface-0/0" />
+    <main className="relative flex h-dvh items-center justify-center overflow-hidden bg-white px-4 text-ink">
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <span className="absolute -left-[12%] top-[10%] h-[700px] w-[700px] rounded-full bg-[radial-gradient(closest-side,rgba(45,212,191,.22),transparent)]" />
+        <span className="absolute -right-[14%] bottom-[-10%] h-[800px] w-[800px] rounded-full bg-[radial-gradient(closest-side,rgba(13,148,136,.14),transparent)]" />
+      </div>
+      <HeroWave active={false} />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative z-10 w-full max-w-sm mx-4"
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 w-full max-w-[420px]"
       >
-        {/* Card */}
-        <div className="rounded-2xl border border-contrast/[0.08] bg-surface-1/80 backdrop-blur-xl p-6 md:p-8 shadow-2xl">
-          {/* Logo */}
-          <div className="flex flex-col items-center mb-5 md:mb-8">
-            <Link href="/" className="flex items-center gap-2.5 mb-3">
-              <LogoIcon className="h-8 w-auto text-contrast" />
-              <span className="text-heading-md font-body tracking-normal">
-                <span className="text-contrast font-bold">sonifica</span><span className="text-contrast font-light">labs</span>
-              </span>
-            </Link>
-            <p className="text-body-md text-text-secondary text-center">
-              {t("subtitle")}
-            </p>
-          </div>
+        <div className="flex flex-col items-center rounded-[26px] border border-contrast/[0.07] bg-white/85 p-[clamp(24px,5vw,40px)] text-center shadow-[0_40px_80px_-40px_rgba(15,42,46,.45)] backdrop-blur-xl">
+          <Link href="/" aria-label={t("backToHome")}><Wordmark size={21} /></Link>
 
-          {/* Error message */}
+          <h1 className="mb-0 mt-7 text-balance text-[clamp(32px,4vw,42px)] font-normal leading-[1.04] tracking-[-0.06em]">
+            {t("titleStart")} <Keyword>{t("titleKeyword")}</Keyword>
+          </h1>
+          <p className="mb-0 mt-3 text-base leading-[1.45] text-text-secondary">{t("subtitle")}</p>
+
           {error && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
-              className="mb-5 rounded-lg bg-fail/10 border border-fail/20 px-4 py-3 text-label-md text-fail text-center"
+              className="mt-5 w-full rounded-[16px] border border-fail/20 bg-fail/10 px-4 py-3 text-sm text-fail"
             >
-              {error === "OAuthAccountNotLinked"
-                ? t("oauthError")
-                : t("genericError")}
+              {error === "OAuthAccountNotLinked" ? t("oauthError") : t("genericError")}
             </motion.div>
           )}
 
-          {/* Divider label */}
-          <div className="flex items-center gap-3 mb-5">
-            <div className="flex-1 h-px bg-contrast/[0.08]" />
-            <span className="text-caption-md text-text-muted uppercase tracking-[0.15em]">
-              {t("continueWith")}
-            </span>
-            <div className="flex-1 h-px bg-contrast/[0.08]" />
-          </div>
-
-          {/* Google button */}
-          <motion.button
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.98 }}
+          <button
             onClick={() => signIn("google", { callbackUrl })}
-            className="w-full flex items-center justify-center gap-3 rounded-xl bg-white border border-contrast/[0.08] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] px-4 py-3 text-body-md font-medium text-zinc-800 transition-all duration-200 hover:bg-zinc-100 hover:shadow-lg cursor-pointer"
+            className="mt-7 flex h-14 w-full cursor-pointer items-center justify-between gap-3 rounded-full bg-ink pl-1.5 pr-6 text-base font-medium tracking-[-0.02em] text-white transition-colors hover:bg-accent"
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
-              <path
-                fill="#4285F4"
-                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
-              />
-              <path
-                fill="#34A853"
-                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-              />
-              <path
-                fill="#FBBC05"
-                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l2.85-2.22.81-.62z"
-              />
-              <path
-                fill="#EA4335"
-                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-              />
-            </svg>
-            Google
-          </motion.button>
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white"><GoogleG /></span>
+            <span className="flex-1 text-center">{t("signInWithGoogle")}</span>
+            <span className="w-5" aria-hidden />
+          </button>
 
-          {/* Terms */}
-          <p className="mt-6 text-caption-md text-text-muted text-center leading-relaxed">
+          <p className="mb-0 mt-6 text-[13px] leading-relaxed text-text-muted">
             {t.rich("termsNotice", {
-              terms: (chunks) => <Link href="/terms" className="text-text-secondary underline hover:text-text-primary transition-colors">{chunks}</Link>,
-              privacy: (chunks) => <Link href="/privacy" className="text-text-secondary underline hover:text-text-primary transition-colors">{chunks}</Link>,
+              terms: (chunks) => <Link href="/terms" className="text-text-secondary underline underline-offset-2 hover:text-accent">{chunks}</Link>,
+              privacy: (chunks) => <Link href="/privacy" className="text-text-secondary underline underline-offset-2 hover:text-accent">{chunks}</Link>,
             })}
           </p>
         </div>
-
       </motion.div>
-    </div>
+    </main>
   );
 }
 

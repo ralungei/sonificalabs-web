@@ -1,103 +1,87 @@
 "use client";
-import { useState } from "react";
-import { useTranslations, useLocale } from "next-intl";
-import { motion } from "framer-motion";
-import { PageShell } from "@/components/PageShell";
-import { DemoCircle, DEMO_DATA, NEUTRAL_TEXTURE, type Demo } from "@/components/DemoCircle";
+import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
+import { AudioBubble } from "@/components/site/AudioBubble";
+import { stopDemo } from "@/components/site/demo-audio";
+import { Keyword } from "@/components/site/ui";
+import { DEMO_CATEGORIES, DEMOS, demoSrc, type DemoCategory } from "@/lib/demos";
+import { cn } from "@/lib/cn";
 
-const DEMO_CLIPS: Record<string, string> = {
-  pizzeria: "/textures/pizzeria.mp4",
-  meditacion: "/textures/meditacion.mp4",
-  informativo: "/textures/informativo.mp4",
-  thriller: "/textures/thriller.mp4",
-  documental: "/textures/documental.mp4",
-  audiocuento: "/textures/audiocuento.mp4",
-  trailer: "/textures/trailer.mp4",
-};
-
-const CATEGORIES = ["all", "tv", "fiction", "commercial", "podcast", "creators", "wellness"] as const;
-type Category = (typeof CATEGORIES)[number];
+/** Bubble sizes cycle through this list so each group looks hand-placed. */
+const SIZES = [118, 92, 104, 86, 124, 96];
 
 export default function ExamplesPage() {
   const t = useTranslations("examples");
-  const tHome = useTranslations("home");
+  const tDemos = useTranslations("home.demos");
   const locale = useLocale();
-  const [active, setActive] = useState<Category>("all");
+  const [cat, setCat] = useState<DemoCategory | "all">("all");
+  const [narrow, setNarrow] = useState(false);
 
-  const demos: Demo[] = DEMO_DATA.map((d) => ({
-    ...d,
-    file: `/demos/${locale}/${d.filename}`,
-    title: tHome(`demos.${d.key}` as Parameters<typeof tHome>[0]),
-    texture: NEUTRAL_TEXTURE,
-    clip: DEMO_CLIPS[d.id],
-  }));
+  useEffect(() => {
+    const fit = () => setNarrow(window.innerWidth < 720);
+    fit();
+    window.addEventListener("resize", fit);
+    return () => { window.removeEventListener("resize", fit); stopDemo(); };
+  }, []);
 
-  const grouped = CATEGORIES.filter((c) => c !== "all").reduce(
-    (acc, cat) => {
-      const items = demos.filter((d) => (d as Demo & { category: string }).category === cat);
-      if (items.length > 0) acc.push({ key: cat, items });
-      return acc;
-    },
-    [] as { key: string; items: Demo[] }[],
-  );
-
-  const filtered = active === "all" ? demos : demos.filter((d) => (d as Demo & { category: string }).category === active);
+  const groups = DEMO_CATEGORIES.filter((c) => cat === "all" || c.id === cat);
 
   return (
-    <PageShell title={t("title")} subtitle={t("subtitle")}>
-      <div className="w-full max-w-4xl mx-auto px-4 pb-16">
-        {/* Category tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActive(cat)}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide uppercase transition-all duration-200 cursor-pointer ${
-                active === cat
-                  ? "bg-contrast text-white shadow-md"
-                  : "bg-white/80 text-contrast/50 hover:text-contrast/80 border border-contrast/10"
-              }`}
-            >
-              {t(`categories.${cat}` as Parameters<typeof t>[0])}
+    <main className="min-h-screen bg-white text-ink">
+      <Navbar />
+
+      <section className="px-[clamp(18px,4vw,48px)] pt-[clamp(48px,7vw,96px)] text-center">
+        <h1 className="m-0 text-[clamp(42px,6vw,96px)] font-normal leading-[1.02] tracking-[-0.07em]">
+          {t("titleStart")} <Keyword underline="tilt" line="coral">{t("titleKeyword")}</Keyword>
+        </h1>
+        <p className="mb-0 mt-[clamp(26px,3vw,36px)] text-[clamp(17px,1.5vw,20px)] text-text-secondary">{t("hint")}</p>
+        <div className="no-scrollbar mx-auto mt-[clamp(28px,4vw,44px)] flex max-w-[1000px] gap-2 overflow-x-auto p-0.5 min-[900px]:justify-center">
+          {(["all", ...DEMO_CATEGORIES.map((c) => c.id)] as const).map((id) => (
+            <button key={id} type="button" onClick={() => setCat(id)} aria-pressed={cat === id}
+              className={cn(
+                "h-[42px] shrink-0 rounded-full border px-[18px] text-[15px] font-medium transition-all duration-200",
+                cat === id ? "border-ink bg-ink text-white" : "border-contrast/[0.12] bg-white text-ink hover:border-ink",
+              )}>
+              {t(`categories.${id}` as Parameters<typeof t>[0])}
             </button>
           ))}
         </div>
+      </section>
 
-        {/* Content */}
-        {active === "all" ? (
-          <div className="space-y-14">
-            {grouped.map(({ key, items }) => (
-              <motion.section
-                key={key}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                <h2 className="text-label-lg font-semibold tracking-widest uppercase text-contrast/40 mb-6 text-center">
-                  {t(`categories.${key}` as Parameters<typeof t>[0])}
+      <div className="mx-auto flex max-w-[1180px] flex-col px-[clamp(18px,4vw,48px)] pb-[clamp(80px,10vw,140px)]">
+        {groups.map((c) => {
+          const items = DEMOS.filter((d) => d.category === c.id);
+          return (
+            <section key={c.id} className="flex flex-col items-center gap-[clamp(24px,3vw,36px)] pt-[clamp(56px,7vw,96px)]"
+              style={{ animation: "rise .8s cubic-bezier(.16,1,.3,1) both" }}>
+              <div className="flex items-center gap-3">
+                <span className="h-2.5 w-2.5 rounded-full" style={{ background: c.color }} />
+                <h2 className="m-0 text-[clamp(28px,3.2vw,44px)] font-normal tracking-[-0.05em]">
+                  {t(`categories.${c.id}` as Parameters<typeof t>[0])}
                 </h2>
-                <div className="flex flex-wrap justify-center gap-8 md:gap-10">
-                  {items.map((demo, i) => (
-                    <DemoCircle key={demo.id} demo={demo} delay={0.05 + i * 0.06} size={96} />
-                  ))}
-                </div>
-              </motion.section>
-            ))}
-          </div>
-        ) : (
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="flex flex-wrap justify-center gap-8 md:gap-10"
-          >
-            {filtered.map((demo, i) => (
-              <DemoCircle key={demo.id} demo={demo} delay={0.05 + i * 0.06} size={96} />
-            ))}
-          </motion.div>
-        )}
+                <span className="text-[15px] text-text-muted">{t("count", { count: items.length })}</span>
+              </div>
+              <div className="flex flex-wrap justify-center gap-x-[clamp(14px,2.6vw,36px)] gap-y-[clamp(18px,3vw,40px)]">
+                {items.map((d, i) => {
+                  const size = Math.round(SIZES[(i + c.id.length) % SIZES.length] * (narrow ? 0.78 : 1));
+                  const name = tDemos(d.key as Parameters<typeof tDemos>[0]);
+                  return (
+                    <div key={d.id} data-bob className="flex flex-col items-center"
+                      style={{ width: Math.max(size, 110), animation: `bob ${8 + (i % 3) * 1.5}s ease-in-out ${-i * 1.1}s infinite` }}>
+                      <AudioBubble id={d.id} src={demoSrc(locale, d.filename)} texture={d.texture} size={size}
+                        label={name} color={c.color} labelVariant="plain" />
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })}
       </div>
-    </PageShell>
+
+      <Footer />
+    </main>
   );
 }

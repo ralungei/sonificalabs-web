@@ -2,9 +2,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/cn";
-
-/** Relative peak height per bar — arch shape, tallest in center */
-const BARS = [0.45, 0.7, 1.0, 0.7, 0.45];
+import { Bars, Check } from "@/components/site/ui";
 
 export function JobStatus({
   status,
@@ -40,61 +38,54 @@ export function JobStatus({
         ? t("producing")
         : "";
 
-  const phaseLabel = (isQueued || isLoading) ? "" : PHASES[currentPhase]?.label ?? "";
-
   return (
-    <div className="w-full max-w-sm mx-auto flex flex-col items-center gap-8 px-10 py-10">
-      {/* Waveform — 5 bars, smooth travelling wave */}
-      <div className="flex items-center justify-center gap-[6px] h-14">
-        {BARS.map((peak, i) => (
-          <motion.div
-            key={i}
-            className="w-[3px] rounded-full origin-center"
-            style={{
-              background:
-                "linear-gradient(to top, var(--color-accent-dim), var(--color-accent))",
-            }}
-            animate={{ scaleY: [0.2, peak, 0.2] }}
-            transition={{
-              duration: 1.1,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 0.13,
-            }}
-            initial={{ height: 56 }}
-          />
-        ))}
+    <div className="mx-auto flex w-full max-w-[640px] flex-col items-center gap-8 px-4 text-center">
+      <div className="h-16 w-[min(240px,70vw)]">
+        <Bars n={30} live />
       </div>
 
-      {/* Phase label + detail text */}
-      <div className="flex flex-col items-center justify-center gap-2 h-14 relative">
+      <div className="flex min-h-[2.2em] items-center text-[clamp(30px,4.4vw,52px)] font-normal leading-[1.04] tracking-[-0.06em]" aria-live="polite">
         <AnimatePresence mode="wait">
-          <motion.h2
-            key={phaseLabel}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.25 }}
-            className="text-heading-sm font-body font-semibold uppercase tracking-[0.25em] text-contrast"
-          >
-            {phaseLabel}
-          </motion.h2>
-        </AnimatePresence>
-
-        <AnimatePresence mode="wait">
-          <motion.p
+          <motion.h1
             key={displayText}
-            initial={{ opacity: 0, y: 4 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.2 }}
-            className="text-body-md text-contrast/80 text-center"
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3 }}
+            className="m-0 text-balance text-[1em] font-normal"
           >
-            {displayText}
-          </motion.p>
+            {displayText || " "}
+          </motion.h1>
         </AnimatePresence>
       </div>
 
+      {/* Phase steps */}
+      <ol className="m-0 flex list-none flex-wrap justify-center gap-2 p-0">
+        {PHASES.map((p, i) => {
+          const done = i < currentPhase;
+          const current = i === currentPhase;
+          return (
+            <li
+              key={p.key}
+              className={cn(
+                "flex h-9 items-center gap-2 rounded-full px-3.5 text-sm font-medium transition-colors duration-300",
+                done && "bg-mint text-accent-dim",
+                current && "bg-ink text-white",
+                !done && !current && "border border-contrast/[0.1] text-text-muted",
+              )}
+            >
+              {done ? (
+                <Check size={12} />
+              ) : current ? (
+                <span className="h-2 w-2 animate-pulse rounded-full bg-[#2dd4bf]" />
+              ) : (
+                <span className="h-2 w-2 rounded-full bg-contrast/15" />
+              )}
+              {p.label}
+            </li>
+          );
+        })}
+      </ol>
     </div>
   );
 }

@@ -1,14 +1,15 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useImperativeHandle, useCallback, type Ref } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
-import { useTranslations, useLocale } from "next-intl";
-import { Icon } from "@iconify/react";
+import { useTranslations } from "next-intl";
 import { createPortal } from "react-dom";
 import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 import { apiFetch } from "@/lib/api";
 import { useApiToken } from "@/components/Providers";
+import { ATTACH_ACCEPT, extractText, UnsupportedFileError } from "@/lib/extract-text";
+import { ArrowDot, Close, Paperclip } from "@/components/site/ui";
 
 interface DropdownOption {
   value: string;
@@ -46,6 +47,9 @@ const DURATIONS = [
 
 const PERSONAJES = ["1", "2", "3", "4", "5", "6", "7", "8"];
 
+/** Text the textarea grows to before it scrolls (rows of 26px). */
+const MAX_ROWS = 3;
+
 function tierFor(plan: string) {
   return PLAN_TIERS.find(t => t.plan === plan) ?? PLAN_TIERS[0];
 }
@@ -70,8 +74,6 @@ function buildPersonajesOptions(plan: string): DropdownOption[] {
   });
 }
 
-
-
 function OptionPills({
   options,
   value,
@@ -94,22 +96,20 @@ function OptionPills({
             onChange(opt.value === value ? "" : opt.value);
           }}
           className={cn(
-            "px-2.5 py-1 rounded-lg text-xs transition-all",
+            "rounded-full px-3 py-1 text-[13px] font-medium transition-all",
             opt.locked
-              ? "opacity-50 cursor-pointer hover:opacity-70 border border-contrast/[0.08] text-text-secondary"
+              ? "cursor-pointer border border-contrast/[0.08] text-text-muted opacity-60 hover:opacity-80"
               : opt.value === value
-                ? "bg-accent/15 text-accent border border-accent/25 font-medium"
-                : "text-text-primary hover:bg-contrast/[0.06] border border-contrast/[0.08]",
+                ? "bg-ink text-white"
+                : "border border-contrast/10 text-ink hover:border-ink",
           )}
         >
           <span className="flex items-center gap-1.5">
             {opt.value}
             {opt.locked && opt.lockBadge && (
               <span className={cn(
-                "text-[9px] px-1 rounded-full font-semibold leading-tight",
-                opt.lockBadge === "Studio"
-                  ? "bg-violet-500/20 text-violet-400"
-                  : "bg-accent/20 text-accent",
+                "rounded-full px-1.5 text-[9px] font-semibold leading-tight",
+                opt.lockBadge === "Studio" ? "bg-violet-100 text-violet-700" : "bg-mint text-accent-dim",
               )}>
                 {opt.lockBadge}
               </span>
@@ -155,63 +155,57 @@ function ParametersPopover({
       <button
         type="button"
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
         className={cn(
-          "flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs transition-colors",
-          activeCount > 0
-            ? "bg-accent/15 text-accent border border-accent/25"
-            : "text-contrast/70 hover:text-contrast hover:bg-contrast/[0.06] border border-transparent",
+          "flex h-9 items-center gap-1.5 rounded-full px-3.5 text-sm font-medium transition-colors",
+          activeCount > 0 ? "bg-ink text-white" : "border border-contrast/10 bg-white/80 text-ink hover:border-ink",
         )}
       >
-        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
         </svg>
         {labels.parameters}
         {activeCount > 0 && (
-          <span className="flex items-center justify-center h-4 w-4 rounded-full bg-accent text-white text-[9px] font-bold leading-none">
+          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white text-[9px] font-bold leading-none text-ink">
             {activeCount}
           </span>
         )}
-        <svg className={cn("w-3 h-3 transition-transform", open && "rotate-180")} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-        </svg>
       </button>
 
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 4, scale: 0.97 }}
+            initial={{ opacity: 0, y: -4, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 4, scale: 0.97 }}
+            exit={{ opacity: 0, y: -4, scale: 0.97 }}
             transition={{ duration: 0.15 }}
-            className="absolute bottom-full mb-1.5 left-0 min-w-[240px] max-w-[320px] rounded-xl border border-contrast/[0.08] bg-white shadow-xl p-3 z-[var(--z-dropdown)] space-y-3"
+            className="absolute left-1/2 top-full z-[var(--z-dropdown)] mt-2 w-[min(340px,86vw)] -translate-x-1/2 space-y-3.5 rounded-[21px] border border-contrast/[0.07] bg-white p-4 text-left shadow-[0_30px_60px_-30px_rgba(15,42,46,.45)]"
           >
-            {/* Tipo */}
             <div>
-              <label className="block text-[10px] text-text-muted font-body uppercase tracking-wider mb-1.5">{labels.type}</label>
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[.08em] text-text-muted">{labels.type}</label>
               <OptionPills options={tipos.map(t => ({ value: t }))} value={tipo} onChange={setTipo} />
             </div>
-            {/* Duracion */}
             <div>
-              <label className="block text-[10px] text-text-muted font-body uppercase tracking-wider mb-1.5">{labels.duration}</label>
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[.08em] text-text-muted">{labels.duration}</label>
               <OptionPills options={durationOptions} value={duracion} onChange={setDuracion} onLockedClick={onLockedClick} />
             </div>
-            {/* Personajes */}
             <div>
-              <label className="block text-[10px] text-text-muted font-body uppercase tracking-wider mb-1.5">{labels.characters}</label>
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-[.08em] text-text-muted">{labels.characters}</label>
               <OptionPills options={personajesOptions} value={personajes} onChange={setPersonajes} onLockedClick={onLockedClick} />
             </div>
-            {/* Choose voices toggle */}
-            <div className="flex items-center justify-between pt-1 border-t border-contrast/[0.06]">
-              <label className="text-[10px] text-text-muted font-body uppercase tracking-wider">{labels.voices}</label>
+            <div className="flex items-center justify-between border-t border-contrast/[0.06] pt-3">
+              <label className="text-xs font-semibold uppercase tracking-[.08em] text-text-muted">{labels.voices}</label>
               <button
                 type="button"
+                role="switch"
+                aria-checked={chooseVoices}
                 onClick={() => setChooseVoices(!chooseVoices)}
                 className={cn(
-                  "relative flex items-center w-8 h-[18px] rounded-full px-[2px] transition-colors duration-200",
-                  chooseVoices ? "bg-accent justify-end" : "bg-contrast/15 justify-start",
+                  "relative flex h-[22px] w-10 items-center rounded-full px-[3px] transition-colors duration-200",
+                  chooseVoices ? "justify-end bg-accent" : "justify-start bg-contrast/15",
                 )}
               >
-                <span className="block h-[14px] w-[14px] rounded-full bg-white shadow-sm" />
+                <span className="block h-4 w-4 rounded-full bg-white shadow-sm" />
               </button>
             </div>
           </motion.div>
@@ -221,24 +215,51 @@ function ParametersPopover({
   );
 }
 
+/** A long paste or an attached document, sent after the typed text. */
+interface Chunk {
+  text: string;
+  /** File name; pastes have none. */
+  name?: string;
+}
+
+export interface PromptFormHandle {
+  /** Puts a prompt in the box (ideas, examples) and focuses it. */
+  setPrompt: (prompt: string) => void;
+  /** Fills the box and produces right away (bottom call to action). */
+  submitWith: (prompt: string) => void;
+}
+
+export interface Suggestion {
+  label: string;
+  prompt: string;
+  icon?: React.ReactNode;
+}
+
 export function PromptForm({
   onSubmit,
+  suggestions,
+  onActivityChange,
+  ref,
 }: {
   onSubmit: (prompt: string) => Promise<void>;
+  suggestions?: Suggestion[];
+  /** True while the box is focused, has text or is producing. */
+  onActivityChange?: (active: boolean) => void;
+  ref?: Ref<PromptFormHandle>;
 }) {
   const t = useTranslations("promptForm");
   const router = useRouter();
-  const PLACEHOLDERS = t.raw("placeholders") as string[];
   const TIPOS = (t("tipos") as string).split(",");
   const { data: session, status: authStatus } = useSession();
   const apiToken = useApiToken();
   const [prompt, setPrompt] = useState("");
-  const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [rateLimitCountdown, setRateLimitCountdown] = useState(0);
   const [quota, setQuota] = useState<QuotaData | null>(null);
+  const [rows, setRows] = useState(1);
+  const [attaching, setAttaching] = useState(false);
 
   useEffect(() => {
     if (!apiToken) return;
@@ -259,7 +280,7 @@ export function PromptForm({
 
   // Long pastes collapse into attached cards instead of flooding the textarea
   const PASTE_CARD_THRESHOLD = 1000;
-  const [pastedChunks, setPastedChunks] = useState<string[]>([]);
+  const [chunks, setChunks] = useState<Chunk[]>([]);
   const [viewerChunk, setViewerChunk] = useState<number | null>(null);
 
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
@@ -268,11 +289,30 @@ export function PromptForm({
     e.preventDefault();
     // Never trim on paste: the quota may still be in flight and a paid user
     // would silently lose most of a long script. Submit enforces the limit.
-    setPastedChunks((prev) => [...prev, text]);
+    setChunks((prev) => [...prev, { text }]);
+  };
+
+  const handleAttach = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setAttaching(true);
+    setError("");
+    try {
+      const text = await extractText(file);
+      if (!text) throw new Error(t("attachEmpty"));
+      setChunks((prev) => [...prev, { text, name: file.name }]);
+      // A document with no instruction becomes the design's default idea.
+      setPrompt((p) => p || t("attachDefaultPrompt"));
+    } catch (err) {
+      setError(err instanceof UnsupportedFileError ? t("attachUnsupported") : err instanceof Error && err.message ? err.message : t("attachFailed"));
+    } finally {
+      setAttaching(false);
+    }
   };
 
   const removeChunk = (idx: number) => {
-    setPastedChunks((prev) => prev.filter((_, i) => i !== idx));
+    setChunks((prev) => prev.filter((_, i) => i !== idx));
     setViewerChunk(null);
   };
   const durationOptions = buildDurationOptions(plan);
@@ -284,6 +324,21 @@ export function PromptForm({
   const [chooseVoices, setChooseVoices] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Grows with the text up to MAX_ROWS, then scrolls
+  const fit = useCallback(() => {
+    const ta = textareaRef.current;
+    if (!ta) return;
+    ta.style.height = "auto";
+    const n = Math.max(1, Math.min(MAX_ROWS, Math.round((ta.scrollHeight - 28) / 26)));
+    ta.style.height = `${28 + 26 * n}px`;
+    setRows(n);
+  }, []);
+  useEffect(() => { fit(); }, [prompt, fit]);
+
+  useEffect(() => {
+    onActivityChange?.(isFocused || isLoading || prompt.length > 0);
+  }, [isFocused, isLoading, prompt, onActivityChange]);
 
   // Rate limit countdown timer
   useEffect(() => {
@@ -300,45 +355,35 @@ export function PromptForm({
     return () => clearInterval(timer);
   }, [rateLimitCountdown]);
 
-  useEffect(() => {
-    if (isFocused || prompt) return;
-    const interval = setInterval(() => {
-      setPlaceholderIdx((prev) => (prev + 1) % PLACEHOLDERS.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [isFocused, prompt]);
-
-  const buildPrompt = () => {
+  const buildPrompt = (typed: string) => {
     const parts: string[] = [];
     if (tipo) parts.push(`[Tipo: ${tipo}]`);
     if (duracion) parts.push(`[Duracion: ${duracion}]`);
     if (personajes) parts.push(`[Personajes: ${personajes}]`);
-    const pasted = pastedChunks.length > 0 ? `\n\n${pastedChunks.join("\n\n")}` : "";
+    const attached = chunks.length > 0 ? `\n\n${chunks.map(c => c.text).join("\n\n")}` : "";
     if (parts.length > 0) {
-      return `${parts.join(" ")} ${prompt.trim()}${pasted}`;
+      return `${parts.join(" ")} ${typed.trim()}${attached}`;
     }
-    return `${prompt.trim()}${pasted}`.trim();
+    return `${typed.trim()}${attached}`.trim();
   };
 
   // Count what is actually sent (separators and [Tipo: ...] prefix included) or
   // the client shows 3500/3500 while the server rejects 3550 with an upsell
-  const outgoingPrompt = buildPrompt();
+  const outgoingPrompt = buildPrompt(prompt);
   const totalChars = outgoingPrompt.length;
   const overBy = totalChars - maxPromptChars;
   const isOverLimit = limitKnown && overBy > 0;
   // A paste with no typed text is a valid submission
-  const hasContent = prompt.trim().length > 0 || pastedChunks.length > 0;
+  const hasContent = prompt.trim().length > 0 || chunks.length > 0;
   const canSubmit = hasContent && !isLoading && !isOverLimit && rateLimitCountdown === 0;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!hasContent || isLoading) return;
-    if (isOverLimit) return;
+  const produce = async (text: string) => {
+    if (isLoading) return;
     setIsLoading(true);
     setError("");
     sessionStorage.setItem("sonificalabs_choose_voices", chooseVoices ? "1" : "0");
     try {
-      await onSubmit(outgoingPrompt);
+      await onSubmit(text);
     } catch (err: unknown) {
       if (err instanceof Error && err.name === "RateLimitError") {
         const seconds = parseInt(err.message.replace("rate_limit:", ""), 10) || 30;
@@ -350,6 +395,29 @@ export function PromptForm({
       setIsLoading(false);
     }
   };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // An empty box is an invitation, not an error: put the cursor in it.
+    if (!hasContent) { textareaRef.current?.focus(); return; }
+    if (!canSubmit) return;
+    produce(outgoingPrompt);
+  };
+
+  useImperativeHandle(ref, () => ({
+    setPrompt: (p: string) => {
+      setPrompt(p);
+      setError("");
+      requestAnimationFrame(() => textareaRef.current?.focus({ preventScroll: true }));
+    },
+    submitWith: (p: string) => {
+      setPrompt(p);
+      const text = buildPrompt(p);
+      if (!text || rateLimitCountdown > 0) return;
+      if (limitKnown && text.length > maxPromptChars) return;
+      produce(text);
+    },
+  }));
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -368,226 +436,209 @@ export function PromptForm({
     }
   }, []);
 
+  const rounded = rows > 1 || chunks.length > 0 ? "rounded-[28px]" : "rounded-full";
+
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto">
+    <form onSubmit={handleSubmit} className="w-full">
       <div
         className={cn(
-          "relative rounded-2xl border transition-all duration-500",
-          "bg-surface-1/75 backdrop-blur-md",
-          "border-border-subtle shadow-[0_1px_2px_rgba(0,0,0,0.04),0_2px_8px_rgba(0,0,0,0.06)]",
+          "border bg-white p-2 backdrop-blur-[10px] transition-[border-color,border-radius] duration-200",
+          "shadow-[0_1px_2px_rgba(15,42,46,.06),0_24px_60px_-30px_rgba(15,42,46,.35)]",
+          rounded,
+          isFocused ? "border-accent" : "border-contrast/[0.12]",
         )}
       >
-        {/* Top accent line on focus */}
-        <div
-          className={cn(
-            "absolute top-0 left-4 right-4 h-px transition-opacity duration-500",
-            "bg-gradient-to-r from-transparent via-accent/30 to-transparent",
-            isFocused ? "opacity-100" : "opacity-0",
-          )}
-        />
-
-        {/* Pasted content cards (Claude-style: text preview + PASTED chip) */}
-        {pastedChunks.length > 0 && (
-          <div className="flex flex-wrap gap-3 px-4 pt-4">
-            {pastedChunks.map((chunk, i) => (
-              <div key={i} className="relative group">
+        {/* Long pastes and attached documents: a card with a preview of the text */}
+        {chunks.length > 0 && (
+          <div className="flex flex-wrap gap-3 px-2 pb-1 pt-2">
+            {chunks.map((chunk, i) => (
+              <div key={i} className="group relative">
                 <button
                   type="button"
                   onClick={() => setViewerChunk(i)}
-                  className="w-28 h-28 rounded-xl border border-border-subtle bg-surface-2/90 overflow-hidden text-left flex flex-col hover:border-accent/40 hover:shadow-sm transition-all"
+                  className="flex h-28 w-28 flex-col overflow-hidden rounded-[14px] border border-contrast/[0.08] bg-surface-2/90 text-left transition-all hover:border-accent/40 hover:shadow-sm"
                 >
                   <div className="flex-1 overflow-hidden px-2 pt-2">
-                    <p className="text-[7px] leading-[1.5] font-mono text-text-muted whitespace-pre-wrap break-words select-none">
-                      {chunk.slice(0, 480)}
+                    <p className="m-0 select-none whitespace-pre-wrap break-words font-mono text-[7px] leading-[1.5] text-text-muted">
+                      {chunk.text.slice(0, 480)}
                     </p>
                   </div>
-                  <div className="shrink-0 px-2 py-1.5 bg-surface-1/80 border-t border-border-subtle">
-                    <span className="text-[9px] font-mono uppercase tracking-wider text-text-muted">
-                      {t("pastedLabel")}
-                    </span>
+                  <div className="shrink-0 truncate border-t border-contrast/[0.08] bg-white/80 px-2 py-1.5 font-mono text-[9px] uppercase tracking-wider text-text-muted">
+                    {chunk.name ?? t("pastedLabel")}
                   </div>
                 </button>
-                {/* Remove — always visible on touch, hover-revealed on pointer devices */}
+                {/* Remove: always visible on touch, revealed on hover with a pointer */}
                 <button
                   type="button"
                   aria-label={t("removePasted")}
                   onClick={() => removeChunk(i)}
-                  className="absolute -top-2 -left-2 h-6 w-6 rounded-full grid place-items-center bg-surface-0 border border-border-subtle shadow-sm text-text-muted hover:text-red-400 opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 focus:opacity-100 transition-opacity"
+                  className="absolute -left-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full border border-contrast/[0.08] bg-white text-text-muted opacity-100 shadow-sm transition-opacity hover:text-fail focus:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100"
                 >
-                  <Icon icon="solar:close-circle-bold" className="h-4 w-4" />
+                  <Close size={10} />
                 </button>
               </div>
             ))}
           </div>
         )}
 
-        {/* Textarea area */}
-        <div className="relative">
+        <div className="flex items-end gap-[5px]">
+          <label
+            title={t("attach")}
+            aria-label={t("attachAria")}
+            className={cn(
+              "flex h-14 w-14 shrink-0 cursor-pointer items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-surface-2 hover:text-accent",
+              (attaching || isLoading) && "pointer-events-none opacity-50",
+            )}
+          >
+            <input type="file" accept={ATTACH_ACCEPT} onChange={handleAttach} className="sr-only" disabled={attaching || isLoading} />
+            {attaching ? (
+              <span className="h-5 w-5 animate-spin rounded-full border-2 border-contrast/15 border-t-accent" />
+            ) : (
+              <Paperclip size={22} />
+            )}
+          </label>
+
           <textarea
             ref={textareaRef}
+            rows={1}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onPaste={handlePaste}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             onKeyDown={handleKeyDown}
-            autoFocus
-            rows={2}
-            className="w-full bg-transparent px-5 pt-4 pb-3 text-text-primary placeholder-transparent outline-none text-base font-body resize-none"
+            placeholder={t("heroPlaceholder")}
+            aria-label={t("heroPlaceholder")}
             disabled={isLoading}
+            className={cn(
+              "block min-w-0 flex-1 resize-none border-0 bg-transparent py-[14px] text-[clamp(17px,1.4vw,20px)] leading-[26px] tracking-[-0.02em] text-ink outline-none placeholder:text-text-muted",
+              rows >= MAX_ROWS ? "overflow-y-auto" : "overflow-hidden",
+            )}
+            style={{ height: 54, transition: "height .28s cubic-bezier(.2,.7,.2,1)" }}
           />
 
-          {/* Animated placeholder */}
-          {!prompt && !isFocused && (
-            <div className="pointer-events-none absolute top-4 left-5 right-5 overflow-hidden">
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={placeholderIdx}
-                  initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
-                  animate={{ opacity: 0.7, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
-                  transition={{ duration: 0.35 }}
-                  className="text-base text-contrast/60 block truncate"
-                >
-                  {PLACEHOLDERS[placeholderIdx]}
-                </motion.span>
-              </AnimatePresence>
-            </div>
-          )}
-
-          {!prompt && isFocused && (
-            <span className="pointer-events-none absolute top-4 left-5 text-base text-contrast/40">
-              {t("describePlaceholder")}
-            </span>
-          )}
-
-          {totalChars > 2800 && (
-            <span className={`absolute bottom-1 right-3 text-[10px] font-mono ${isOverLimit ? "text-red-400" : "text-contrast/30"}`}>
-              {limitKnown ? `${totalChars}/${maxPromptChars}` : totalChars}
-            </span>
-          )}
-        </div>
-
-        {/* Bottom toolbar */}
-        <div className="flex flex-wrap items-center justify-between border-t border-contrast/[0.06] px-3 py-2 gap-2">
-          {/* Left — parameters + debug */}
-          <div className="flex items-center gap-1.5">
-            <ParametersPopover
-              tipo={tipo} setTipo={setTipo}
-              duracion={duracion} setDuracion={setDuracion}
-              personajes={personajes} setPersonajes={setPersonajes}
-              chooseVoices={chooseVoices} setChooseVoices={setChooseVoices}
-              tipos={TIPOS}
-              durationOptions={durationOptions}
-              personajesOptions={personajesOptions}
-              onLockedClick={() => router.push("/pricing")}
-              labels={{ type: t("type"), duration: t("duration"), characters: t("characters"), parameters: t("parameters"), voices: t("voices") }}
-            />
-          </div>
-
-          {/* Right — counter + submit */}
-          <div className="flex items-center gap-3 ml-auto">
-            {remaining === null ? (
-              session
-                ? <span className="h-4 w-16 rounded bg-contrast/[0.06] animate-pulse" />
-                : <span className="text-[11px] text-contrast/50 whitespace-nowrap flex items-center gap-1.5">
-                    <span className="font-bold">20 {t("creditsUnit")}</span>
-                  </span>
-            ) : remaining > 0 ? (
-              <span className="text-[11px] text-contrast/50 whitespace-nowrap flex items-center gap-1.5">
-                {(plan === "starter" || plan === "pro" || plan === "studio") && (
-                  <span className="text-[10px] font-semibold uppercase tracking-wide text-accent bg-accent/10 border border-accent/20 rounded px-1.5 py-0.5 leading-none">
-                    {plan}
-                  </span>
-                )}
-                <span className="font-bold">{remaining} {t("creditsUnit")}</span>
+          <button
+            type="submit"
+            disabled={isLoading || isOverLimit || rateLimitCountdown > 0}
+            aria-label={t("create")}
+            className={cn(
+              "flex h-14 shrink-0 items-center gap-[13px] rounded-full bg-ink pr-2 text-base font-medium tracking-[-0.02em] text-white transition-colors",
+              "pl-2 sm:pl-6",
+              isOverLimit || rateLimitCountdown > 0 ? "cursor-not-allowed opacity-40" : "hover:bg-accent",
+            )}
+          >
+            <span className="hidden sm:inline">{isLoading ? t("creating") : t("create")}</span>
+            {isLoading ? (
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-ink/15 border-t-ink" />
               </span>
             ) : (
-              <button
-                type="button"
-                className="text-[11px] text-accent border border-accent/30 rounded-lg px-2.5 py-1 hover:bg-accent/10 transition-colors font-body whitespace-nowrap"
-              >
-                {t("upgradePlan")}
-              </button>
+              <ArrowDot size={40} />
             )}
-
-            <motion.button
-              type="submit"
-              disabled={!canSubmit}
-              whileHover={canSubmit ? { scale: 1.1 } : {}}
-              whileTap={canSubmit ? { scale: 0.9 } : {}}
-              className={cn(
-                "flex items-center justify-center h-8 w-8 rounded-xl shrink-0",
-                "transition-all duration-300",
-                canSubmit
-                  ? "bg-accent text-white"
-                  : "bg-contrast/5 text-contrast/25 cursor-not-allowed",
-              )}
-            >
-              {isLoading ? (
-                <motion.span
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    duration: 0.8,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                  className="inline-block h-3.5 w-3.5 border-2 border-surface-0/20 border-t-surface-0 rounded-full"
-                />
-              ) : (
-                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
-                </svg>
-              )}
-            </motion.button>
-          </div>
+          </button>
         </div>
       </div>
+
+      {isLoading && (
+        <div className="mx-auto mt-3.5 h-0.5 max-w-[640px] overflow-hidden rounded-sm bg-contrast/15" aria-hidden>
+          <motion.div className="h-full w-1/3 bg-ink" animate={{ x: ["-100%", "300%"] }} transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }} />
+        </div>
+      )}
+
+      {/* Options and credits */}
+      <div className="mt-3 flex items-center justify-center gap-3">
+        <ParametersPopover
+          tipo={tipo} setTipo={setTipo}
+          duracion={duracion} setDuracion={setDuracion}
+          personajes={personajes} setPersonajes={setPersonajes}
+          chooseVoices={chooseVoices} setChooseVoices={setChooseVoices}
+          tipos={TIPOS}
+          durationOptions={durationOptions}
+          personajesOptions={personajesOptions}
+          onLockedClick={() => router.push("/pricing")}
+          labels={{ type: t("type"), duration: t("duration"), characters: t("characters"), parameters: t("parameters"), voices: t("voices") }}
+        />
+        {remaining === null ? (
+          session
+            ? <span className="h-4 w-16 animate-pulse rounded bg-contrast/[0.06]" />
+            : <span className="text-sm text-text-muted">{t("credits", { count: 20 })}</span>
+        ) : remaining > 0 ? (
+          <span className="flex items-center gap-1.5 text-sm text-text-muted">
+            {(plan === "starter" || plan === "pro" || plan === "studio") && (
+              <span className="rounded-full bg-mint px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-accent-dim">{plan}</span>
+            )}
+            {t("credits", { count: remaining })}
+          </span>
+        ) : (
+          <button type="button" onClick={() => router.push("/pricing")}
+            className="h-9 rounded-full border border-accent/30 px-3.5 text-sm font-medium text-accent hover:bg-accent/10">
+            {t("upgradePlan")}
+          </button>
+        )}
+        {totalChars > 2800 && (
+          <span className={cn("text-xs tabular-nums", isOverLimit ? "text-fail" : "text-text-muted")}>
+            {limitKnown ? `${totalChars}/${maxPromptChars}` : totalChars}
+          </span>
+        )}
+      </div>
+
+      {suggestions && suggestions.length > 0 && (
+        <div className="no-scrollbar mx-auto mt-[clamp(14px,2.4vh,24px)] flex w-fit max-w-full gap-2 overflow-x-auto p-0.5"
+          style={{ animation: "rise .8s .55s cubic-bezier(.2,.7,.2,1) both" }}>
+          {suggestions.map((s) => (
+            <button
+              key={s.label}
+              type="button"
+              onClick={() => { setPrompt(s.prompt); requestAnimationFrame(() => textareaRef.current?.focus()); }}
+              className="flex h-10 shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-contrast/10 bg-white/80 pl-[13px] pr-4 text-sm font-medium text-ink backdrop-blur-[8px] transition-all hover:-translate-y-px hover:border-ink"
+            >
+              {s.icon}
+              {s.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Error / Rate limit countdown */}
       <AnimatePresence>
         {error && (
-          <motion.div
+          <motion.p
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
+            role="alert"
             className={cn(
-              "mt-3 rounded-xl border px-4 py-3 text-sm text-center font-body",
-              rateLimitCountdown > 0
-                ? "border-accent/20 bg-accent/5 text-accent animate-pulse"
-                : "border-fail/30 bg-fail/90 text-white",
+              "mx-auto mt-4 max-w-[640px] rounded-[21px] px-5 py-3 text-center text-[15px] font-medium",
+              rateLimitCountdown > 0 ? "bg-surface-2 text-accent-dim" : "bg-fail/[0.07] text-fail",
             )}
           >
-            {rateLimitCountdown > 0
-              ? t("rateLimitWait", { seconds: rateLimitCountdown })
-              : error}
-          </motion.div>
+            {rateLimitCountdown > 0 ? t("rateLimitWait", { seconds: rateLimitCountdown }) : error}
+          </motion.p>
         )}
       </AnimatePresence>
 
       {/* Over the limit the submit button is disabled, so say why and how to fix it */}
       <AnimatePresence>
         {isOverLimit && !error && (
-          <motion.div
+          <motion.p
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="mt-3 rounded-xl border border-fail/30 bg-fail/[0.06] px-4 py-3 text-sm text-center font-body text-fail"
+            className="mx-auto mt-4 max-w-[640px] rounded-[21px] bg-fail/[0.07] px-5 py-3 text-center text-[15px] font-medium text-fail"
           >
             {t("overLimit", { count: overBy, max: maxPromptChars })}
-          </motion.div>
+          </motion.p>
         )}
       </AnimatePresence>
 
-
       {typeof document !== "undefined" && createPortal(
         <AnimatePresence>
-          {viewerChunk !== null && pastedChunks[viewerChunk] != null && (
+          {viewerChunk !== null && chunks[viewerChunk] != null && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 grid place-items-center bg-black/40 backdrop-blur-sm p-4"
+              className="fixed inset-0 z-50 grid place-items-center bg-ink/40 p-4 backdrop-blur-sm"
               onClick={() => setViewerChunk(null)}
             >
               <motion.div
@@ -595,28 +646,21 @@ export function PromptForm({
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 12, scale: 0.97 }}
                 transition={{ type: "spring", duration: 0.4, bounce: 0.1 }}
-                className="relative w-full max-w-2xl max-h-[75vh] flex flex-col rounded-2xl bg-surface-0 border border-border-subtle shadow-2xl"
+                className="relative flex max-h-[75vh] w-full max-w-2xl flex-col rounded-[26px] bg-white shadow-[0_40px_80px_-36px_rgba(15,42,46,.45)]"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="flex items-center justify-between px-5 py-3.5 border-b border-border-subtle shrink-0">
-                  <div className="flex flex-col">
-                    <span className="text-label-md font-body font-semibold text-text-primary">
-                      {t("pastedContent")}
-                    </span>
-                    <span className="text-[10px] font-mono text-text-muted">
-                      {t("pastedChars", { count: pastedChunks[viewerChunk].length })}
-                    </span>
+                <div className="flex shrink-0 items-center justify-between border-b border-contrast/[0.07] px-6 py-4">
+                  <div className="flex min-w-0 flex-col">
+                    <span className="truncate text-base font-medium text-ink">{chunks[viewerChunk].name ?? t("pastedContent")}</span>
+                    <span className="text-xs text-text-muted">{t("pastedChars", { count: chunks[viewerChunk].text.length })}</span>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setViewerChunk(null)}
-                    className="h-7 w-7 rounded-full grid place-items-center text-text-muted hover:text-text-primary hover:bg-contrast/[0.06] transition-all"
-                  >
-                    <Icon icon="solar:close-circle-linear" className="h-4.5 w-4.5" />
+                  <button type="button" onClick={() => setViewerChunk(null)} aria-label={t("remove")}
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-contrast/10 text-ink hover:border-ink">
+                    <Close size={11} />
                   </button>
                 </div>
-                <div className="overflow-y-auto px-5 py-4 text-sm font-body text-text-secondary whitespace-pre-wrap break-words leading-relaxed">
-                  {pastedChunks[viewerChunk]}
+                <div className="overflow-y-auto whitespace-pre-wrap break-words px-6 py-5 text-sm leading-relaxed text-text-secondary">
+                  {chunks[viewerChunk].text}
                 </div>
               </motion.div>
             </motion.div>

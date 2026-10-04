@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef, useState, type ComponentType } from "react";
 import { useTranslations } from "next-intl";
 import { Navbar } from "@/components/Navbar";
+import { ArrowDot } from "@/components/site/ui";
 import { useShowData, type ShowInitialData } from "./useShowData";
 import { apiFetch } from "@/lib/api";
 import { useApiToken } from "@/components/Providers";
@@ -182,7 +183,7 @@ export function ShowController({ id, view: View, withAnalyser = false, initialDa
 
   return (
     <div className="relative min-h-screen">
-      <Navbar />
+      <Navbar overlay />
       <audio
         ref={audioRef}
         src={data.audioUrl}
@@ -211,8 +212,8 @@ export function ShowController({ id, view: View, withAnalyser = false, initialDa
 
 function Frame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative min-h-screen bg-surface-0">
-      <Navbar />
+    <div className="relative min-h-screen bg-white text-ink">
+      <Navbar overlay />
       {children}
     </div>
   );
@@ -220,7 +221,7 @@ function Frame({ children }: { children: React.ReactNode }) {
 
 function CenterMessage({ msg, pulse = false }: { msg: string; pulse?: boolean }) {
   return (
-    <div className="fixed inset-0 grid place-items-center text-text-muted text-label-sm uppercase tracking-widest font-mono">
+    <div className="fixed inset-0 grid place-items-center text-sm font-medium uppercase tracking-[.12em] text-text-muted">
       <span className={pulse ? "animate-pulse" : undefined}>{msg}</span>
     </div>
   );
@@ -245,17 +246,18 @@ function SignInScreen({
   }, []);
   return (
     <div className="fixed inset-0 grid place-items-center px-6">
-      <div className="flex flex-col items-center gap-6 text-center max-w-sm">
-        <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted">
+      <div className="flex max-w-md flex-col items-center gap-6 text-center">
+        <span className="rounded-full bg-surface-2 px-3.5 py-[7px] text-[13px] font-semibold uppercase tracking-[.08em] text-text-secondary">
           {eyebrow}
         </span>
-        <p className="text-text-primary text-body-lg leading-relaxed">{prompt}</p>
+        <p className="m-0 text-balance text-[clamp(26px,3vw,36px)] font-normal leading-[1.15] tracking-[-0.05em]">{prompt}</p>
         <a
           href={`/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`}
           data-prevent-toggle
-          className="px-5 py-2.5 rounded-full bg-accent text-white text-label-md font-semibold hover:bg-accent-bright transition"
+          className="flex h-14 items-center gap-[13px] rounded-full bg-ink pl-6 pr-2 text-base font-medium tracking-[-0.02em] text-white transition-colors hover:bg-accent"
         >
           {cta}
+          <ArrowDot size={40} />
         </a>
       </div>
     </div>
