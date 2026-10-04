@@ -1,36 +1,40 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Navigation", () => {
-  test("navbar shows logo and links", async ({ page, isMobile }) => {
-    test.skip(!!isMobile, "Nav links hidden on mobile");
+  test("desktop header shows the wordmark and the main links", async ({ page, isMobile }) => {
+    test.skip(!!isMobile, "Links live in the menu on mobile");
     await page.goto("/");
-    await expect(page.getByText("sonificalabs").first()).toBeVisible();
-    await expect(page.getByRole("link", { name: /Pricing|Precios/i })).toBeVisible();
+    await expect(page.getByRole("link", { name: "sonificalabs" }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: /^(Examples|Ejemplos)$/ }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: /^(Who we are|Quiénes somos)$/ }).first()).toBeVisible();
   });
 
-  test("pricing link navigates correctly", async ({ page, isMobile }) => {
-    test.skip(!!isMobile, "Nav links hidden on mobile");
+  test("the footer pricing link opens the pricing page", async ({ page }) => {
+    await page.route("**/user/quota", (route) => route.fulfill({ status: 200, contentType: "application/json", body: "{}" }));
     await page.goto("/");
-    await page.getByRole("link", { name: /Pricing|Precios/i }).click();
-    await page.waitForURL(/pricing/, { timeout: 5000 });
-    await expect(page.getByText("Free").first()).toBeVisible();
+    await page.locator("footer").getByRole("link", { name: /^(Pricing|Precios)$/ }).click();
+    await page.waitForURL(/pricing/, { timeout: 10000 });
+    await expect(page.getByText("Studio").first()).toBeVisible();
   });
 
-  test("shows sign in button when not logged in", async ({ page }) => {
+  test("desktop sign in link goes to the signin page", async ({ page, isMobile }) => {
+    test.skip(!!isMobile, "Sign in lives in the menu on mobile");
     await page.goto("/");
-    await expect(page.getByRole("link", { name: /Sign in|Iniciar sesión/i })).toBeVisible();
+    await page.getByRole("link", { name: /^(Sign in|Entrar)$/ }).first().click();
+    await page.waitForURL(/signin/, { timeout: 10000 });
   });
 
-  test("sign in button navigates to signin page", async ({ page }) => {
+  test("mobile menu opens with the links and sign in", async ({ page, isMobile }) => {
+    test.skip(!isMobile, "Mobile only");
     await page.goto("/");
-    await page.getByRole("link", { name: /Sign in|Iniciar sesión/i }).click();
-    await page.waitForURL(/signin/, { timeout: 5000 });
+    await page.getByRole("button", { name: /^(Menu|Menú)$/ }).click();
+    await expect(page.getByRole("link", { name: /^(Pricing|Precios)$/ }).last()).toBeVisible();
+    await expect(page.getByRole("link", { name: /^(Sign in|Entrar)$/ }).last()).toBeVisible();
   });
 
-  test("how it works link scrolls to section", async ({ page, isMobile }) => {
-    test.skip(!!isMobile, "Nav links hidden on mobile");
+  test("the discover link points at the first section", async ({ page, isMobile }) => {
+    test.skip(!!isMobile, "Hidden on small screens");
     await page.goto("/");
-    const link = page.getByRole("link", { name: /How it works|Cómo funciona/i });
-    await expect(link).toBeVisible();
+    await expect(page.getByRole("link", { name: /See how it works|Descubre cómo funciona/i })).toHaveAttribute("href", "#cap-problema");
   });
 });

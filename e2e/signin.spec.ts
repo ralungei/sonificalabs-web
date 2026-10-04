@@ -1,34 +1,26 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Sign in page", () => {
-  test("renders login card with Google button", async ({ page }) => {
+  test("renders the card with the Google button", async ({ page }) => {
     await page.goto("/signin");
-    await expect(page.getByText("sonificalabs").first()).toBeVisible();
-    await expect(page.locator("button", { hasText: "Google" })).toBeVisible();
+    await expect(page.locator("h1")).toContainText(/Sign in and create your|Entra y crea tu/i);
+    await expect(page.getByRole("button", { name: /Continue with Google|Continuar con Google/i })).toBeEnabled();
   });
 
-  test("shows continue with divider", async ({ page }) => {
+  test("the wordmark takes you back home", async ({ page }) => {
     await page.goto("/signin");
-    await expect(page.getByText(/Continue with|Continuar con/i)).toBeVisible();
+    await page.getByRole("link", { name: /Back to SonificaLabs|Volver a SonificaLabs/i }).click();
+    await page.waitForURL((url) => /^\/(en|es)?\/?$/.test(url.pathname), { timeout: 10000 });
   });
 
-  test("has back to home link that navigates", async ({ page }) => {
+  test("links to the terms and the privacy policy", async ({ page }) => {
     await page.goto("/signin");
-    const backLink = page.getByText(/Back to SonificaLabs|Volver a SonificaLabs/i);
-    await expect(backLink).toBeVisible();
-    await backLink.click();
-    // May navigate to /en or / depending on locale
-    await page.waitForURL(/^\/$|\/en\/?$|\/es\/?$/, { timeout: 5000 });
-  });
-
-  test("Google button is clickable", async ({ page }) => {
-    await page.goto("/signin");
-    const googleBtn = page.locator("button", { hasText: "Google" });
-    await expect(googleBtn).toBeEnabled();
+    await expect(page.getByRole("link", { name: /terms of use|términos de uso/i })).toBeVisible();
+    await expect(page.getByRole("link", { name: /privacy policy|política de privacidad/i })).toBeVisible();
   });
 
   test("shows error message for OAuthAccountNotLinked", async ({ page }) => {
     await page.goto("/signin?error=OAuthAccountNotLinked");
-    await expect(page.getByText(/already registered|ya esta registrado/i)).toBeVisible();
+    await expect(page.getByText(/already registered|ya está registrado/i)).toBeVisible();
   });
 });
