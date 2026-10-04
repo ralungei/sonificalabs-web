@@ -100,11 +100,11 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
             className={cn(
               "group flex h-11 items-center gap-2.5 rounded-full px-4 text-[15px] font-medium tracking-[-0.02em] transition-colors",
               active
-                ? "bg-ink text-white"
+                ? "bg-contrast/[0.06] text-ink"
                 : "text-text-secondary hover:bg-surface-2 hover:text-ink",
             )}
           >
-            <Icon icon={item.icon} className={cn("h-[18px] w-[18px] shrink-0", active ? "text-[#2dd4bf]" : "text-text-muted")} />
+            <Icon icon={item.icon} className={cn("h-[18px] w-[18px] shrink-0", active ? "text-accent" : "text-text-muted")} />
             {t(`nav.${item.id}`)}
           </Link>
         );

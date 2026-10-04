@@ -177,7 +177,7 @@ export function Ideas({ onPick }: { onPick: PickPrompt }) {
     <section id="ideas" className={`${SECTION} scroll-mt-10`}>
       <div className="mx-auto flex max-w-[1180px] flex-col gap-[clamp(24px,3.5vw,44px)]">
         <Reveal>
-          <h2 className={H2}>{t("ideasTitle")} <Keyword gradient="ocean" underline="tilt" line="amber">{t("ideasKeyword")}</Keyword></h2>
+          <h2 className={H2}>{t("ideasTitle")} <Keyword underline="tilt" line="amber">{t("ideasKeyword")}</Keyword></h2>
         </Reveal>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,330px),1fr))] gap-[13px]">
           {ideas.map((idea, i) => {
@@ -438,7 +438,7 @@ export function Business({ onPick }: { onPick: PickPrompt }) {
             <span className="flex items-center gap-2 self-start rounded-full bg-ink px-3.5 py-[7px] text-[13px] font-semibold uppercase tracking-[.08em] text-white">
               <Briefcase size={15} />{t("businessTag")}
             </span>
-            <h2 className={H2}>{t("businessTitle")} <Keyword gradient="indigo" underline="tilt" line="aqua">{t("businessKeyword")}</Keyword></h2>
+            <h2 className={H2}>{t("businessTitle")} <Keyword underline="tilt" line="aqua">{t("businessKeyword")}</Keyword></h2>
           </div>
           <div className="flex flex-wrap gap-2">
             <a href={mail} className="flex h-14 items-center gap-[13px] rounded-full bg-ink pl-6 pr-2 text-base font-medium text-white hover:bg-accent">
@@ -492,7 +492,7 @@ export function Gift({ onCreate }: { onCreate: (prompt: string) => void }) {
             <GiftIcon size={15} />{t("giftTag")}
           </span>
           <h2 className="m-0 text-balance text-[clamp(34px,5vw,55px)] font-normal leading-[1.02] tracking-[-0.065em]">
-            {t("giftTitle")} <Keyword gradient="dusk" underline="tilt" line="rose">{t("giftKeyword")}</Keyword>
+            {t("giftTitle")} <Keyword underline="tilt" line="rose">{t("giftKeyword")}</Keyword>
           </h2>
           <form onSubmit={(e) => { e.preventDefault(); go(); }}
             className="mt-2 flex w-full max-w-[520px] items-center gap-2 rounded-full bg-white py-1.5 pl-[22px] pr-1.5 shadow-[0_1px_2px_rgba(15,42,46,.06),0_20px_44px_-28px_rgba(15,42,46,.4)]">

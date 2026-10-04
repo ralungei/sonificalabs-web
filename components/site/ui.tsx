@@ -58,9 +58,6 @@ export const KW_GRADIENTS = {
   teal: "linear-gradient(100deg,#0d9488 0%,#0e9aa3 40%,#0e7fa6 75%,#2f6fb0 100%)",
   deep: "linear-gradient(100deg,#0f766e 0%,#0d9488 60%,#14b8a6 100%)",
   mint: "linear-gradient(100deg,#0d9488 0%,#14b8a6 50%,#0e9aa3 100%)",
-  ocean: "linear-gradient(100deg,#0e9aa3 0%,#0e7fa6 50%,#2f6fb0 100%)",
-  indigo: "linear-gradient(100deg,#2f6fb0 0%,#4f63b8 50%,#6d5bc4 100%)",
-  dusk: "linear-gradient(100deg,#0d9488 0%,#2f6fb0 55%,#6d5bc4 100%)",
 } as const;
 
 /** Underline inks: the hero keeps the dark one, every other section gets its own. */
@@ -74,8 +71,21 @@ export const KW_LINES = {
 } as const;
 
 /**
+ * Text gradient that goes with each coloured underline: the same hue, a step
+ * deeper so the word still reads on white.
+ */
+const KW_LINE_TEXT: Record<Exclude<keyof typeof KW_LINES, "ink">, string> = {
+  aqua: "linear-gradient(100deg,#0f766e 0%,#0d9488 55%,#14b8a6 100%)",
+  amber: "linear-gradient(100deg,#c2410c 0%,#d97706 55%,#f59e0b 100%)",
+  coral: "linear-gradient(100deg,#e8590c 0%,#f0603f 55%,#f97362 100%)",
+  rose: "linear-gradient(100deg,#be185d 0%,#e11d48 55%,#f43f5e 100%)",
+  violet: "linear-gradient(100deg,#5b21b6 0%,#6d28d9 55%,#7c5cd6 100%)",
+};
+
+/**
  * The highlighted word of a headline: display face, gradient ink and an
- * optional hand-drawn underline (flat and drawn in, or tilted).
+ * optional hand-drawn underline (flat and drawn in, or tilted). A coloured
+ * underline brings its own text gradient; `gradient` applies otherwise.
  */
 export function Keyword({
   children,
@@ -89,8 +99,9 @@ export function Keyword({
   line?: keyof typeof KW_LINES;
 }) {
   const background = KW_LINES[line];
+  const text = line === "ink" ? KW_GRADIENTS[gradient] : KW_LINE_TEXT[line];
   return (
-    <span className="kw" style={{ backgroundImage: KW_GRADIENTS[gradient] }}>
+    <span className="kw" style={{ backgroundImage: text }}>
       {children}
       {underline === "draw" && (
         <span className="kw-line" style={{ background, animation: "draw .9s .9s cubic-bezier(.6,0,.2,1) both" }} />
