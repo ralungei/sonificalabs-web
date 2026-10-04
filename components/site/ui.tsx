@@ -67,7 +67,7 @@ export const KW_LINES = {
   amber: "linear-gradient(90deg,#fcd34d,#f59e0b)",
   coral: "linear-gradient(90deg,#fdba74,#f97362)",
   rose: "linear-gradient(90deg,#f9a8d4,#f43f5e)",
-  violet: "linear-gradient(90deg,#c4b5fd,#7c5cd6)",
+  violet: "linear-gradient(90deg,#a5b4fc,#c084fc,#f0abfc)",
 } as const;
 
 /**
@@ -79,7 +79,7 @@ const KW_LINE_TEXT: Record<Exclude<keyof typeof KW_LINES, "ink">, string> = {
   amber: "linear-gradient(100deg,#c2410c 0%,#d97706 55%,#f59e0b 100%)",
   coral: "linear-gradient(100deg,#e8590c 0%,#f0603f 55%,#f97362 100%)",
   rose: "linear-gradient(100deg,#be185d 0%,#e11d48 55%,#f43f5e 100%)",
-  violet: "linear-gradient(100deg,#5b21b6 0%,#6d28d9 55%,#7c5cd6 100%)",
+  violet: "linear-gradient(100deg,#4f46e5 0%,#7c3aed 50%,#c026d3 100%)",
 };
 
 /**
