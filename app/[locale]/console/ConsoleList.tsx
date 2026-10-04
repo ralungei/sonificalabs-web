@@ -8,6 +8,7 @@ import { Icon } from "@iconify/react";
 import { apiFetch, apiUrl } from "@/lib/api";
 import { useApiToken } from "@/components/Providers";
 import { timeAgo, formatDate, formatDuration } from "@/lib/format";
+import { ArrowDot } from "@/components/site/ui";
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -151,8 +152,10 @@ function PlayButton({ id, title }: { id: string; title: string }) {
       onClick={toggle}
       aria-label={label}
       title={state === "error" ? label : undefined}
-      className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border bg-surface-0 transition-all duration-200 hover:shadow-[var(--shadow-glow-sm)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
-        state === "error" ? "border-fail/40 text-fail hover:border-fail" : "border-border-subtle text-accent hover:border-accent"
+      className={`grid h-11 w-11 shrink-0 place-items-center rounded-full transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+        state === "error" ? "border border-fail/40 bg-white text-fail hover:border-fail"
+        : state === "playing" || state === "loading" ? "bg-accent text-white"
+        : "bg-ink text-white hover:bg-accent"
       }`}
     >
       <Icon icon={icon} className={state === "idle" ? "h-4 w-4 translate-x-px" : "h-4 w-4"} />
@@ -238,7 +241,7 @@ export function ConsoleList({
 
   if (loading && !data) {
     return (
-      <div className="overflow-hidden rounded-2xl border border-border-subtle bg-surface-0">
+      <div className="overflow-hidden rounded-[21px] border border-contrast/[0.07] bg-white shadow-[0_30px_60px_-40px_rgba(15,42,46,.35)]">
         {Array.from({ length: compact ? PAGE_SIZE : 6 }).map((_, i) => (
           <RowSkeleton key={i} />
         ))}
@@ -248,7 +251,7 @@ export function ConsoleList({
 
   if (failed) {
     return (
-      <div className="rounded-2xl border border-border-subtle bg-surface-0 px-6 py-14 text-center">
+      <div className="rounded-[21px] border border-contrast/[0.07] bg-white shadow-[0_30px_60px_-40px_rgba(15,42,46,.35)] px-6 py-14 text-center">
         <Icon icon="solar:cloud-cross-linear" className="mx-auto mb-3 h-8 w-8 text-text-muted" />
         <p className="text-body-sm text-text-secondary">{t("error")}</p>
         <button
@@ -267,18 +270,18 @@ export function ConsoleList({
 
   if (!active.length && !items.length) {
     return (
-      <div className="rounded-2xl border border-dashed border-border-subtle bg-surface-0 px-6 py-16 text-center">
-        <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full bg-accent/8 text-accent">
+      <div className="rounded-[21px] border border-dashed border-contrast/[0.12] bg-white px-6 py-16 text-center">
+        <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full bg-mint text-accent">
           <Icon icon="solar:soundwave-linear" className="h-7 w-7" />
         </div>
-        <h2 className="text-heading-sm font-semibold text-contrast">{t("empty.title")}</h2>
-        <p className="mx-auto mt-2 max-w-sm text-body-sm text-text-secondary">{t("empty.body")}</p>
+        <h2 className="m-0 text-[22px] font-medium tracking-[-0.035em] text-ink">{t("empty.title")}</h2>
+        <p className="mx-auto mb-0 mt-2 max-w-sm text-[15px] leading-[1.45] text-text-secondary">{t("empty.body")}</p>
         <Link
-          href="/"
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-label-md font-medium text-white transition-all hover:bg-accent-bright hover:shadow-[var(--shadow-glow-md)]"
+          href="/console"
+          className="mt-6 inline-flex h-12 items-center gap-2.5 rounded-full bg-ink pl-5 pr-1.5 text-[15px] font-medium tracking-[-0.02em] text-white transition-colors hover:bg-accent"
         >
-          <Icon icon="solar:magic-stick-3-bold" className="h-4 w-4" />
           {t("empty.cta")}
+          <ArrowDot size={36} />
         </Link>
       </div>
     );
@@ -286,7 +289,7 @@ export function ConsoleList({
 
   return (
     <>
-      <div className="overflow-hidden rounded-2xl border border-border-subtle bg-surface-0">
+      <div className="overflow-hidden rounded-[21px] border border-contrast/[0.07] bg-white shadow-[0_30px_60px_-40px_rgba(15,42,46,.35)]">
         <AnimatePresence initial={false}>
           {active.map((item) => (
             <motion.div
@@ -301,7 +304,7 @@ export function ConsoleList({
                 <Icon icon="svg-spinners:ring-resize" className="h-4 w-4" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-body-sm font-medium text-contrast">
+                <p className="m-0 truncate text-[15px] font-medium tracking-[-0.02em] text-ink">
                   {item.title || item.prompt || t("untitled")}
                 </p>
                 <div className="mt-1 flex items-center gap-x-3 text-caption-md text-text-muted">
@@ -341,7 +344,7 @@ export function ConsoleList({
               )}
 
               <Link href={`/p/${item.id}`} className="min-w-0 flex-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
-                <p className="truncate text-body-sm font-medium text-contrast transition-colors group-hover:text-accent">
+                <p className="m-0 truncate text-[15px] font-medium tracking-[-0.02em] text-ink transition-colors group-hover:text-accent">
                   {label}
                 </p>
                 <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-caption-md text-text-muted">

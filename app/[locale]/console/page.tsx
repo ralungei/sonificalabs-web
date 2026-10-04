@@ -76,10 +76,10 @@ export default function ConsoleGeneratorPage() {
 
       <section className="mt-12">
         <div className="mb-3 flex items-baseline justify-between gap-3">
-          <h2 className="text-heading-sm font-semibold leading-6 text-contrast">{t("recentTitle")}</h2>
+          <h2 className="m-0 text-[22px] font-medium tracking-[-0.035em] text-ink">{t("recentTitle")}</h2>
           <Link
             href="/console/history"
-            className="inline-flex items-center gap-1 text-label-md text-text-secondary transition-colors hover:text-accent"
+            className="inline-flex items-center gap-1 text-sm font-medium text-text-secondary transition-colors hover:text-accent"
           >
             {t("seeAll")}
             <Icon icon="solar:alt-arrow-right-linear" className="h-3.5 w-3.5" />
