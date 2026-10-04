@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 
 const VS = "attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}";
 const FS = `precision highp float;uniform vec2 res;uniform float t;uniform float amp;uniform float yo;
+uniform vec3 ca;uniform vec3 cb;uniform vec3 cc;uniform vec3 cm;
 float ln(float y,float x,float ph,float a,float w){return w/abs(y+sin(x+ph)*a);}
 void main(){
   vec2 p=(gl_FragCoord.xy*2.0-res)/min(res.x,res.y);
@@ -11,22 +12,28 @@ void main(){
   float l1=ln(p.y,p.x*0.9,t,amp,0.0045);
   float l2=ln(p.y+0.05,p.x*1.3,-t*0.7,amp*0.7,0.003);
   float l3=ln(p.y-0.04,p.x*0.7,t*0.5+1.7,amp*0.5,0.0025);
-  vec3 c1=mix(vec3(0.051,0.580,0.533),vec3(0.176,0.831,0.749),smoothstep(0.1,0.6,sx));
-  c1=mix(c1,vec3(0.388,0.400,0.945),smoothstep(0.6,1.0,sx));
-  vec3 c2=mix(vec3(0.176,0.831,0.749),vec3(0.051,0.580,0.533),sx);
-  vec3 c3=mix(vec3(0.388,0.400,0.945),vec3(0.176,0.831,0.749),sx);
+  vec3 c1=mix(ca,cb,smoothstep(0.1,0.6,sx));
+  c1=mix(c1,cc,smoothstep(0.6,1.0,sx));
+  vec3 c2=mix(cb,ca,sx);
+  vec3 c3=mix(cc,cb,sx);
   float s=l1+l2+l3;
-  vec3 c=mix((c1*l1+c2*l2+c3*l3)/max(s,1e-3),vec3(0.62,0.80,0.80),0.35);
+  vec3 c=mix((c1*l1+c2*l2+c3*l3)/max(s,1e-3),cm,0.35);
   float fade=smoothstep(0.0,0.2,sx)*smoothstep(1.0,0.8,sx);
   float a=clamp(s*0.18,0.0,0.35)*fade;
   gl_FragColor=vec4(c*a,a);
 }`;
 
+/** Wave inks: three line colours and the tint they are washed with. */
+const TONES = {
+  teal: { a: [0.051, 0.580, 0.533], b: [0.176, 0.831, 0.749], c: [0.388, 0.400, 0.945], m: [0.62, 0.80, 0.80] },
+  violet: { a: [0.310, 0.275, 0.898], b: [0.659, 0.333, 0.969], c: [0.925, 0.282, 0.600], m: [0.80, 0.72, 0.92] },
+} as const;
+
 /**
  * Three soft sound waves behind the hero (WebGL). `active` makes them swell
  * and move faster: something is playing, being typed or produced.
  */
-export function HeroWave({ active }: { active: boolean }) {
+export function HeroWave({ active, tone = "teal" }: { active: boolean; tone?: keyof typeof TONES }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const activeRef = useRef(active);
   activeRef.current = active;
@@ -50,6 +57,11 @@ export function HeroWave({ active }: { active: boolean }) {
     gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
     const uRes = gl.getUniformLocation(pr, "res"), uT = gl.getUniformLocation(pr, "t");
     const uA = gl.getUniformLocation(pr, "amp"), uY = gl.getUniformLocation(pr, "yo");
+    const colors = TONES[tone];
+    gl.uniform3fv(gl.getUniformLocation(pr, "ca"), colors.a);
+    gl.uniform3fv(gl.getUniformLocation(pr, "cb"), colors.b);
+    gl.uniform3fv(gl.getUniformLocation(pr, "cc"), colors.c);
+    gl.uniform3fv(gl.getUniformLocation(pr, "cm"), colors.m);
     const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     let t = 0, amp = 0.2, raf = 0, visible = true;
     const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
@@ -74,7 +86,7 @@ export function HeroWave({ active }: { active: boolean }) {
     };
     frame();
     return () => { cancelAnimationFrame(raf); io.disconnect(); };
-  }, []);
+  }, [tone]);
 
   return (
     <canvas ref={ref} aria-hidden className="pointer-events-none absolute inset-0 h-full w-full"

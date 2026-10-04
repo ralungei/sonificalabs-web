@@ -114,11 +114,12 @@ export function Keyword({
 /* ── Buttons ───────────────────────────────────────────────────── */
 
 /** Small round "→" that sits at the end of every primary button. */
-export function ArrowDot({ size = 40, tone = "light" }: { size?: number; tone?: "light" | "dark" | "teal" | "gradient" }) {
+export function ArrowDot({ size = 40, tone = "light" }: { size?: number; tone?: "light" | "dark" | "teal" | "violet" | "gradient" }) {
   const styles: Record<string, CSSProperties> = {
     light: { background: "#fff", color: "var(--color-ink)" },
     dark: { background: "var(--color-ink)", color: "#fff" },
     teal: { background: "#fff", color: "var(--color-accent)" },
+    violet: { background: "#fff", color: "#7c3aed" },
     gradient: { background: "linear-gradient(120deg,#0d9488,#2f8fb8)", color: "#fff" },
   };
   return (
@@ -128,11 +129,12 @@ export function ArrowDot({ size = 40, tone = "light" }: { size?: number; tone?: 
   );
 }
 
-type PillVariant = "dark" | "teal" | "outline";
+type PillVariant = "dark" | "teal" | "violet" | "outline";
 
 const PILL: Record<PillVariant, string> = {
   dark: "bg-ink text-white hover:bg-accent",
   teal: "bg-accent text-white hover:bg-ink",
+  violet: "bg-[#7c3aed] text-white hover:bg-ink",
   outline: "border border-contrast/15 bg-white text-ink hover:border-accent hover:text-accent",
 };
 
@@ -157,7 +159,7 @@ export function PillLink({
     PILL[variant],
     className,
   );
-  const dot = arrow ? <ArrowDot size={36} tone={variant === "outline" ? "dark" : variant === "teal" ? "teal" : "light"} /> : null;
+  const dot = arrow ? <ArrowDot size={36} tone={variant === "outline" ? "dark" : variant === "teal" ? "teal" : variant === "violet" ? "violet" : "light"} /> : null;
   if (external || href.startsWith("mailto:") || href.startsWith("#")) {
     return <a href={href} className={cls}>{children}{dot}</a>;
   }
