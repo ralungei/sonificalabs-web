@@ -224,7 +224,7 @@ export function PipelineView({ apiToken }: { apiToken: string | null }) {
         <div className="space-y-1.5 mt-1">
           <div className="flex items-start gap-2">
             <span className="text-xs font-bold text-neutral-400 shrink-0 w-14">Modelo</span>
-            <span><Tag color="emerald">gemini-2.5-flash</Tag></span>
+            <span><Tag color="emerald">gemini-3.7-flash</Tag></span>
           </div>
           <div className="flex items-start gap-2">
             <span className="text-xs font-bold text-neutral-400 shrink-0 w-14">Tool</span>

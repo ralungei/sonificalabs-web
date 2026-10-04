@@ -45,13 +45,15 @@ export default function Home() {
   useEffect(() => () => stopDemo(), []);
 
   const handleSubmit = useCallback(
-    async (prompt: string) => {
+    // `instruction` is what the user typed, sent apart from any pasted material
+    // so the API reads the requested duration from it and not from a script.
+    async (prompt: string, instruction?: string) => {
       let res: Response;
       try {
         res = await apiFetch("/produce", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt }),
+          body: JSON.stringify({ prompt, instruction }),
         }, apiToken);
       } catch {
         throw new Error(t("serviceUnavailable"));

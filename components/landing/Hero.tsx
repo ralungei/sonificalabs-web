@@ -30,7 +30,7 @@ export function Hero({
   onSubmit,
 }: {
   formRef: RefObject<PromptFormHandle | null>;
-  onSubmit: (prompt: string) => Promise<void>;
+  onSubmit: (prompt: string, instruction: string) => Promise<void>;
 }) {
   const t = useTranslations("landing");
   const locale = useLocale();

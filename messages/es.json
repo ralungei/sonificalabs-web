@@ -13,7 +13,9 @@
     "enter": "Entrar",
     "createAudio": "Crear audio",
     "menu": "Menú",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "myProductions": "Mis generaciones",
+    "goToConsole": "Consola"
   },
   "home": {
     "heroSub": "Si tienes una idea, aquí la conviertes en audio.",
@@ -747,5 +749,56 @@
     ],
     "giftFile": "tu_primer_audio.mp3",
     "giftMeta": "Voces · Música · Efectos"
+  },
+  "console": {
+    "greeting": "Hola, {name}",
+    "title": "Mis generaciones",
+    "subtitle": "Todo lo que has creado, en un solo sitio.",
+    "listTitle": "Historial",
+    "newProduction": "Nueva producción",
+    "untitled": "Sin título",
+    "credits": "{n} créditos",
+    "pageOf": "Página {page} de {pages} · {total} producciones",
+    "error": "No hemos podido cargar tus generaciones.",
+    "retry": "Reintentar",
+    "stats": {
+      "credits": "Créditos",
+      "productions": "Producciones",
+      "minutes": "Minutos generados",
+      "upgrade": "Mejorar plan"
+    },
+    "empty": {
+      "title": "Aún no has creado nada",
+      "body": "Cuando generes tu primer audio aparecerá aquí, listo para escuchar y descargar.",
+      "cta": "Crear mi primera producción"
+    },
+    "status": {
+      "queued": "En cola",
+      "generating": "Generando",
+      "confirming": "Esperando confirmación",
+      "producing": "Produciendo",
+      "done": "Listo",
+      "error": "Fallo",
+      "cancelled": "Cancelada"
+    },
+    "actions": {
+      "play": "Reproducir {title}",
+      "pause": "Pausar {title}",
+      "download": "Descargar {title}",
+      "follow": "Seguir",
+      "prev": "Página anterior",
+      "next": "Página siguiente",
+      "playError": "No se ha podido reproducir {title}. Pulsa para reintentar"
+    },
+    "nav": {
+      "generator": "Generador de audio",
+      "history": "Mis generaciones",
+      "account": "Ajustes de cuenta",
+      "signOut": "Cerrar sesión"
+    },
+    "generatorSubtitle": "Describe lo que quieres y lo convertimos en audio producido.",
+    "recentTitle": "Recientes",
+    "seeAll": "Ver todas",
+    "openMenu": "Abrir menú"
   }
 }

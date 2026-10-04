@@ -239,9 +239,16 @@ export function PromptForm({
   onSubmit,
   suggestions,
   onActivityChange,
+  className,
+  showQuota = true,
   ref,
 }: {
-  onSubmit: (prompt: string) => Promise<void>;
+  /** `instruction` is only what the user typed, without tags or pasted cards. */
+  onSubmit: (prompt: string, instruction: string) => Promise<void>;
+  /** Extra classes for the outer form. */
+  className?: string;
+  /** Hide the plan badge and credit count on surfaces that already show them. */
+  showQuota?: boolean;
   suggestions?: Suggestion[];
   /** True while the box is focused, has text or is producing. */
   onActivityChange?: (active: boolean) => void;
@@ -377,13 +384,13 @@ export function PromptForm({
   const hasContent = prompt.trim().length > 0 || chunks.length > 0;
   const canSubmit = hasContent && !isLoading && !isOverLimit && rateLimitCountdown === 0;
 
-  const produce = async (text: string) => {
+  const produce = async (text: string, instruction: string) => {
     if (isLoading) return;
     setIsLoading(true);
     setError("");
     sessionStorage.setItem("sonificalabs_choose_voices", chooseVoices ? "1" : "0");
     try {
-      await onSubmit(text);
+      await onSubmit(text, instruction);
     } catch (err: unknown) {
       if (err instanceof Error && err.name === "RateLimitError") {
         const seconds = parseInt(err.message.replace("rate_limit:", ""), 10) || 30;
@@ -401,7 +408,7 @@ export function PromptForm({
     // An empty box is an invitation, not an error: put the cursor in it.
     if (!hasContent) { textareaRef.current?.focus(); return; }
     if (!canSubmit) return;
-    produce(outgoingPrompt);
+    produce(outgoingPrompt, prompt.trim());
   };
 
   useImperativeHandle(ref, () => ({
@@ -415,7 +422,7 @@ export function PromptForm({
       const text = buildPrompt(p);
       if (!text || rateLimitCountdown > 0) return;
       if (limitKnown && text.length > maxPromptChars) return;
-      produce(text);
+      produce(text, p.trim());
     },
   }));
 
@@ -439,7 +446,7 @@ export function PromptForm({
   const rounded = rows > 1 || chunks.length > 0 ? "rounded-[28px]" : "rounded-full";
 
   return (
-    <form onSubmit={handleSubmit} className="w-full">
+    <form onSubmit={handleSubmit} className={cn("w-full", className)}>
       <div
         className={cn(
           "border bg-white p-2 backdrop-blur-[10px] transition-[border-color,border-radius] duration-200",
@@ -558,7 +565,7 @@ export function PromptForm({
           onLockedClick={() => router.push("/pricing")}
           labels={{ type: t("type"), duration: t("duration"), characters: t("characters"), parameters: t("parameters"), voices: t("voices") }}
         />
-        {remaining === null ? (
+        {showQuota && (remaining === null ? (
           session
             ? <span className="h-4 w-16 animate-pulse rounded bg-contrast/[0.06]" />
             : <span className="text-sm text-text-muted">{t("credits", { count: 20 })}</span>
@@ -574,7 +581,7 @@ export function PromptForm({
             className="h-9 rounded-full border border-accent/30 px-3.5 text-sm font-medium text-accent hover:bg-accent/10">
             {t("upgradePlan")}
           </button>
-        )}
+        ))}
         {totalChars > 2800 && (
           <span className={cn("text-xs tabular-nums", isOverLimit ? "text-fail" : "text-text-muted")}>
             {limitKnown ? `${totalChars}/${maxPromptChars}` : totalChars}

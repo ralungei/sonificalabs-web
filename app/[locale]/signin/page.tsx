@@ -1,10 +1,10 @@
 "use client";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Wordmark } from "@/components/Navbar";
 import { HeroWave } from "@/components/site/HeroWave";
 import { Keyword } from "@/components/site/ui";
@@ -23,8 +23,16 @@ function GoogleG() {
 function SignInContent() {
   const t = useTranslations("signin");
   const params = useSearchParams();
-  const callbackUrl = params.get("callbackUrl") || "/";
+  const router = useRouter();
+  const { status } = useSession();
+  // Signing in lands in the console, not back on the marketing page.
+  const callbackUrl = params.get("callbackUrl") || "/console";
   const error = params.get("error");
+
+  // Already signed in: there is nothing to do here, go straight to the app.
+  useEffect(() => {
+    if (status === "authenticated") router.replace(callbackUrl);
+  }, [status, router, callbackUrl]);
 
   return (
     <main className="relative flex h-dvh items-center justify-center overflow-hidden bg-white px-4 text-ink">

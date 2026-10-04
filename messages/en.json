@@ -13,7 +13,9 @@
     "enter": "Sign in",
     "createAudio": "Create audio",
     "menu": "Menu",
-    "close": "Close"
+    "close": "Close",
+    "myProductions": "My generations",
+    "goToConsole": "Console"
   },
   "home": {
     "heroSub": "If you have an idea, you can turn it into audio here.",
@@ -747,5 +749,56 @@
     ],
     "giftFile": "your_first_audio.mp3",
     "giftMeta": "Voices · Music · Effects"
+  },
+  "console": {
+    "greeting": "Hi, {name}",
+    "title": "My generations",
+    "subtitle": "Everything you have created, in one place.",
+    "listTitle": "History",
+    "newProduction": "New production",
+    "untitled": "Untitled",
+    "credits": "{n} credits",
+    "pageOf": "Page {page} of {pages} · {total} productions",
+    "error": "We could not load your generations.",
+    "retry": "Retry",
+    "stats": {
+      "credits": "Credits",
+      "productions": "Productions",
+      "minutes": "Minutes generated",
+      "upgrade": "Upgrade plan"
+    },
+    "empty": {
+      "title": "Nothing here yet",
+      "body": "Once you generate your first audio it will show up here, ready to play and download.",
+      "cta": "Create my first production"
+    },
+    "status": {
+      "queued": "Queued",
+      "generating": "Generating",
+      "confirming": "Awaiting confirmation",
+      "producing": "Producing",
+      "done": "Ready",
+      "error": "Failed",
+      "cancelled": "Cancelled"
+    },
+    "actions": {
+      "play": "Play {title}",
+      "pause": "Pause {title}",
+      "download": "Download {title}",
+      "follow": "Follow",
+      "prev": "Previous page",
+      "next": "Next page",
+      "playError": "Could not play {title}. Click to retry"
+    },
+    "nav": {
+      "generator": "Audio generator",
+      "history": "My generations",
+      "account": "Account settings",
+      "signOut": "Sign out"
+    },
+    "generatorSubtitle": "Describe what you want and we turn it into produced audio.",
+    "recentTitle": "Recent",
+    "seeAll": "See all",
+    "openMenu": "Open menu"
   }
 }

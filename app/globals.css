@@ -9,9 +9,10 @@
      COLORS
      ═══════════════════════════════════════════ */
 
-  /* Surfaces — white with a cool teal tint */
+  /* Surfaces: white with a cool teal tint. surface-1 lifts a hair off the
+     page so cards sitting on the body can be told apart. */
   --color-surface-0: #FFFFFF;
-  --color-surface-1: #FFFFFF;
+  --color-surface-1: #F7FAFA;
   --color-surface-2: #EEF6F5;
   --color-surface-3: #E1ECEA;
 
@@ -98,6 +99,8 @@
 @utility text-body-md { font-size: 1rem; }
 @utility text-body-sm { font-size: 0.875rem; }
 @utility text-caption-md { font-size: 0.75rem; }
+@utility text-caption-sm { font-size: 0.6875rem; }
+@utility text-label-lg { font-size: 0.9375rem; }
 @utility text-label-md { font-size: 0.8125rem; }
 @utility text-label-sm { font-size: 0.75rem; }
 

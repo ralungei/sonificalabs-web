@@ -128,6 +128,10 @@ export function Navbar({ variant = "page", overlay = false }: { variant?: "home"
           {status === "loading" ? (
             <span className="hidden h-9 w-9 animate-pulse rounded-full bg-contrast/[0.06] md:block" />
           ) : session?.user ? (
+            <>
+            {/* Signed-in users get a direct way into the app: the marketing
+                page is not where their work lives. */}
+            <Link href="/console" className={cn(linkCls, "hidden md:inline", active("/console"))}>{t("myProductions")}</Link>
             <div ref={menuRef} className="relative hidden md:block">
               <button type="button" onClick={() => setMenuOpen(!menuOpen)} aria-label={t("myAccount")}
                 className="flex items-center rounded-full p-0.5 transition-colors hover:bg-contrast/[0.06]">
@@ -153,6 +157,7 @@ export function Navbar({ variant = "page", overlay = false }: { variant?: "home"
                         </div>
                       )}
                     </div>
+                    <Link href="/console" className="block px-4 py-2.5 text-sm font-medium text-ink hover:bg-surface-2">{t("myProductions")}</Link>
                     <Link href="/account" className="block px-4 py-2.5 text-sm font-medium text-ink hover:bg-surface-2">{t("myAccount")}</Link>
                     <Link href="/pricing" className="block px-4 py-2.5 text-sm font-medium text-ink hover:bg-surface-2">{t("manageSubscription")}</Link>
                     <button type="button" onClick={() => signOut()} className="block w-full px-4 py-2.5 text-left text-sm font-medium text-ink hover:bg-surface-2">
@@ -162,6 +167,7 @@ export function Navbar({ variant = "page", overlay = false }: { variant?: "home"
                 )}
               </AnimatePresence>
             </div>
+            </>
           ) : (
             <Link href="/signin" className={cn(linkCls, "hidden border-b border-current pb-[3px] md:inline")}>{t("enter")}</Link>
           )}
@@ -199,6 +205,9 @@ export function Navbar({ variant = "page", overlay = false }: { variant?: "home"
               </div>
               <div className="flex flex-col gap-1 px-3 pt-2 text-xl font-medium tracking-[-0.03em]">
                 <Link href="/" onClick={() => setMobileOpen(false)} className="rounded-2xl px-3 py-3 hover:bg-surface-2">{t("createAudio")}</Link>
+                {session?.user && (
+                  <Link href="/console" onClick={() => setMobileOpen(false)} className="rounded-2xl px-3 py-3 hover:bg-surface-2">{t("myProductions")}</Link>
+                )}
                 <Link href="/examples" onClick={() => setMobileOpen(false)} className="rounded-2xl px-3 py-3 hover:bg-surface-2">{t("examples")}</Link>
                 <a href="/#ideas" onClick={anchor("ideas")} className="rounded-2xl px-3 py-3 hover:bg-surface-2">{t("ideas")}</a>
                 <a href="/#empresas" onClick={anchor("empresas")} className="rounded-2xl px-3 py-3 hover:bg-surface-2">{t("business")}</a>
