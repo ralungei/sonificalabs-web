@@ -76,13 +76,15 @@ export function Hero({
         ))}
       </div>
 
-      {/* Above the "discover" link: the customize popover opens downwards over it. */}
-      <div className="relative z-[4] mt-[110px] flex w-full max-w-[980px] flex-col items-center text-center md:mt-[clamp(120px,20vh,230px)]">
-        <h1 className="m-0 text-balance text-[clamp(44px,7vw,89px)] font-normal leading-[1.04] tracking-[-0.07em] anim-rise" style={{ animationDelay: ".1s" }}>
+      {/* Above the "discover" link: the customize popover opens downwards over it.
+          The column is wider than what it holds and sits over the side bubbles
+          (Relax, Cuento), so it lets clicks through and only its content takes them. */}
+      <div className="pointer-events-none relative z-[4] mt-[110px] flex w-full max-w-[980px] flex-col items-center text-center md:mt-[clamp(120px,20vh,230px)]">
+        <h1 className="pointer-events-auto m-0 text-balance text-[clamp(44px,7vw,89px)] font-normal leading-[1.04] tracking-[-0.07em] anim-rise" style={{ animationDelay: ".1s" }}>
           {t("heroTitle")} <Keyword underline="draw">{t("heroKeyword")}</Keyword>
         </h1>
 
-        <div className="mt-[clamp(28px,5vh,52px)] w-full max-w-[720px] anim-rise" style={{ animationDelay: ".3s" }}>
+        <div className="pointer-events-auto mt-[clamp(28px,5vh,52px)] w-full max-w-[720px] anim-rise" style={{ animationDelay: ".3s" }}>
           <PromptForm ref={formRef} onSubmit={onSubmit} suggestions={suggestions} onActivityChange={setTyping} />
 
           {/* Bubbles in a scrollable row on narrow screens */}
