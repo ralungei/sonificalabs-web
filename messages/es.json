@@ -170,6 +170,7 @@
           "Hasta 30 segundos por audio",
           "Hasta 2 voces por producción",
           "10 voces en español, latino e inglés",
+          "Voces con emoción, risas y susurros",
           "Música, SFX y mezcla con IA",
           "Compartir vía enlace"
         ]
@@ -182,6 +183,7 @@
           "~20 producciones al mes",
           "Hasta 1 minuto por audio",
           "Hasta 3 voces por producción",
+          "Las 29 voces del catálogo",
           "Descarga en MP3",
           "Licencia comercial"
         ]
@@ -194,9 +196,7 @@
         "features": [
           "Hasta 5 minutos por audio",
           "Hasta 4 voces por producción",
-          "27+ voces en español, latino e inglés",
-          "Voces expresivas con emoción",
-          "Descarga en MP3"
+          "Descarga en WAV y FLAC sin pérdida"
         ]
       },
       "studio": {
@@ -244,8 +244,8 @@
         "a": "Los créditos no usados se mantienen hasta el final del ciclo de facturación. No se acumulan de un mes a otro."
       },
       {
-        "q": "¿Qué es el modelo avanzado de voces?",
-        "a": "El plan gratuito usa un modelo de voz rápido con buena calidad. Los planes Pro y Studio usan un modelo más expresivo, más natural y con soporte para 70+ idiomas. La diferencia se nota especialmente en diálogos y narraciones largas."
+        "q": "¿Qué voces hay?",
+        "a": "29 voces de mujer y de hombre, de jóvenes a mayores. El plan gratuito incluye 10 y los planes de pago, todas. Cualquier voz puede hablar con acento de España, latinoamericano, inglés de EE. UU., británico o italiano: la IA elige el acento según tu idea y puedes pedirle uno concreto. Todos los planes usan el mismo motor de voz, con emoción, risas, suspiros y susurros."
       },
       {
         "q": "¿Puedo cancelar cuando quiera?",
@@ -353,8 +353,7 @@
     "thirdPartyItems": [
       "Google (autenticación OAuth)",
       "Stripe (procesamiento de pagos; consulta su política de privacidad en stripe.com/privacy)",
-      "Google Gemini (generación de guiones con IA: recibe el texto de tus prompts)",
-      "ElevenLabs (síntesis de voz: recibe los textos de las voces generadas)",
+      "Google Gemini (generación de guiones y síntesis de voz con IA: recibe el texto de tus prompts y de las voces generadas)",
       "Cloudflare (alojamiento, almacenamiento de archivos y base de datos)"
     ],
     "thirdPartiesTransfer": "Estos servicios pueden estar ubicados fuera del EEE (Estados Unidos). Las transferencias se amparan en el EU-US Data Privacy Framework y/o Cláusulas Contractuales Tipo.",
@@ -403,7 +402,7 @@
       "Sobre el audio generado: te concedemos una licencia de uso amplia (incluido uso comercial en planes de pago). SonificaLabs no reclama derechos sobre tus producciones."
     ],
     "ai": "Contenido generado por IA",
-    "aiText": "El audio se genera mediante inteligencia artificial (Google Gemini para guiones, ElevenLabs para voces). El resultado no está garantizado en cuanto a precisión, originalidad o idoneidad. Eres responsable de revisar el contenido antes de publicarlo.",
+    "aiText": "El audio se genera mediante inteligencia artificial (Google Gemini para guiones y voces). El resultado no está garantizado en cuanto a precisión, originalidad o idoneidad. Eres responsable de revisar el contenido antes de publicarlo.",
     "acceptable": "Uso aceptable",
     "acceptableItems": [
       "No generar contenido ilegal, difamatorio o que incite al odio.",

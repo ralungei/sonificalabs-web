@@ -4,8 +4,9 @@ export interface VoiceDef {
   name: string;
   id: string;
   gender: "f" | "m";
-  lang: string;
   desc: string;
+  /** Where the voice fits best, e.g. "documental, informativo". */
+  uses?: string;
   free?: boolean;
 }
 

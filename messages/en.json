@@ -170,6 +170,7 @@
           "Up to 30 seconds per audio",
           "Up to 2 voices per production",
           "10 voices in Spanish, Latin and English",
+          "Voices with emotion, laughs and whispers",
           "Music, SFX and AI mixing",
           "Share via link"
         ]
@@ -182,6 +183,7 @@
           "~20 productions per month",
           "Up to 1 minute per audio",
           "Up to 3 voices per production",
+          "All 29 catalog voices",
           "Download in MP3",
           "Commercial license"
         ]
@@ -194,9 +196,7 @@
         "features": [
           "Up to 5 minutes per audio",
           "Up to 4 voices per production",
-          "27+ voices in Spanish, Latin and English",
-          "Expressive voices with emotion",
-          "Download in MP3"
+          "Lossless WAV and FLAC download"
         ]
       },
       "studio": {
@@ -244,8 +244,8 @@
         "a": "Unused credits are kept until the end of the billing cycle. They don't roll over to the next month."
       },
       {
-        "q": "What is the advanced voice model?",
-        "a": "The free plan uses a fast voice model with good quality. Pro and Studio plans use a more expressive, natural model with support for 70+ languages. The difference is especially noticeable in dialogues and long narrations."
+        "q": "Which voices are there?",
+        "a": "29 female and male voices, from young to older. The free plan includes 10 and paid plans include all of them. Any voice can speak with a Spain, Latin American, US English, British or Italian accent: the AI picks the accent from your idea, and you can ask for a specific one. Every plan uses the same voice engine, with emotion, laughs, sighs and whispers."
       },
       {
         "q": "Can I cancel anytime?",
@@ -353,8 +353,7 @@
     "thirdPartyItems": [
       "Google (OAuth authentication)",
       "Stripe (payment processing; see their privacy policy at stripe.com/privacy)",
-      "Google Gemini (AI script generation: receives your prompt text)",
-      "ElevenLabs (voice synthesis: receives generated voice text)",
+      "Google Gemini (AI script generation and voice synthesis: receives your prompt text and the generated voice text)",
       "Cloudflare (hosting, file storage, and database)"
     ],
     "thirdPartiesTransfer": "These services may be located outside the EEA (United States). Transfers are covered by the EU-US Data Privacy Framework and/or Standard Contractual Clauses.",
@@ -403,7 +402,7 @@
       "Regarding generated audio: we grant you a broad usage license (including commercial use on paid plans). SonificaLabs does not claim rights over your productions."
     ],
     "ai": "AI-generated content",
-    "aiText": "Audio is generated using artificial intelligence (Google Gemini for scripts, ElevenLabs for voices). Results are not guaranteed in terms of accuracy, originality, or suitability. You are responsible for reviewing the content before publishing it.",
+    "aiText": "Audio is generated using artificial intelligence (Google Gemini for scripts and voices). Results are not guaranteed in terms of accuracy, originality, or suitability. You are responsible for reviewing the content before publishing it.",
     "acceptable": "Acceptable use",
     "acceptableItems": [
       "Do not generate illegal, defamatory, or hate-inciting content.",

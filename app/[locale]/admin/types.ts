@@ -97,7 +97,6 @@ export type ConsoleTab = "dashboard" | "lab";
 export interface LabResult {
   id: string;
   model: string;
-  tts: string;
   status: "queued" | "working" | "done" | "error";
   progress?: string;
   audioUrl: string | null;

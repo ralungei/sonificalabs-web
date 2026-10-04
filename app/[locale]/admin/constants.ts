@@ -31,8 +31,8 @@ export const TEST_SCENARIOS: TestScenario[] = [
     prompt: "Lectura dramatica de 15 segundos: 'El universo no tiene obligacion de tener sentido para ti'. Solo voz, sin musica ni efectos. Voz profunda con reverb sutil." },
 ];
 
-export const LAB_MODELS: { model: string; tts: string; tag: string }[] = [
-  { model: "gemini-3.7-flash", tts: "", tag: "Gemini 3.7 Flash" },
+export const LAB_MODELS: { model: string; tag: string }[] = [
+  { model: "gemini-3.7-flash", tag: "Gemini 3.7 Flash" },
 ];
 
 export const LAB_CATEGORIES = [...new Set(TEST_SCENARIOS.map((s) => s.category))];
